@@ -1,0 +1,71 @@
+.edit-nav-pen {
+    float: right;
+    margin-left: 6px;
+    margin-right: 8px;
+    margin-top: 6px;
+}
+.edit-nav-trash {
+    float: right;
+    margin-right: 32px;
+    margin-top: 6px;
+}
+.edit-nav-add {
+    float: right;
+    margin-left: 38;
+    margin-right: 32px;
+    margin-bottom: 4px;
+}
+
+.nav-name {
+    width: 140px;
+}
+
+.confirm-edit-nav{
+    margin-right: 60px;
+    margin-left: 16px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.confirm-add-nav{
+    margin-left: 16px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+
+.link_icon_spacer{
+    margin-left: 16px;
+    margin-right: 16px;
+
+}
+.tooltip {
+    position: relative;
+  }
+  
+  .tooltip-text {
+    display: none;
+    position: absolute;
+    z-index: 1;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 5px;
+    border-radius: 3px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 150px;
+    text-align: center;
+    /* Adjust positioning to be below and slightly to the right of the trigger element */
+    top: calc(100% + 5px);
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .tooltip:hover + .tooltip-text {
+    display: block;
+  }
+  
+  
