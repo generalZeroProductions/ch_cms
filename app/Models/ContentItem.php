@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class ContentItem extends Model
 {
     protected $fillable = [
-        'type', 'title',  'body', 'index', 'data', 'styles'
+        'type','heading', 'title', 'body', 'index', 'data', 'styles'
     ];
 
     protected $casts = [

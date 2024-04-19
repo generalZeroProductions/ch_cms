@@ -1,3 +1,6 @@
+
+<link rel="stylesheet" href="{{ asset('scripts/bootstrap.min.css') }}">
+
 <div class="modal fade" id="baseModal">
   <div class="modal-dialog">
     <div class="modal-content">

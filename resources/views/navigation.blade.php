@@ -32,8 +32,7 @@
                     </li>
                     @if ($editMode)
                         <a href="#" class="edit-nav-pen"
-                            onClick="loadEditNav2('{{ json_encode($nav) }}','{{ $nav->id }}_{{ $nav->title }}','{{ json_encode($allPageTitles) }}')">
-
+                            onClick="loadEditNav('{{ json_encode($nav) }}','{{ $nav->id }}_{{ $nav->title }}','{{ json_encode($allPageTitles) }}')">
                             <img src = "{{ asset('icons\pen.svg') }}">
                         </a>
                         <a href = "#" class = "edit-nav-trash"
@@ -92,7 +91,7 @@
     </ul>
     @if ($editMode)
         <div class = "col-auto ">
-            <a href = "#" class = "edit-nav-add" 
+            <a href = "#" class = "edit-nav-add"
                 onClick="openBaseModal('selectType','{{ json_encode($allPageTitles) }}', null, null)">
                 <img src = "{{ asset('icons\add.svg') }}" id = "hoverIcon">
             </a>
@@ -106,46 +105,47 @@
 </nav>
 
 <script>
-{{-- var event = new MouseEvent('mouseover', {
+    {{-- var event = new MouseEvent('mouseover', {
   'view': window,
   'bubbles': true,
   'cancelable': true
 }); --}}
 
 
-var element = document.getElementById('hoverIcon');
+    var element = document.getElementById('hoverIcon');
 
-element.addEventListener('mouseover', function() {
-    showTooltip('tooltip-1');
-  console.log('Mouse over, set Font Awesome class here');
-  
-});
+    element.addEventListener('mouseover', function() {
+        showTooltip('tooltip-1');
+        console.log('Mouse over, set Font Awesome class here');
 
-element.addEventListener('mouseout', function() {
-    hideTooltip('tooltip-1');
-  console.log('Mouse out, remove Font Awesome class here');
-});
+    });
+
+    element.addEventListener('mouseout', function() {
+        hideTooltip('tooltip-1');
+        console.log('Mouse out, remove Font Awesome class here');
+    });
 
 
-var tooltipTimeout;
-function showTooltip(tooltipId) {
-    var tooltip = document.getElementById(tooltipId);
-    if (tooltip) {
-        tooltip.style.display = 'block';
-        clearTimeout(tooltipTimeout); 
-    }
-}
-function hideTooltip(tooltipId) {
-    tooltipTimeout = setTimeout(function() {
+    var tooltipTimeout;
+
+    function showTooltip(tooltipId) {
         var tooltip = document.getElementById(tooltipId);
         if (tooltip) {
-            tooltip.style.display = 'none';
+            tooltip.style.display = 'block';
+            clearTimeout(tooltipTimeout);
         }
-    }, 200); // Adjust the delay as needed
-}
+    }
 
+    function hideTooltip(tooltipId) {
+        tooltipTimeout = setTimeout(function() {
+            var tooltip = document.getElementById(tooltipId);
+            if (tooltip) {
+                tooltip.style.display = 'none';
+            }
+        }, 200); // Adjust the delay as needed
+    }
 
-    {{-- document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
         var navLinks = document.querySelectorAll('.nav-link');
 
         navLinks.forEach(function(navLink) {
@@ -158,6 +158,6 @@ function hideTooltip(tooltipId) {
                 parentNavItem.classList.add('active');
             });
         });
-    }); --}}
+    });
 
 </script>

@@ -1,3 +1,16 @@
+.space-row {
+    margin-top: 24px;
+}
+.tab_ul {
+    padding: 0; /* Remove default padding */
+    margin: 0; /* Remove default margin */
+    list-style-type: none; /* Remove bullet points */
+    font-size: large;
+}
+.article_edit{
+    min-height: 300px;
+    background-color: navajowhite;
+}
 .edit-nav-pen {
     float: right;
     margin-left: 6px;
@@ -19,7 +32,9 @@
 .nav-name {
     width: 140px;
 }
-
+.hidden-content {
+    display: none;
+}
 .confirm-edit-nav{
     margin-right: 60px;
     margin-left: 16px;

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NavController;
+use App\Http\Controllers\PageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +18,39 @@ use App\Http\Controllers\NavController;
 Route::get('/', function () {
     return view('index');
 });
+
+
+ //PAGE ROUTING 
+// Route::get('/load-page/{routeName}', function ($routeName) {
+//     dd($routeName);
+// });
+// Route::get('/load-page/{routeName}', function ($routeName) {
+//     $viewPath = 'rows.' . $routeName; // Adjust the path to match your views directory structure
+//     if (view()->exists($viewPath)) {
+//         return View::make($viewPath);
+//     } else {
+//         abort(404); // or handle the error appropriately
+//     }
+// });  updateArticle
+
+Route::get('/', function () {
+    return View::make('index');
+})->name('root');
+Route::get('/load-page/{routeName}', [PageController::class, 'loadPage']);
+
+Route::get('/image_upload', function () {
+    return View::make('forms.upload_image');
+})->name('image_upload');
+Route::get('/update_article', function () {
+    return View::make('forms.editColumn');
+})->name('update_article');
+
+Route::post('/upload', [PageController::class, 'upload'])->name('upload');
+Route::post('/update_article', [PageController::class, 'updateArticle'])->name('update_article');
+
+
+
+
 
 //  NAV ROUTES
 Route::get('/edit_nav_item', function () {
