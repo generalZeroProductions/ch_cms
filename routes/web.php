@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ConsoleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NavController;
 use App\Http\Controllers\PageController;
@@ -15,38 +16,77 @@ use App\Http\Controllers\PageController;
 |
 */
 
-Route::get('/', function () {
-    return view('index');
-});
+// CONSOLE ROUTING
 
 
- //PAGE ROUTING 
-// Route::get('/load-page/{routeName}', function ($routeName) {
-//     dd($routeName);
-// });
-// Route::get('/load-page/{routeName}', function ($routeName) {
-//     $viewPath = 'rows.' . $routeName; // Adjust the path to match your views directory structure
-//     if (view()->exists($viewPath)) {
-//         return View::make($viewPath);
-//     } else {
-//         abort(404); // or handle the error appropriately
-//     }
-// });  updateArticle
+Route::get('/changeSlideImage', function () {
+    return View::make('console.edit_slide_image');
+})->name('changeSlideImage');
 
-Route::get('/', function () {
-    return View::make('index');
-})->name('root');
+Route::get('/dispay_slide_data', function () {
+    return View::make('forms.slide_data_form');
+})->name('dispay_slide_data');
+
+Route::get('/build', function () {
+    return View::make('console.page_builder');
+})->name('builder');
+
+Route::get('/row_type', function () {
+    return View::make('console.row_select_form');
+})->name('rowType');
+
+Route::get('/dashboard', function () {
+    return View::make('console.dashboard');
+})->name('dashboard');
+
+Route::get('/slideShowEdit', function () {
+    return View::make('console.edit_slideshow_form');
+})->name('slideShowEdit');
+
+
+Route::post('/update_slideshow', [ConsoleController::class, 'updateSlideshow'])->name('update_slideshow');
+
+
+Route::post('/create_page', [ConsoleController::class, 'makeNewPage'])->name('create_page');
+
+//PAGE ROUTING 
+Route::get('/title_change', function () {
+    return View::make('forms.title_change');
+})->name('title_change');
+
+Route::get('/set_mobile', function () {
+    return View::make('setMobile');
+})->name('setMobile');
+
+
+
+// Route::get('/', function () {
+//     return View::make('index');
+// })->name('root');
+
 Route::get('/load-page/{routeName}', [PageController::class, 'loadPage']);
+Route::get('/load-tab/{routeName}', [PageController::class, 'loadTabContent']);
 
 Route::get('/image_upload', function () {
     return View::make('forms.upload_image');
 })->name('image_upload');
+
+
 Route::get('/update_article', function () {
     return View::make('forms.editColumn');
 })->name('update_article');
 
+
+
+Route::get('/edit_tabs', function () {
+    return View::make('forms.edit_tabs_form');
+})->name('editTabs');
+
+Route::post('/updatePageTitle', [PageController::class, 'pageTitle'])->name('updatePageTitle');
 Route::post('/upload', [PageController::class, 'upload'])->name('upload');
+Route::post('/use_image', [PageController::class, 'useImage'])->name('use_image');
 Route::post('/update_article', [PageController::class, 'updateArticle'])->name('update_article');
+Route::post('/update_tabs', [PageController::class, 'updateTabs'])->name('update_tabs');
 
 
 
@@ -90,3 +130,8 @@ Route::post('/delete_nav_item', [NavController::class,'deleteItem'])->name('dele
 Route::post('/update_drop_nav', [NavController::class,'updateDrop'])->name('update_drop_nav');
 Route::post('/add_drop_nav', [NavController::class,'addDropdown'])->name('add_drop_nav');
 
+
+
+Route::get('/{pageName?}', function ($pageName = null) {
+    return view('index', ['pageName' => $pageName]);
+})->name('root');

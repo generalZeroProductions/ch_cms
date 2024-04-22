@@ -1,0 +1,14 @@
+{"rows":[2]}
+{"columns":[7]}
+
+{
+    "slides":
+    {"image":"lake.jpg",
+    "caption":"nice lake"} ,
+        {"image":"defaultBanner.jpg",
+    "caption":"nice default"} ,
+    
+}
+
+
+

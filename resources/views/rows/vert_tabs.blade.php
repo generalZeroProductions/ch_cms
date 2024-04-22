@@ -23,11 +23,16 @@
     $contentIndex = 0;
 @endphp
 
-<ul id="menu">
+<ul id="menu" style="margin-left:0px; padding-left: 0px">
     @foreach ($tabs as $tab)
-        <li>
-            <a href="#">{{ $tab->title }}</a>
-            <div class="hidden-content" id = "content_{{ $tab->id }}">content</div>
+        <li class="menuFold">
+            <div class="menu-item">
+                {{ $tab->title }}
+                <img src="{{ asset('icons/chevronDown.svg') }}" class="menu-icon">
+            </div>
+            <div class="hidden-content">
+                <!-- Hidden content here -->
+            </div>
         </li>
         @php
             $contentIndex += 1;

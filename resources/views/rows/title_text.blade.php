@@ -10,7 +10,7 @@
     <div>
         @if ($editMode)
             <div class = "row">
-                <a href="#" class="nav-link" onClick="loadEditArticle({{$column}}, {{$page->id}})">
+                <a href="#" class="nav-link" onClick="loadEditArticle({{$column}}, '{{$pageName}}')">
                     <span class="menu-icon"><img src="{{ asset('icons/pen.svg') }}"></span>
                 </a>
             </div>

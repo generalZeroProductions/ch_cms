@@ -1,7 +1,5 @@
 <form method="POST" action = "/update_article">
     @csrf
-    <input type="hidden" name="article_id" id = "article_id">
-     <input type="hidden" name="page_id" id = "page_id">
     <div class="form-group">
         <h4>文章标题</h4>
         <input type="text" class="form-control" id="edit_article_title" name="title">
@@ -13,4 +11,6 @@
     <button type="submit" class="btn btn-primary">Submit</button>
     <button type="button" class="btn btn-secondary">Cancel</button>
     <input type="hidden" name="body_text" id = "body_text">
+    <input type="hidden" name="article_id" id = "article_id">
+    <input type="hidden" name="page_name" id = "page_name">
 </form>

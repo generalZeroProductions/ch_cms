@@ -11,26 +11,21 @@
 
 @endphp
 <div class = "container" style="padding-left:0px">
-<form method="POST" action="/upload" enctype="multipart/form-data">
-    @csrf
+<div>
     <div class="form-group form-section-header">
         <label for="fileInput">上传新图像文件</label>
         <div class=row>
             <div class=col-md-9>
-                <input type="file" class="form-control-file" id="fileInput" name="file" value="选择图像" placeholder="选择图像">
+                <input type="file" class="form-control-file" id="fileInput" name="file">
             </div>
             <div class=col-md-3 style = "justify-content: left">
-                <button type="submit" class="btn btn-primary" style = "text-align:center;width: 110px;">上传并使用</button>
+                <button class="btn btn-primary" onClick = "refreshSlideImage('upload')" style = "text-align:center;width: 110px;">上传并使用</button>
             </div>
         </div>
     </div>
-
-    <input type = "hidden" id="page_name" name ="page_name">
-    <input type = "hidden" id = "column_id" name = "column_id">
-</form>
+</div>
 <hr>
-<form method="POST" action="/use_image">
-    @csrf
+<div >
     <div class="form-group form-section-header">
         <label for="fileInput">使用来自服务器的图像文件</label>
           <div class=row>
@@ -42,11 +37,10 @@
         </select>
             </div>
             <div class=col-md-3 style = "justify-content: left">
-            <button type="submit" class="btn btn-primary" style = "text-align:center; width: 110px;">使用图像</button>
+            <button class="btn btn-primary" onClick = "refreshSlideImage('image')" style = "text-align:center; width: 110px;">使用图像</button>
             </div>
         </div>
     </div>
-    <input type = "hidden" id="page_name_use" name ="page_name_use">
-    <input type = "hidden" id = "column_id_use" name = "column_id_use">
-</form>
+  
+</div>
 </div>

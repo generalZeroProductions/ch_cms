@@ -5,7 +5,25 @@
     padding: 0; /* Remove default padding */
     margin: 0; /* Remove default margin */
     list-style-type: none; /* Remove bullet points */
-    font-size: large;
+    font-size: x-large;
+}
+
+.menu-item {
+    display: flex; /* Use flexbox */
+    align-items: center; /* Vertically center the content */
+    background-color: blue; /* Replace YourColorHere with your desired background color */
+    color: white;
+    padding: 10px; /* Adjust padding as needed */
+    text-decoration: none; /* Removes default underline */
+    list-style-type: none;
+    
+}
+.menu-item:hover {
+    color: white;
+}
+.menu-item img {
+    display: inline-block;
+    margin-left: auto; /* Push the image to the right */
 }
 .article_edit{
     min-height: 300px;
@@ -56,7 +74,9 @@
 .link_icon_spacer{
     margin-left: 16px;
     margin-right: 16px;
-
+}
+.tab_li_spacer{
+    margin-top: 10px;
 }
 .tooltip {
     position: relative;
@@ -84,3 +104,98 @@
   }
   
   
+.new_item_input {
+    height: 40px !important; /* Adjust the height as needed */
+    font-size: 16px; /* Adjust the font size as needed */
+    /* Add any other styling properties you want */
+}
+
+
+
+
+.carousel-inner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover
+  }
+
+  .banner_container {
+    width: 1920px; /* Set your desired width */
+    height: 400px; /* Set your desired height */
+    overflow: hidden; /* Ensure that the image is cropped to fit within the container */
+}
+
+.banner_container img {
+    width: 100%; /* Make the image fill the width of the container */
+    height: 100%; /* Make the image fill the height of the container */
+    object-fit: cover; /* Crop the image to cover the container */
+}
+
+.modal-lg {
+    min-width: 600px;
+}
+.modal-xl {
+    max-width: 90%;
+}
+.modal-xxl {
+    max-width: 100%;
+}
+
+.title_change_div {
+    min-height: 32px; /* Adjust the value as needed */
+    margin-left: 12px;
+}
+.title_indicator{
+    font-size: medium;
+    font-weight: 600;
+    display: inline-block;
+}
+.title_reference{
+    font-size: large;
+    display: inline-block;
+}
+
+.form-section-header {
+    font-size: large;
+    font-weight: bold;
+    text-align: left;
+}
+
+
+.button-fill-column {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+
+.slide-preview {
+    margin: 12px; /* 8px margin around the element */
+    max-width: 15vw;
+}
+
+.slide-preview a {
+    display: inline-block;
+    align-content: right; /* Align anchor element to the right */
+}
+
+.slide-preview > * {
+    margin-bottom: 12px; /* 6px vertical margin between each child element */
+}
+
+
+.slide-preview input[type="text"] {
+    width: 100%; /* Make the input text fill the width of the column */
+}
+
+
+.slide_thumbnail {
+    display: flex;
+    align-items: center; /* Vertically center the content */
+    justify-content: center; /* Horizontally center the content */
+    height: 20vh; /* Set the height of the container */
+    margin-top: 1vh;
+    margin-bottom: 1vh;
+   
+}

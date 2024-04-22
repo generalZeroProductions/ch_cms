@@ -10,7 +10,6 @@ foreach ($files as $file) {
 @endphp
 <form id="fileUploadForm" action="/uploadImage" method="POST" enctype="multipart/form-data">
     @csrf
-    <input type="hidden" value="{{$row->id}}" name="rowName">
     <div class="form-group">
         <label for="imageNameInput">Image Name</label>
         <input type="text" class="form-control" id="imageNameInput" name="imageName" value="{{$row->image}}" required>
@@ -24,4 +23,5 @@ foreach ($files as $file) {
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button type="submit" class="btn btn-primary" onclick="checkForDuplicates()">Upload</button>
     </div>
+    <input type="hidden" value="{{$row->id}}" name="rowName">
 </form>

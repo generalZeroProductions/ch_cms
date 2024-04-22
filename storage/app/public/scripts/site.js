@@ -1,4 +1,8 @@
+var linkImagePath;
+var imagesAsset;
+var iconsAsses;
 function loadPage(routeName) {
+    console.log(routeName);
     fetch("/load-page/" + routeName)
         .then((response) => response.text()) // Parse response as text
         .then((html) => {
@@ -19,96 +23,13 @@ function loadPage(routeName) {
         .catch((error) => console.error("Error loading page:", error));
 }
 
-function loadTab(tabId, routeName, ulId, linkId) {
-    fetch("/load-page/" + routeName)
-        .then((response) => response.text()) // Parse response as text
-        .then((html) => {
-            document.getElementById(tabId).innerHTML = html;
-        })
-        .catch((error) => console.error("Error loading page:", error));
-        highlightListItem(ulId, linkId);
-}
-
-function loadVertTab(tabId, routeName) {
-    fetch("/load-page/" + routeName)
-        .then((response) => response.text()) // Parse response as text
-        .then((html) => {
-            document.getElementById(tabId).innerHTML = html;
-        })
-        .catch((error) => console.error("Error loading page:", error));
-
-}
-
-function decodeRoutes(encodedString) {
-    var decodedString = encodedString.replace(/&quot;/g, '"');
-    var array = JSON.parse(decodedString);
-    return array;
-}
-
-function menuFolder(routes) {
-    const menu = document.getElementById("menu");
-    const links = menu.getElementsByTagName("a");
-    const contents = menu.getElementsByClassName("hidden-content");
-    const allRoutes = decodeRoutes(routes);
-    for (let i = 0; i < links.length; i++) {
-        const content = links[i].nextElementSibling;
-        fetch("/load-page/" + allRoutes[i])
-        .then((response) => response.text()) // Parse response as text
-        .then((html) => {
-            content.innerHTML = html;
-        })
-        .catch((error) => console.error("Error loading page:", error));
-    }
-    for (let i = 0; i < links.length; i++) {
-        links[i].addEventListener("click", function (event) {
-            event.preventDefault();
-            const content = this.nextElementSibling;
-            // Toggle visibility of content
-            if (content.style.display === "block") {
-                content.style.display = "none";
-            } else {
-                // Close any other open contents
-                for (let j = 0; j < contents.length; j++) {
-                    if (
-                        contents[j] !== content &&
-                        contents[j].style.display === "block"
-                    ) {
-                        contents[j].style.display = "none";
-                    }
-                }
-                content.style.display = "block";
-            }
-        });
-    }
-}
-function highlightListItem(ulId, linkId) {
-    // Get the <ul> element
-    var ulElement = document.getElementById(ulId);
-    if (!ulElement) {
-        console.log("not found");
-    }
-    // Get all <a> elements inside the <ul>
-    var linkElements = ulElement.getElementsByTagName("a");
-
-    // Loop through each <a> element
-    for (var i = 0; i < linkElements.length; i++) {
-        // If the current <a> element has the specified id, set its color to blue
-        if (linkElements[i].id === linkId) {
-            linkElements[i].style.color = "blue";
-        } else {
-            // Otherwise, set its color to black
-            linkElements[i].style.color = "black";
-        }
-    }
-}
-
-function loadEditArticle(article, page_id) {
+function loadEditArticle(article, pageName) {
     const url = "/update_article";
     var articleId = "article_" + article.id;
     var title;
     var body;
     var text;
-    console.log(article.title);
+
     fetch(url)
         .then((response) => response.text())
         .then((html) => {
@@ -134,17 +55,65 @@ function loadEditArticle(article, page_id) {
             if (id) {
                 id.value = article.id;
             }
-            var page = document.getElementById("page_id");
+            var page = document.getElementById("page_name");
             if (page) {
-                page.value = page_id;
+                page.value = pageName;
             }
         });
 }
 
-function openBaseModal(action, allTitles, item, pageId) {
+function showSelectNavType(modContent)
+{
+    fetch('/add_nav_select')
+        .then((response) => response.text())
+        .then((html) => {
+            modContent.innerHTML = html;
+            document.getElementById("base-modal-title").innerHTML =
+                "创建新的导航";
+        })
+        .catch((error) =>
+            console.error("Error loading newNavSelect:", error)
+        );
+}
+function removeNavItem(modContent, item)
+{
+    var navItem = JSON.parse(item);
+    document.getElementById("base-modal-title").innerHTML =
+    "确认删除记录 " + navItem.title;
+    fetch("/delete_nav_item")
+        .then((response) => response.text())
+        .then((html) => {
+            modContent.innerHTML = html;
+            document.getElementById("nav_id").value = navItem.id;
+            document.getElementById("delete_btn").innerHTML =
+                "删除";
+            document.getElementById("page_name").value = pageName;
+        })
+        .catch((error) =>
+            console.error("Error loading remove nav item:", error)
+        );
+}
+function showUploadImageStandard(modContent,item,pageName)
+{
+    var column = JSON.parse(item);
+    document.getElementById("base-modal-title").innerHTML = "选择图像";
+    fetch('/image_upload')
+        .then((response) => response.text())
+        .then((html) => {
+            modContent.innerHTML = html;
+            document.getElementById("page_name").value = pageName;
+            document.getElementById("column_id").value = column.id;
+            document.getElementById("page_name_use").value = pageName;
+            document.getElementById("column_id_use").value = column.id;
+        })
+        .catch((error) =>
+            console.error("Error loading image select form:", error)
+        );
+}
+
+function openBaseModal(action, allTitles, item, pageName) {
     const url = "/open_base_modal";
     var modContent;
-    console.log("action = " + action);
     fetch(url)
         .then((response) => response.text())
         .then((html) => {
@@ -155,44 +124,33 @@ function openBaseModal(action, allTitles, item, pageId) {
             modal.classList.add("show");
             modal.style.display = "block";
             modal.dataset.allTitles = allTitles;
+            modal.dataset.pageName = pageName;
             modContent = document.getElementById("base-modal-content");
-
+            modal.classList.add("modal-xxl"); // Add extra-large size
             // Check if modContent is assigned and action is "selectType" before fetching additional content
             if (action === "selectType" && modContent) {
-                const surl = "/add_nav_select";
-                fetch(surl)
-                    .then((response) => response.text())
-                    .then((html) => {
-                        modContent.innerHTML = html;
-                    })
-                    .catch((error) =>
-                        console.error("Error loading newNavSelect:", error)
-                    );
+                showSelectNavType(modContent);
             }
             if (action === "removeItem" && modContent) {
-                const surl = "/delete_nav_item";
-                var navItem = JSON.parse(item);
-                fetch(surl)
-                    .then((response) => response.text())
-                    .then((html) => {
-                        modContent.innerHTML = html;
-                        document.getElementById("nav_id").value = navItem.id;
-                        document.getElementById("delete_btn").innerHTML =
-                            "Confirm Delete " + navItem.title;
-                    })
-                    .catch((error) =>
-                        console.error("Error loading newNavSelect:", error)
-                    );
+                removeNavItem(modContent, item);
             }
             if (action === "uploadImage" && modContent) {
-                const surl = "/image_upload";
-                var navItem = JSON.parse(item);
-                fetch(surl)
+                showUploadImageStandard(modContent,item,pageName);
+            }
+            if (action === "slideShowImage" && modContent) {
+                slideItemImageAssign(modContent, item);
+            }
+            if (action === "createRow" && modContent) {
+                fetch('/row_type')
                     .then((response) => response.text())
                     .then((html) => {
                         modContent.innerHTML = html;
-                        document.getElementById("page_id").value = pageId;
-                        document.getElementById("column_id").value = navItem.id;
+                        var modalDialog =
+                            document.getElementById("base-modal-size");
+                            
+                        modalDialog.classList.add("modal-lg");
+                        document.getElementById("base-modal-title").innerHTML =
+                            "选择要创建的行类型";
                     })
                     .catch((error) =>
                         console.error("Error loading newNavSelect:", error)
@@ -202,24 +160,58 @@ function openBaseModal(action, allTitles, item, pageId) {
         .catch((error) => console.error("Error loading baseModal:", error));
 }
 
-const csrfToken = document
-    .querySelector('meta[name="csrf-token"]')
-    .getAttribute("content");
-var linkImagePath;
-
-function closeModal(modalId) {
-    var modal = document.getElementById(modalId);
+function closeModal() {
+    var modal = document.getElementById("baseModal");
     modal.classList.remove("show");
-    // modal.style.display = 'none';
-
-    // Ensure that modal backdrop is also hidden
-    var modalBackdrop = document.querySelector(".modal-backdrop");
-    // modalBackdrop.style.display = 'none';
-
-    // Remove the modal element from the DOM
     modal.remove();
 }
 
 function printPhpVar(phpvar) {
     console.log("var = " + phpvar);
+}
+
+function changePageTitle(page, divId) {
+    const pageItem = JSON.parse(page);
+    var titleDiv = document.getElementById(divId);
+    fetch("/title_change")
+        .then((response) => response.text())
+        .then((html) => {
+            titleDiv.innerHTML = html;
+            document.getElementById("page_title").value = pageItem.title;
+            document.getElementById("page_id").value = pageItem.id;
+        })
+        .catch((error) => console.error("Error loading newNavSelect:", error));
+}
+
+const csrfToken = document
+    .querySelector('meta[name="csrf-token"]')
+    .getAttribute("content");
+
+function setSessionScreenSize() {
+    console.log("trying");
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "session_mobile.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    var postData = "width=" + window.innerWidth;
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                // Handle the response
+                document.body.innerHTML = xhr.responseText;
+            } else {
+                console.error("Error:", xhr.status);
+            }
+        }
+    };
+    xhr.send(postData);
+}
+
+function bannerOn() {
+    const myCarouselElement = document.querySelector(
+        "#carouselExampleCaptions"
+    );
+    const carousel = new bootstrap.Carousel(myCarouselElement, {
+        interval: 2000,
+        touch: true,
+    });
 }

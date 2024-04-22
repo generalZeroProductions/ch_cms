@@ -9,11 +9,17 @@
     $articleId2 = "article_".$column2->id;
     $editMode = true;
 @endphp
-    <div class="row space-row">
+    <div class = "container">
+    @if ($tabContent)
+        <div class="row">
+        @else
+            <div class="row space-row">
+    @endif
         <div class="col-md-6" id = "{{$articleId1}}">
-            @include('rows/title_text',['column'=> $column1, 'page'=>$page])
+            @include('rows/title_text',['column'=> $column1, 'pageName'=>$pageName])
         </div>
         <div class="col-md-6" id = "{{$articleId2}}">
-            @include('rows/title_text',['column'=> $column2, 'page'=>$page])
+            @include('rows/title_text',['column'=> $column2, 'pageName'=>$pageName])
         </div>
     </div>
+</div>

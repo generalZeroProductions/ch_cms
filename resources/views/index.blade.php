@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="{{ asset('scripts/site.css') }}">
     <script src="{{ asset('scripts/site.js') }}"></script>
     <script src="{{ asset('scripts/navCtl.js') }}"></script>
+    <script src="{{ asset('scripts/tabsCtl.js') }}"></script>
+    <script src="{{ asset('scripts/editors.js') }}"></script>
 
 </head>
 
@@ -24,35 +26,53 @@
     @php
         use App\Models\Navigation;
         use App\Models\ContentItem;
+        session_start();
+        $_SESSION['edit'] = true;
+        $mobile = false;
+        if (isset($_SESSION['mobile'])) {
+            if (isset($_SESSION['screenWidth'])) {
+                echo '<script>
+                    if (window.innerWidth !== ' . $_SESSION['screenWidth'] . ') {
+                        window.location.href = "/set_mobile";
+                    }
+                </script>';
+                $mobile = $_SESSION['mobile'];
+            }
+        } else {
+            echo '<script>
+                window.location.href = "/set_mobile";
+            </script>';
+        }
+
         $editMode = true;
         $route;
-        if (isset($pageId)) {
-            $page = ContentItem::findOrFail($pageId);
-            $route = $page->title;
-            dd("herre");
-        }
-        // Check if $currentPage is set
-        else {
+        if (isset($pageName)) {
+            $route = $pageName;
+        } else {
             // Fetch items from the navigation table where the type is 'nav' and select the one with the lowest index
-            $lowestIndexItem = Navigation::where('type', 'nav')->orderBy('index')->first();
-            if ($lowestIndexItem) {
-                $route = $lowestIndexItem->route;
+            $firstNav = Navigation::where('type', 'nav')->orderBy('index')->first();
+            if ($firstNav) {
+                $route = $firstNav->route;
             } else {
                 // If no item was found, set $currentPage to a default value ('products' in this case)
                 $route = 'page 3';
             }
         }
+
     @endphp
     <script src="{{ asset('scripts/jquery-3.2.1.slim.min.js') }}"></script>
 
-    @include('navigation')
-    <div id = "main_content" class = "container">
+    @include('navigation', ['pageName' => $route])
+    <div id = "main_content">
     </div>
-    <script src="{{ asset('scripts/bootstrap.min.js') }}"></script>
     <script src="{{ asset('scripts/popper.min.js') }}"></script>
+    <script src="{{ asset('scripts/bootstrap.min.js') }}"></script>
+
     <script>
         window.onload = function() {
             linkImagePath = "{{ asset('icons/link.svg') }}";
+            iconsAsset = "{{ asset('icons/') }}/";
+            imagesAsset = "{{ asset('images/') }}/";
             var route = "{{ $route }}";
             loadPage(route);
         };

@@ -6,7 +6,6 @@ var newNavId = -1;
 function addNavItemStandard() {
     var modal = document.getElementById("baseModal");
     var allTitles = JSON.parse(modal.dataset.allTitles);
-    console.log(allTitles);
     const url = "/add_nav_standard";
     var modContent;
     fetch(url)
@@ -25,7 +24,7 @@ function addNavItemStandard() {
         .catch((error) => console.error("Error loading baseModal:", error));
 }
 
-function loadEditNav(nav, div_id, page_list) {
+function loadEditNav(nav, div_id, page_list, pageName) {
     const url = "/edit_nav_item";
     var pageTitles = JSON.parse(page_list);
     var navItem = JSON.parse(nav);
@@ -36,6 +35,7 @@ function loadEditNav(nav, div_id, page_list) {
             columnDiv.innerHTML = html;
             document.getElementById("nav_title").value = navItem.title;
             document.getElementById("nav_id").value = navItem.id;
+            document.getElementById("page_name").value = pageName;
             var route_select = document.getElementById("route_select"); // Corrected id to 'route_select'
             pageTitles.forEach(function (page) {
                 var option = document.createElement("option");
@@ -133,9 +133,8 @@ function addDropdownNav() {
     var modContent;
     subNavIndex = 1;
     newNavId = -1;
-
     modContent = document.getElementById("base-modal-content");
-
+    const modal = document.getElementById("baseModal");
     if (modContent) {
         const surl = "/dropdown_adder";
         fetch(surl)
@@ -143,7 +142,7 @@ function addDropdownNav() {
             .then((html) => {
                 modContent.innerHTML = html;
                 document.getElementById("drop_title").value = "new dropdown";
-                var list = document.getElementById("dropdown_list");
+                document.getElementById("page_name").value = modal.dataset.pageName;
                 for (let i = 0; i < 5; i++) {
                     createSubNavItem();
                 }
@@ -169,10 +168,12 @@ function addSubItem(newItem, pageTitles, modContent, list) {
     console.log(newItem + " :: at add Item");
     var newDiv = document.createElement("div");
     newDiv.classList.add("row");
+    newDiv.classList.add("tab_li_spacer");
     var newInput = document.createElement("input");
     newInput.setAttribute("type", "text");
     newInput.id = "text_" + newItem.id;
     newInput.value = newItem.title;
+    newDiv.classList.add("new_item_input")
     newDiv.appendChild(newInput);
     modContent.appendChild(newDiv);
     var img = document.createElement("img");
@@ -181,6 +182,7 @@ function addSubItem(newItem, pageTitles, modContent, list) {
     newDiv.appendChild(img);
     var newSelect = document.createElement("select");
     newSelect.classList.add("form-control", "col");
+    newSelect.classList.add("new_item_input")
     newSelect.id = "select_" + newItem.id;
     pageTitles.forEach(function (page) {
         var option = document.createElement("option");

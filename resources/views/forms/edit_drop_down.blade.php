@@ -3,7 +3,7 @@
     <div class="form-group" style = "margin:20px">
     <div class = "row">
     <input type="text" id = "drop_title" name = "drop_title">
-    <input type = "hidden" id = "drop_id" name = "drop_id">
+   
     </div>
         <div id = "dropdown_list">
             
@@ -21,4 +21,6 @@
         </div>
     </div>
     <input type="hidden" id="dropDownData" name="data">
+     <input type = "hidden" id = "drop_id" name = "drop_id">
+    <input type="hidden" id="page_name" name="page_name">
 </form>

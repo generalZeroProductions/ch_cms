@@ -2,15 +2,36 @@
     @csrf
     <div class="form-group" style = "margin:20px">
         <div class="row align-items-center"> <!-- Ensure all columns are vertically aligned -->
-            <input type="hidden" id="nav_id" name="nav_id" class="col-auto">
-            <input type="text" class="form-control nav-name col" id="nav_title" name="nav_title" value = "New Item">
+            <input type="text" class="form-control nav-name col new_item_input" id="nav_title" name="nav_title"
+                value = "New Item">
             <img src="{{ asset('icons\link.svg') }}" class="col-auto">
-            <select id="route_select" name="route" class="form-control col">
+            <select id="route_select" name="route" class="form-control col new_item_input">
                 <!-- Add options here -->
             </select>
             <button type="submit" class="confirm-add-nav col-auto">
-                <img src="{{ asset('icons/check.svg') }}">
+                <img src="{{ asset('icons/add.svg') }}">
             </button>
         </div>
     </div>
+    <input type="hidden" id="nav_id" name="nav_id">
+    <input type="hidden" id="page_name" name="page_name">
 </form>
+
+
+{{-- <form method="POST" action = "/update_nav_item">
+    @csrf
+    <div class="form-group" style = "margin:0px">
+        <div class="row align-items-center"> <!-- Ensure all columns are vertically aligned -->
+            <input type="hidden" id="nav_id" name="nav_id">
+             <input type="hidden" id="page_id" name="page_id">
+            <input type="text" class="form-control nav-name col new_item_input" id="nav_title" name="nav_title">
+            <img src="{{ asset('icons\link.svg') }}" class="col-auto">
+            <select id="route_select" name="route" class="form-control col new_item_input">
+                <!-- Add options here -->
+            </select>
+            <button type="submit" class="confirm-edit-nav col-auto">
+                <img src="{{ asset('icons/add18.svg') }}">
+            </button>
+        </div>
+    </div>
+</form> --}}

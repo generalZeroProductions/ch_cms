@@ -18,9 +18,7 @@ class NavController extends Controller
 
         // Save the changes to the database
         $navItem->save();
-
-        // Optionally, you can return a response indicating success
-        return response()->json(['message' => 'Navigation item updated successfully']);
+        return redirect()->route('root',['pageName'=> $request->page_name]);
     }
     public function newNavItem(Request $request)
     {
@@ -36,7 +34,7 @@ class NavController extends Controller
             'title' => $request->nav_title,
             'route' => $request->route,
         ]);
-
+        return redirect()->route('root',['pageName'=> $request->page_name]);
     }
 
     public function deleteItem(Request $request)
@@ -49,16 +47,14 @@ class NavController extends Controller
             return response()->json(['message' => 'Item not found'], 404);
         }
         $item->delete();
-        return response()->json(['message' => 'Item deleted successfully'], 200);
+        return redirect()->route('root',['pageName'=> $request->page_name]);
     }
 
     public function updateDrop(Request $request)
     {
-
         $subData = json_decode($request->data);
         $removedItems = [];
         $allSubItems = [];
-        // Retrieve the navigation items from the database based on the provided ID
         foreach ($subData as $subItem) {
             $subThis = Navigation::find($subItem->id);
             if ($subThis) {
@@ -95,16 +91,18 @@ class NavController extends Controller
         $dData['items'] = $ids;
         $dropNav->data = $dData;
         $dropNav->save();
+
+        foreach($removedItems as $record)
+        {
+            $record->delete();
+        }
+        return redirect()->route('root',['pageName'=> $request->page_name]);
     }
-
-
 
     public function addDropdown(Request $request)
     {
-        // dd($request);
         $subData = json_decode($request->data);
         $allSubItems = [];
-        // Retrieve the navigation items from the database based on the provided ID
         foreach ($subData as $subItem) {
             if ($subItem->title != '') {
                 $newItem = Navigation::create([
@@ -129,5 +127,6 @@ class NavController extends Controller
             'title' => $request->drop_title,
             'data' => $dataArray,
         ]);
+        return redirect()->route('root',['pageName'=> $request->page_name]);
     }
 }
