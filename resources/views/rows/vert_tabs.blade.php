@@ -1,9 +1,7 @@
 @php
     use App\Models\ContentItem;
     use App\Models\Navigation;
-    $data = $row->data;
-    $tabData = $data['tabs'];
-
+    $tabData = $location['row']['data']['tabs'];
     $tabs = [];
     foreach ($tabData as $tabId) {
         $nextTab = Navigation::findOrFail($tabId);
@@ -16,9 +14,9 @@
     $sendRoutes = json_encode($contentRoutes);
     $defaultRoute = $tabs[0]->route;
     $defaultLink = $linkId = 'tab_' . $tabs[0]->title;
-    $menuId = 'menu_' . $row->id;
-    $contentId = 'content_' . $row->id;
-    $ulId = 'ul_' . $row->id;
+    $menuId = 'menu_' . $location['row']['id'];
+    $contentId = 'content_' . $location['row']['id'];
+    $ulId = 'ul_' . $location['row']['id'];
     $editMode = true;
     $contentIndex = 0;
 @endphp
@@ -41,9 +39,10 @@
     <!-- Add more menu items as needed -->
 </ul>
 
+
+
 <div id="runScripts">
     <script>
         menuFolder('{{$sendRoutes}}');
     </script>
 </div>
-

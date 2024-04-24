@@ -11,7 +11,7 @@
 .menu-item {
     display: flex; /* Use flexbox */
     align-items: center; /* Vertically center the content */
-    background-color: blue; /* Replace YourColorHere with your desired background color */
+    background-color: rgb(92, 92, 95); /* Replace YourColorHere with your desired background color */
     color: white;
     padding: 10px; /* Adjust padding as needed */
     text-decoration: none; /* Removes default underline */
@@ -78,6 +78,11 @@
 .tab_li_spacer{
     margin-top: 10px;
 }
+
+
+
+
+
 .tooltip {
     position: relative;
   }
@@ -85,7 +90,7 @@
   .tooltip-text {
     display: none;
     position: absolute;
-    z-index: 1;
+    z-index: 2;
     background-color: #fff;
     border: 1px solid #ccc;
     padding: 5px;
@@ -93,16 +98,35 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     width: 150px;
     text-align: center;
+    top: 20px;
     /* Adjust positioning to be below and slightly to the right of the trigger element */
     top: calc(100% + 5px);
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(50%);
   }
   
   .tooltip:hover + .tooltip-text {
     display: block;
   }
+  .tooltip-text-slideshow {
+    display: none;
+    position: absolute;
+    z-index: 2;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 5px;
+    border-radius: 3px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 150px;
+    text-align: center;
+    top: -30px;
+    right: 10%;
+    transform: translateX(10%);
+  }
   
+  .tooltip:hover + .tooltip-text-slideshow {
+    display: block;
+  }
   
 .new_item_input {
     height: 40px !important; /* Adjust the height as needed */
@@ -143,8 +167,41 @@
 
 .title_change_div {
     min-height: 32px; /* Adjust the value as needed */
-    margin-left: 12px;
+    margin-left: 12px !important;
+    margin-bottom: 12px;
+   
+   
 }
+.delete_row_button{
+    text-align: right !important;
+    padding-right: 26px !important;
+    margin-right: 0px !important;
+}
+
+.row_add_button{
+    min-height: 32px; /* Adjust the value as needed */
+    margin-top:12px;
+    margin-right: 12px !important;
+}
+.row_add_button  button {
+    font-weight: 600;
+    color: white;
+}
+.row_add_button button:hover {
+    color: rgb(239, 96, 13);
+
+}
+
+.row_add_button button:focus {
+    color: rgb(255, 255, 255);
+}
+.add_row_icon{
+    margin-right:12px;
+    padding-right: 14px;
+    height: 20px;
+    margin-bottom: 3px;
+}
+
 .title_indicator{
     font-size: medium;
     font-weight: 600;
@@ -169,33 +226,83 @@
     text-align: center;
 }
 
-
 .slide-preview {
-    margin: 12px; /* 8px margin around the element */
-    max-width: 15vw;
+    display:flex;
 }
-
-.slide-preview a {
-    display: inline-block;
-    align-content: right; /* Align anchor element to the right */
-}
-
-.slide-preview > * {
-    margin-bottom: 12px; /* 6px vertical margin between each child element */
-}
-
-
-.slide-preview input[type="text"] {
+.slide-caption {
     width: 100%; /* Make the input text fill the width of the column */
 }
+.row-slide-thumb{
+    margin-top: 2vh;
+    margin-bottom: 2vh;
+    height:22vh;
+}
 
+.slide-caption {
+    width: 100%; /* Make the input text fill the width of the column */
+}
 
 .slide_thumbnail {
     display: flex;
     align-items: center; /* Vertically center the content */
     justify-content: center; /* Horizontally center the content */
     height: 20vh; /* Set the height of the container */
-    margin-top: 1vh;
-    margin-bottom: 1vh;
+    margin-top: 3vh;
+    margin-bottom: 3vh;
    
 }
+.add_thumbnail {
+    position: relative; /* Required for absolute positioning */
+    display: flex;
+    align-items: center; /* Vertically center the content */
+    justify-content: center; /* Horizontally center the content */
+    height: 20vh; /* Set the height of the container */
+}
+
+.add_thumbnail .centered {
+    position: absolute;
+    bottom: 40%; /* Align to the bottom of the container */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Center horizontally */
+}
+.add_thumbnail .svg{
+    height: 44px;
+}
+
+
+.slide_edit_icon{
+    height: 24px;
+    margin-left:18px;
+}
+
+.parent {
+    text-align: left;
+  }
+  .child {
+    display: inline-block;
+    width:auto;
+  }
+
+.row-of-slides {
+    display: flex; /* Use flexbox layout for the row */
+    justify-content: space-between; /* Space out columns evenly */
+    margin: 1vh 0; /* 1vh margin above and below the row */
+  }
+  
+  /* Individual column */
+  .col-slide-preview {
+    flex: 1; /* Let columns grow and shrink equally to fill available space */
+    margin-left: 2vh;
+  } 
+  
+  /* Image container inside each column */
+  .image-slide-thumb {
+    margin-top: 2vh;
+    height: 200px; /* Set a constant height for the image container */
+    margin-bottom: 2vh;
+  }
+  
+  /* Text box below the image */
+  .text-box-slide-caption {
+    width: 100%; /* Fill the width of the column */
+  }

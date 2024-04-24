@@ -1,7 +1,6 @@
 @php
     use App\Models\ContentItem;
-    $data = $row->data;
-    $columnData = $data['columns'];
+    $columnData = $location['row']['data']['columns'];
     $column = ContentItem::findOrFail($columnData[0]);
     $articleId = 'article_' . $column->id;
     $editMode = true;
@@ -13,7 +12,7 @@
             <div class="row space-row">
     @endif
     <div class="col-md-12" id = "{{ $articleId }}">
-        @include('rows/title_text', ['column' => $column, 'pageName' => $pageName])
+        @include('rows/title_text', ['column' => $column, 'location' => $location])
     </div>
 </div>
 </div>

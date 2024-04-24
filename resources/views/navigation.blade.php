@@ -32,11 +32,11 @@
                     </li>
                     @if ($editMode)
                         <a href="#" class="edit-nav-pen"
-                            onClick="loadEditNav('{{ json_encode($nav) }}','{{ $nav->id }}_{{ $nav->title }}','{{ json_encode($allPageTitles) }}','{{$pageName}}')">
+                            onClick="loadEditNav('{{ json_encode($nav) }}','{{ $nav->id }}_{{ $nav->title }}','{{json_encode($location)}}')">
                             <img src = "{{ asset('icons\pen.svg') }}">
                         </a>
                         <a href = "#" class = "edit-nav-trash"
-                            onClick="openBaseModal('removeItem',null, '{{ json_encode($nav) }}', null)">
+                            onClick="openBaseModal('removeItem','{{ json_encode($nav) }}', '{{json_encode($location)}}')">
                             <img src = "{{ asset('icons\trash.svg') }}">
                         </a>
     </div>
@@ -71,11 +71,11 @@
         </li>
         @if ($editMode)
             <a href = "#" class = "edit-nav-pen"
-                onClick="editDropdown('{{ json_encode($nav) }}','{{ json_encode($subNavItems) }}','{{ json_encode($allPageTitles) }}')">
+                onClick="editDropdown('{{ json_encode($nav) }}','{{ json_encode($subNavItems) }}','{{ json_encode($location) }}')">
                 <img src = "{{ asset('icons\pen.svg') }}">
             </a>
             <a href = "#" class = "edit-nav-trash"
-                onClick="openBaseModal('removeItem',null, '{{ json_encode($nav) }}', null)">
+                onClick="openBaseModal('removeItem','{{ json_encode($nav) }}', '{{json_encode($location)}}')">
                 <img src = "{{ asset('icons\trash.svg') }}">
             </a>
             </div>
@@ -89,7 +89,7 @@
     @if ($editMode)
         <div class = "col-auto ">
             <a href = "#" class = "edit-nav-add"
-                onClick="openBaseModal('selectType','{{ json_encode($allPageTitles) }}', null, null,'{{$pageName}}')">
+                onClick="openBaseModal('selectNavType', null,'{{json_encode($location)}}')">
                 <img src = "{{ asset('icons\add.svg') }}" id = "hoverIcon">
             </a>
             <div class="tooltip-text" id="tooltip-1">将新项目添加到导航栏</div>
@@ -104,45 +104,18 @@
 </nav>
 
 <script>
-    {{-- var event = new MouseEvent('mouseover', {
-  'view': window,
-  'bubbles': true,
-  'cancelable': true
-}); --}}
-
-
     var element = document.getElementById('hoverIcon');
 
     element.addEventListener('mouseover', function() {
         showTooltip('tooltip-1');
-        console.log('Mouse over, set Font Awesome class here');
-
     });
 
     element.addEventListener('mouseout', function() {
         hideTooltip('tooltip-1');
-        console.log('Mouse out, remove Font Awesome class here');
     });
 
 
-    var tooltipTimeout;
-
-    function showTooltip(tooltipId) {
-        var tooltip = document.getElementById(tooltipId);
-        if (tooltip) {
-            tooltip.style.display = 'block';
-            clearTimeout(tooltipTimeout);
-        }
-    }
-
-    function hideTooltip(tooltipId) {
-        tooltipTimeout = setTimeout(function() {
-            var tooltip = document.getElementById(tooltipId);
-            if (tooltip) {
-                tooltip.style.display = 'none';
-            }
-        }, 200); // Adjust the delay as needed
-    }
+  
 
     document.addEventListener('DOMContentLoaded', function() {
         var navLinks = document.querySelectorAll('.nav-link');

@@ -7,7 +7,8 @@
       <!-- Modal Header -->
       <div class="modal-header">
         <h4 class="modal-title" id="base-modal-title"></h4>
-        <button type="button" class="close"  onClick="closeModal('baseModal')">&times;</button>
+        <a href="#" onClick="closeModal('baseModal')"><img src="{{asset('icons/close.svg')}}" class = 'slide_edit_icon'></a>
+        {{-- <button type="button" class="close"  onClick="closeModal('baseModal')">&times;</button> --}}
       </div>
       <!-- Modal Body -->
       <div class="modal-body text-center" id="base-modal-content">

@@ -17,6 +17,6 @@
         </div>
         <input type="hidden" id="tabData" name="data">
         <input type="hidden" id="row_id" name="row_id">
-        <input type="hidden" id="page_name" name="page_name">
+        <input type="hidden" id="page_id" name="page_id">
         <input type="hidden" id="route_list">
 </form>

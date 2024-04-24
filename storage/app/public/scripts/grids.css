@@ -1,0 +1,42 @@
+.row-v-3{
+    height:33vh;
+   }
+   
+   .gray-page{
+       background-color:gray;
+   }
+   
+   .yellow-page{
+       background-color:yellow;
+   }
+   
+   .blue-page{
+       background-color:blue;
+   }
+
+   .gray-page{
+    background-color:rgb(212, 212, 235);
+}
+
+.pad-contain-general{
+    margin-right: 5vh;
+    margin-left: 5vw;
+    display: grid;
+    place-items: center; 
+}
+.heading-right{
+    display: table-cell;
+    vertical-align: middle;
+    text-align: right;
+    margin-top: 2vh;;
+    margin-right: 0;
+    padding-right: 0;
+
+}
+.table-right{
+    display: table-cell;
+    vertical-align: middle;
+    text-align: right;
+    margin-right: 0;
+    padding-right: 0;
+}

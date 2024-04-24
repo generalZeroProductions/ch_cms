@@ -14,7 +14,12 @@ class PageController extends Controller
             ->where('type', 'page')
             ->first();
         if ($page) {
-            return view('page', ['page' => $page, 'pageName' => $routeName,'tabContent'=>false]);
+            $location = [
+                'page' => $page,
+                'row' => null,
+                'item' => null,
+            ];
+            return view('page', ['page' => $page, 'location' => $location,'tabContent'=>false]);
         } else {
             return response()->json(['error' => 'Page not found'], 404);
         }
@@ -25,22 +30,41 @@ class PageController extends Controller
             ->where('type', 'page')
             ->first();
         if ($page) {
-            return view('page', ['page' => $page, 'pageName' => $routeName, 'tabContent'=>true]);
+            $location = [
+                'page'=>$page,
+                'row'=> null,
+                'item'=> null,
+            ];
+            return view('page', ['page' => $page,'location'=>$location, 'tabContent'=>true]);
         } else {
             return response()->json(['error' => 'Page not found'], 404);
         }
     }
+    // public function loadTabContent($routeName)
+    // {
+    //     $page = ContentItem::where('title', $routeName)
+    //         ->where('type', 'page')
+    //         ->first();
+    //     if ($page) {
+    //         return redirect()->route('root', ['newon'Locati => $page->id, 'tabContent' => true]);
+
+    //     } else {
+    //         return response()->json(['error' => 'Page not found'], 404);
+    //     }
+    // }
 
     public function useImage(Request $request)
     {
-        $column = ContentItem::findOrFail($request->column_id_use);
-        if($column)
-        {
+        $column = ContentItem::findOrFail($request->column_id_select);
+        if ($column) {
             $column->image = $request->image_select;
             $column->save();
-            return redirect()->route('root',['pageName'=> $request->page_name_use]);
+            $returnPage = ContentItem::findOrFail($request->page_id_at_select);
+            return redirect()->route('root', ['newLocation' => $returnPage->id]);
+        } else {
+            return response()->json(['error' => 'Column not found'], 404);
         }
-        return response()->json(['error' => 'Page not found'], 404);
+
     }
 
     public function pageTitle(Request $request)
@@ -48,26 +72,28 @@ class PageController extends Controller
         $page = ContentItem::findOrFail($request->page_id);
         if ($page) {
             $navItems = Navigation::where('route', $page->title)->get();
-            foreach($navItems as $nav)
-            {
+            foreach ($navItems as $nav) {
                 $nav->route = $request->page_title;
                 $nav->save();
             }
             $page->title = $request->page_title;
             $page->save();
-            return redirect()->route('root',['pageName'=> $page->title]);
+            return redirect()->route('root', ['newLocation' => $page->id]);
+
         } else {
             return response()->json(['error' => 'Page not found'], 404);
         }
     }
-    
+
     public function updateArticle(Request $request)
     {
+     
         $article = ContentItem::findOrFail($request->article_id);
         $article->title = $request->title;
         $article->body = $request->body_text;
         $article->save();
-        return redirect()->route('root',['pageName'=>$request->page_name]);
+        $returnPage = ContentItem::findOrFail($request->page_id);
+        return redirect()->route('root', ['newLocation' => $returnPage]);
     }
 
     public function updateTabs(Request $request)
@@ -114,13 +140,14 @@ class PageController extends Controller
         foreach ($removedItems as $record) {
             $record->delete();
         }
-        return redirect()->route('root',['pageName'=>$request->page_name]);
 
+        $returnPage = ContentItem::findOrFail($request->page_id);
+        return redirect()->route('root', ['newLocation' => $returnPage]);
     }
 
     public function upload(Request $request)
     {
-        dd($request);
+
         $request->validate([
             'file' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Example validation rules for an image file
         ]);
@@ -132,12 +159,13 @@ class PageController extends Controller
                 $column = ContentItem::findOrFail($request->column_id);
                 $column->image = $filename;
                 $column->save();
-                return redirect()->route('root',['pageName'=>$request->page_name]);
+                $returnPage = ContentItem::findOrFail($request->page_id);
+                return redirect()->route('root', ['newLocation' => $returnPage->id]);
+               
             } else {
                 return response()->json(['message' => 'Failed to upload file'], 500);
             }
         }
         return response()->json(['message' => 'No file uploaded'], 400);
     }
-
 }

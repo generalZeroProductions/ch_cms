@@ -2,6 +2,17 @@
 {"columns":[7]}
 
 {
+    "slides":[
+    {"image":"lake.jpg",
+    "caption":"nice lake"} ,
+        {"image":"defaultBanner.jpg",
+    "caption":"nice default"} ]
+    
+}
+
+
+
+{
     "slides":
     {"image":"lake.jpg",
     "caption":"nice lake"} ,
@@ -11,4 +22,105 @@
 }
 
 
+I have: 
+fetch("/slideShowEdit")
+        .then((response) => response.text())
+        .then((html) => {
+            var runScriptsDiv = document.getElementById("run_scripts");
+            if (runScriptsDiv) {
+                var innerHtml = runScriptsDiv.innerHTML;
+                var toolTipCall = innerHtml.match(/toolTipStart\([^)]*\)/);
+                if (toolTipCall !== null) {
+                    eval(toolTipCall[0]);//   this just a call to a function in my main js,
+                }
+            }
+        })
+        .catch((error) => {
+            console.error("Error loading slideshowEdit:", error);
+        });
 
+        inside of of /slideShowEdit I have :
+        <div class="tooltip-text" id = "tooltip_trash"> delete this slide</div>
+        <div id = "run_scripts">
+    <script>
+        toolTipStart(); // this code executes and it finds the element 'trash_icon_0', which was just created by php
+    </script>
+</div>
+
+function toolTipStart()
+{
+    var element = document.getElementById('trash_icon_0');
+    element.addEventListener('mouseover', function() {
+        showTooltip('tooltip_trash');
+        // console.log('Mouse over, set Font Awesome class here');
+
+    });
+    element.addEventListener('mouseout', function() {
+        hideTooltip('tooltip_trash');
+        // console.log('Mouse out, remove Font Awesome class here');
+    });
+}
+
+this script also exectes but always logs "TOOL NOT FOUND"
+var tooltipTimeout;
+
+function showTooltip(tooltipId) {
+    var tooltip = document.getElementById(tooltipId);
+    if (tooltip) {
+        tooltip.style.display = 'block';
+        clearTimeout(tooltipTimeout);
+        console.log("FOUND TOOL");
+    }
+    else{
+        console.log("TOOL NOT FOUND");
+    }
+}
+the stranger thing is that the 
+
+
+
+<div class="tooltip-text" id = "tooltip_trash"> delete this slide</div>
+
+
+using 
+ .tooltip-text {
+    display: none;
+    position: absolute;
+    z-index: 2;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 5px;
+    border-radius: 3px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 150px;
+    text-align: center;
+    /* Adjust positioning to be below and slightly to the right of the trigger element */
+    top: calc(100% + 5px);
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .tooltip:hover + .tooltip-text {
+    display: block;
+  }
+
+  but can't see the tool tip.  I know the event is firing and the tooltip is being hit,  there is a reaction in the 
+  window, but the tip is just in the right place?  can't see it anywhere?
+
+
+
+
+                    <hr>
+                    <div class = 'row' style = 'margin-top:5vw'>
+                        <div class="col-4">
+                            <label>用户名:</label><br><br>
+                            <label>密码:</label>
+                        </div>
+
+                        <div class="col-8">
+                            <input type="text" id="title" name="title" required><br><br>
+
+                            <input type="text" id="title" name="title" required>
+                        </div>
+                    </div>
+                  

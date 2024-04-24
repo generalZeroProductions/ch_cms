@@ -6,24 +6,22 @@
         $editMode = $_SESSION['edit'];
     }
 
-    $data = $row->data;
-    $tabData = $data['tabs'];
+    $tabData = $location['row']['data']['tabs'];
 
     $tabs = [];
     foreach ($tabData as $tabId) {
         $nextTab = Navigation::findOrFail($tabId);
+        if($nextTab){
         $tabs[] = $nextTab;
+        }
     }
+
     $defaultRoute = $tabs[0]->route;
     $defaultLink = $linkId = 'tab_' . $tabs[0]->id;
-    $menuId = 'menu_' . $row->id;
-    $contentId = 'content_' . $row->id;
-    $ulId = 'ul_' . $row->id;
+    $menuId = 'menu_' . $location['row']['id'];
+    $contentId = 'content_' . $location['row']['id'];
+    $ulId = 'ul_' . $location['row']['id'];
 
-    if ($editMode) {
-        $allRoutes = ContentItem::where('type', 'page')->get();
-        $routes = $allRoutes->pluck('title')->toArray();
-    }
 @endphp
 
 <div class="row space-row" style= "padding-left:15px; margin-left:18px">
@@ -31,7 +29,8 @@
         @if ($editMode)
             <div class = "row">
                 <a href = "#" class = "edit-nav-pen"
-                    onClick="editTabsList({{ json_encode($tabs) }}, {{ json_encode($routes) }}, '{{ $menuId }}','{{ $row->id }}','{{ $pageName }}')">
+                onClick="editTabsList({{ json_encode($tabs) }},'{{$menuId}}','{{ json_encode($location) }}')">
+                    {{-- onClick="editTabsList({{ json_encode($tabs) }},'{{$menuId}}',{{ json_encode($location) }}')"> --}}
                     <img src = "{{ asset('icons\pen.svg') }}">
                 </a>
             </div>

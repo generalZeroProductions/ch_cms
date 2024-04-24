@@ -3,6 +3,7 @@ var tabIndex;
 var newTabId;
 
 function loadTab(tabId, routeName, ulId, linkId) {
+    console.log(tabId);
     fetch("/load-tab/" + routeName)
         .then((response) => response.text()) // Parse response as text
         .then((html) => {
@@ -27,23 +28,22 @@ function decodeRoutes(encodedString) {
     return array;
 }
 
-function editTabsList(tabList, routeList, tabDiv, rowId, pageName) {
-    const url = "/edit_tabs";
-    const divID = document.getElementById(tabDiv);   
+function editTabsList(tabList, tabDiv, location) {
+    const divID = document.getElementById(tabDiv);  
+    const locItem = JSON.parse(location); 
+   console.log(tabList);
     tabIndex = 1;
     newTabId = -1;
-    fetch(url)
+    fetch('/edit_tabs')
         .then((response) => response.text())
         .then((html) => {
             if (divID) {
                 divID.innerHTML = html;
                 var listDiv = document.getElementById("tab_list");
-                var rowDiv = document.getElementById("row_id").value = rowId;
-                var pageDiv = document.getElementById("page_name").value = pageName;
-                document.getElementById("route_list").value = JSON.stringify(routeList);
+                var rowDiv = document.getElementById("row_id").value = locItem.row.id;
+                var pageid = document.getElementById("page_id").value = locItem.page.id;
                 tabList.forEach(function (tab) {
-                    console.log("foreach");
-                    newTabFromSource(tab, routeList, listDiv);
+                    newTabFromSource(tab, listDiv);
                 });
             }
         })
@@ -51,29 +51,27 @@ function editTabsList(tabList, routeList, tabDiv, rowId, pageName) {
 }
 function createTabItem() {
     var list = document.getElementById("tab_list");
-    var routeList = JSON.parse(document.getElementById("route_list").value);
-    console.log(routeList);
     var newItem = {
         id: newNavId,
         title: "newTab",
-        route: routeList[0],
+        route: allRoutes[0],
         index: subNavIndex,
     };
     subNavIndex += 1;
     newNavId -= 1;
-    addTab(newItem, routeList,list);
+    addTab(newItem,list);
 }
-function newTabFromSource(tab, routes, listDiv) {
+function newTabFromSource(tab, listDiv) {
     var newTab = {
         id: tab.id,
         title: tab.title,
         route: tab.route,
         index: tab.index,
     };
-    addTab(newTab, routes, listDiv);
+    addTab(newTab,listDiv);
 }
 
-function addTab(newTab, routes, listDiv) {
+function addTab(newTab,listDiv) {
     tabData.push(newTab);
     var newDiv = document.createElement("div");
     newDiv.classList.add("row");
@@ -86,12 +84,12 @@ function addTab(newTab, routes, listDiv) {
     listDiv.appendChild(newDiv);
     var img = document.createElement("img");
     img.classList.add("link_icon_spacer");
-    img.src = linkImagePath;
+    img.src = iconsAsset+"link.svg";
     newDiv.appendChild(img);
     var newSelect = document.createElement("select");
     newSelect.classList.add("form-control", "col");
     newSelect.id = "select_" + newTab.id;
-    routes.forEach(function (page) {
+    allRoutes.forEach(function (page) {
         var option = document.createElement("option");
         option.value = page;
         option.text = page;
@@ -132,11 +130,11 @@ function updateTabData() {
 
 function menuFolder(routes) {
     const menuItems = document.querySelectorAll('.menuFold');
-    const allRoutes = decodeRoutes(routes);
+    const tabRoutes = decodeRoutes(routes);
     menuItems.forEach((item,index) => {
         const menuItem = item.querySelector('.menu-item');
         const hiddenContent = item.querySelector('.hidden-content');
-        const route = allRoutes[index]; 
+        const route = tabRoutes[index]; 
         fetch("/load-tab/" + route)
             .then(response => response.text()) // Parse response as text
             .then(html => {

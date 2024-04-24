@@ -3,22 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\Navigation;
+use App\Models\ContentItem;
 use Illuminate\Http\Request;
 
 class NavController extends Controller
 {
     public function updateNavItem(Request $request)
     {
-        // Retrieve the navigation item based on the ID from the request
         $navItem = Navigation::findOrFail($request->nav_id);
-
-        // Update the title and route fields based on the values in the request
         $navItem->title = $request->nav_title;
         $navItem->route = $request->route;
-
-        // Save the changes to the database
         $navItem->save();
-        return redirect()->route('root',['pageName'=> $request->page_name]);
+        $returnPage = ContentItem::findOrFail($request->page_id);
+        $location = [
+            'page'=>$returnPage,
+            'row'=>null,
+            'column'=>null
+        ];
+        return redirect()->route('root',['newLoction'=> $location]);
     }
     public function newNavItem(Request $request)
     {
@@ -26,7 +28,6 @@ class NavController extends Controller
             ->orWhere('type', 'drop')
             ->orderBy('index', 'desc') // Use 'desc' to get the highest index
             ->first();
-
         $newIndex = $highestIndexItem ? $highestIndexItem->index + 1 : 1;
         $newNav = Navigation::create([
             'type' => 'nav',
@@ -34,7 +35,13 @@ class NavController extends Controller
             'title' => $request->nav_title,
             'route' => $request->route,
         ]);
-        return redirect()->route('root',['pageName'=> $request->page_name]);
+        $returnPage = ContentItem::findOrFail($request->page_id);
+        $location = [
+            'page'=>$returnPage,
+            'row'=>null,
+            'column'=>null
+        ];
+        return redirect()->route('root',['newLoction'=> $location]);
     }
 
     public function deleteItem(Request $request)
@@ -46,14 +53,30 @@ class NavController extends Controller
         if (!$item) {
             return response()->json(['message' => 'Item not found'], 404);
         }
+        if($item->type === 'drop')
+        {
+            foreach($item->data['items'] as $id)
+            {
+                $sub = Navigation::find($id);
+                $sub->delete();
+            }
+        }
         $item->delete();
-        return redirect()->route('root',['pageName'=> $request->page_name]);
+
+
+        $returnPage = ContentItem::findOrFail($request->page_id);
+        $location = [
+            'page'=>$returnPage,
+            'row'=>null,
+            'column'=>null
+        ];
+        return redirect()->route('root',['newLoction'=> $location]);
     }
 
     public function updateDrop(Request $request)
     {
         $subData = json_decode($request->data);
-        $removedItems = [];
+        $unusedItems = [];
         $allSubItems = [];
         foreach ($subData as $subItem) {
             $subThis = Navigation::find($subItem->id);
@@ -64,7 +87,7 @@ class NavController extends Controller
                     $subThis->save();
                     $allSubItems[] = $subThis;
                 } else {
-                    $removedItems[] = $subThis;
+                    $unusedItems[] = $subThis->id;
                 }
             } else {
                 if ($subItem->title != '') {
@@ -81,24 +104,43 @@ class NavController extends Controller
         usort($allSubItems, function ($a, $b) {
             return $a['index'] - $b['index'];
         });
-        $ids = [];
+        $subNavIds = [];
         $dropNav = Navigation::find($request->drop_id);
         $dropNav->title = $request->drop_title;
         foreach ($allSubItems as $record) {
-            $ids[] = $record->id;
+            $subNavIds[] = $record->id;
         }
+        
+        foreach ($dropNav->data['items'] as $id) {
+            if (!in_array($id,$subNavIds)) {
+                if(!in_array($id,$unusedItems))
+                {
+                    $unusedItems[] = $id;
+                }
+            }
+        }
+
+        if(count($unusedItems) > 0) {
+            foreach($unusedItems as $id){
+                $item = Navigation::findOrFail($id);
+                $item->delete();
+            }
+        }
+
         $dData = $dropNav->data;
-        $dData['items'] = $ids;
+        $dData['items'] = $subNavIds;
         $dropNav->data = $dData;
         $dropNav->save();
 
-        foreach($removedItems as $record)
-        {
-            $record->delete();
-        }
-        return redirect()->route('root',['pageName'=> $request->page_name]);
+        $returnPage = ContentItem::findOrFail($request->page_id);
+        $location = [
+            'page'=>$returnPage,
+            'row'=>null,
+            'column'=>null
+        ];
+        return redirect()->route('root',['newLoction'=> $location]);
     }
-
+   
     public function addDropdown(Request $request)
     {
         $subData = json_decode($request->data);
@@ -127,6 +169,12 @@ class NavController extends Controller
             'title' => $request->drop_title,
             'data' => $dataArray,
         ]);
-        return redirect()->route('root',['pageName'=> $request->page_name]);
+        $returnPage = ContentItem::findOrFail($request->page_id);
+        $location = [
+            'page'=>$returnPage,
+            'row'=>null,
+            'column'=>null
+        ];
+        return redirect()->route('root',['newLoction'=> $location]);
     }
 }

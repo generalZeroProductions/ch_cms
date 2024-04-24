@@ -15,9 +15,14 @@ use App\Http\Controllers\PageController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+//  BUILDER ROUTES
+Route::post('/create_slideshow', [ConsoleController::class, 'createSlideshow'])->name('create_slideshow');
+
 
 // CONSOLE ROUTING
-
+Route::get('/login', function () {
+    return View::make('layouts.login');
+})->name('login');
 
 Route::get('/changeSlideImage', function () {
     return View::make('console.edit_slide_image');
@@ -132,6 +137,7 @@ Route::post('/add_drop_nav', [NavController::class,'addDropdown'])->name('add_dr
 
 
 
-Route::get('/{pageName?}', function ($pageName = null) {
-    return view('index', ['pageName' => $pageName]);
+Route::get('/{newLocation?}', function ($newLocation = null) {
+    return view('index', ['newLocation' => $newLocation]);
 })->name('root');
+

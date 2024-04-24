@@ -3,41 +3,40 @@ var dropdownData = [];
 var subNavIndex = 0;
 var newNavId = -1;
 
-function addNavItemStandard() {
-    var modal = document.getElementById("baseModal");
-    var allTitles = JSON.parse(modal.dataset.allTitles);
-    const url = "/add_nav_standard";
-    var modContent;
-    fetch(url)
+function addNavItemStandard(PageId) {
+    console.log("happens here");
+    fetch("/add_nav_standard")
         .then((response) => response.text())
         .then((html) => {
             var modalContainer = document.getElementById("base-modal-content");
             modalContainer.innerHTML = html;
             var route_select = document.getElementById("route_select"); // Corrected id to 'route_select'
-            allTitles.forEach(function (page) {
+            allRoutes.forEach(function (page) {
                 var option = document.createElement("option");
                 option.value = page;
                 option.text = page;
                 route_select.appendChild(option);
             });
+            var modal = document.getElementById("baseModal");
+            document.getElementById("page_id").value = modal.dataset.pageId;
         })
         .catch((error) => console.error("Error loading baseModal:", error));
 }
 
-function loadEditNav(nav, div_id, page_list, pageName) {
-    const url = "/edit_nav_item";
-    var pageTitles = JSON.parse(page_list);
+function loadEditNav(nav, div_id, location) {
+
     var navItem = JSON.parse(nav);
-    fetch(url)
+    var locItem = JSON.parse(location);
+    fetch('/edit_nav_item')
         .then((response) => response.text())
         .then((html) => {
             const columnDiv = document.getElementById(div_id);
             columnDiv.innerHTML = html;
             document.getElementById("nav_title").value = navItem.title;
             document.getElementById("nav_id").value = navItem.id;
-            document.getElementById("page_name").value = pageName;
+            document.getElementById("page_id").value = locItem.page.id;
             var route_select = document.getElementById("route_select"); // Corrected id to 'route_select'
-            pageTitles.forEach(function (page) {
+            allRoutes.forEach(function (page) {
                 var option = document.createElement("option");
                 option.value = page;
                 option.text = page;
@@ -53,40 +52,124 @@ function loadEditNav(nav, div_id, page_list, pageName) {
 
 
 function updateDropdownData() {
-    var hiddenField = document.getElementById("dropDownData"); // Assuming 'data' is the ID of the hidden field
-    hiddenField.value = JSON.stringify(dropdownData); // Convert the object to a JSON string and set it as the value of the hidden field
-    console.log("update made " + dropdownData);
+    var hiddenField = document.getElementById("dropDownData"); 
+    hiddenField.value = JSON.stringify(dropdownData); 
+    console.log("DDD " +dropdownData);
 }
 
+function removeNavItem(modContent, item, location)
+{
+    var navItem = JSON.parse(item);
+    const locItem = JSON.parse(location);
+    document.getElementById("base-modal-title").innerHTML =
+    "确认删除记录 " + navItem.title;
+    fetch("/delete_nav_item")
+        .then((response) => response.text())
+        .then((html) => {
+            modContent.innerHTML = html;
+            document.getElementById("nav_id").value = navItem.id;
+            document.getElementById("delete_btn").innerHTML =
+                "删除";
+            document.getElementById("page_id").value = locItem.page.id;
+        })
+        .catch((error) =>
+            console.error("Error loading remove nav item:", error)
+        );
+}
 
+function showSelectNavType(modContent,location)
+{
+    fetch('/add_nav_select')
+        .then((response) => response.text())
+        .then((html) => {
+            modContent.innerHTML = html;
+            document.getElementById("base-modal-title").innerHTML =
+                "创建新的导航";
+        })
+        .catch((error) =>
+            console.error("Error loading newNavSelect:", error)
+        );
+}
 
 function createSubNavItem() {
     var modContent = document.getElementById("base-modal-content");
-    var modal = document.getElementById("baseModal");
     var list = document.getElementById("dropdown_list");
-    var pageTitles = JSON.parse(modal.dataset.allTitles);
     var newItem = {
         id: newNavId,
         title: "newItem",
-        route: pageTitles[0],
+        route: allRoutes[0],
         index: subNavIndex,
     };
     subNavIndex += 1;
     newNavId -= 1;
-    addSubItem(newItem, pageTitles, modContent, list);
+    addSubItem(newItem, modContent, list);
 }
 
-function editDropdown(nav, subNav, allTitles) {
+function addSubItem(newItem, modContent, list) {
+    dropdownData.push(newItem);
+    var newDiv = document.createElement("div");
+    newDiv.classList.add("row");
+    newDiv.classList.add("tab_li_spacer");
+    var newInput = document.createElement("input");
+    newInput.setAttribute("type", "text");
+    newInput.id = "text_" + newItem.id;
+    newInput.value = newItem.title;
+    newInput.setAttribute('autocomplete', 'off');
+    newDiv.classList.add("new_item_input")
+    newDiv.appendChild(newInput);
+    modContent.appendChild(newDiv);
+    var img = document.createElement("img");
+    img.classList.add("link_icon_spacer");
+    img.src = iconsAsset+'link.svg';
+    newDiv.appendChild(img);
+    var newSelect = document.createElement("select");
+    newSelect.classList.add("form-control", "col");
+    newSelect.classList.add("new_item_input")
+    newSelect.id = "select_" + newItem.id;
+    allRoutes.forEach(function (page) {
+        var option = document.createElement("option");
+        option.value = page;
+        option.text = page;
+        if (page === newItem.route) {
+            option.selected = true; // Set 'selected' attribute for the default value
+        }
+        newSelect.appendChild(option);
+    });
+    newDiv.appendChild(newSelect);
+    list.appendChild(newDiv);
+    newSelect.addEventListener("change", function (event) {
+        var selection = event.target.value;
+        var itemId = newItem.id;
+        updateItem(itemId, { route: selection });
+    });
+
+    newInput.addEventListener("input", function (event) {
+        var text = event.target.value;
+        var itemId = newItem.id;
+        var text = event.target.value.trim(); 
+        if (text === '') {
+            newInput.style.backgroundColor = 'rgb(210, 210, 223)';
+            newInput.placeholder = '不包括菜单项';
+        } else {
+            newInput.style.backgroundColor = ''; 
+            newInput.placeholder = '';
+        }
+        updateItem(itemId, { title: text });
+    });
+    updateDropdownData();
+}
+
+
+function editDropdown(nav, subNav, location) {
     dropdownData = [];
     var navItem = JSON.parse(nav);
     var subItems = JSON.parse(subNav);
+    var locItem = JSON.parse(location);
     subIndex = subItems.length;
-    const url = "/open_base_modal";
     var modContent;
-    var pageTitles = JSON.parse(allTitles);
     subNavIndex = 1;
     newNavId = -1;
-    fetch(url)
+    fetch("/open_base_modal")
         .then((response) => response.text())
         .then((html) => {
             var modalContainer = document.createElement("div");
@@ -95,7 +178,6 @@ function editDropdown(nav, subNav, allTitles) {
             var modal = document.getElementById("baseModal");
             modal.classList.add("show");
             modal.style.display = "block";
-            modal.dataset.allTitles = allTitles;
             modContent = document.getElementById("base-modal-content");
 
             if (modContent) {
@@ -104,14 +186,15 @@ function editDropdown(nav, subNav, allTitles) {
                     .then((response) => response.text())
                     .then((html) => {
                         modContent.innerHTML = html;
-                        document.getElementById("drop_title").value =
+                        document.getElementById("drop_title").value = locItem.page.id;
                             navItem.title;
                         document.getElementById("drop_id").value = navItem.id;
+                        document.getElementById("page_id").value = locItem.page.id;
                         var list = document.getElementById("dropdown_list");
+                       
                         subItems.forEach(function (subItem) {
                             newItemFromSource(
                                 subItem,
-                                pageTitles,
                                 modContent,
                                 list
                             );
@@ -142,7 +225,7 @@ function addDropdownNav() {
             .then((html) => {
                 modContent.innerHTML = html;
                 document.getElementById("drop_title").value = "new dropdown";
-                document.getElementById("page_name").value = modal.dataset.pageName;
+                document.getElementById("page_id").value = modal.dataset.pageId;
                 for (let i = 0; i < 5; i++) {
                     createSubNavItem();
                 }
@@ -153,61 +236,17 @@ function addDropdownNav() {
     }
 }
 
-function newItemFromSource(subItem, pageTitles, modContent, list) {
+function newItemFromSource(subItem, modContent, list) {
     var newItem = {
         id: subItem.id,
         title: subItem.title,
         route: subItem.route,
         index: subItem.index,
     };
-    addSubItem(newItem, pageTitles, modContent, list);
+    addSubItem(newItem, modContent, list);
 }
 
-function addSubItem(newItem, pageTitles, modContent, list) {
-    dropdownData.push(newItem);
-    console.log(newItem + " :: at add Item");
-    var newDiv = document.createElement("div");
-    newDiv.classList.add("row");
-    newDiv.classList.add("tab_li_spacer");
-    var newInput = document.createElement("input");
-    newInput.setAttribute("type", "text");
-    newInput.id = "text_" + newItem.id;
-    newInput.value = newItem.title;
-    newDiv.classList.add("new_item_input")
-    newDiv.appendChild(newInput);
-    modContent.appendChild(newDiv);
-    var img = document.createElement("img");
-    img.classList.add("link_icon_spacer");
-    img.src = linkImagePath;
-    newDiv.appendChild(img);
-    var newSelect = document.createElement("select");
-    newSelect.classList.add("form-control", "col");
-    newSelect.classList.add("new_item_input")
-    newSelect.id = "select_" + newItem.id;
-    pageTitles.forEach(function (page) {
-        var option = document.createElement("option");
-        option.value = page;
-        option.text = page;
-        if (page === newItem.route) {
-            option.selected = true; // Set 'selected' attribute for the default value
-        }
-        newSelect.appendChild(option);
-    });
-    newDiv.appendChild(newSelect);
-    list.appendChild(newDiv);
-    newSelect.addEventListener("change", function (event) {
-        var selection = event.target.value;
-        var itemId = newItem.id;
-        updateItem(itemId, { route: selection });
-    });
 
-    newInput.addEventListener("input", function (event) {
-        var text = event.target.value;
-        var itemId = newItem.id;
-        updateItem(itemId, { title: text });
-    });
-    updateDropdownData();
-}
 
 function updateItem(itemId, newData) {
     var index = dropdownData.findIndex((item) => item.id === itemId);

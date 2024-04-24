@@ -12,5 +12,5 @@
     <button type="button" class="btn btn-secondary">Cancel</button>
     <input type="hidden" name="body_text" id = "body_text">
     <input type="hidden" name="article_id" id = "article_id">
-    <input type="hidden" name="page_name" id = "page_name">
+    <input type="hidden" name="page_id" id = "page_id">
 </form>

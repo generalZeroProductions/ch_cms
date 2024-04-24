@@ -10,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>凤凰纵横</title>
-    <script src="{{ asset('scripts/site.js') }}"></script>
+    <script src="{{ asset('scripts/main.js') }}"></script>
 </head>
 
 <body class="antialiased">

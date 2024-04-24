@@ -25,7 +25,7 @@
         </div>
     </div>
 
-    <input type = "hidden" id="page_name" name ="page_name">
+    <input type = "hidden" id="page_id" name ="page_id">
     <input type = "hidden" id = "column_id" name = "column_id">
 </form>
 <hr>
@@ -46,7 +46,7 @@
             </div>
         </div>
     </div>
-    <input type = "hidden" id="page_name_use" name ="page_name_use">
-    <input type = "hidden" id = "column_id_use" name = "column_id_use">
+    <input type = "hidden" id= "page_id_at_select" name ="page_id_at_select">
+    <input type = "hidden" id = "column_id_select" name = "column_id_select">
 </form>
 </div>

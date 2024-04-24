@@ -13,5 +13,5 @@
         </div>
     </div>
     <input type="hidden" id="nav_id" name="nav_id">
-    <input type="hidden" id="page_name" name="page_name">
+    <input type="hidden" id="page_id" name="page_id">
 </form>

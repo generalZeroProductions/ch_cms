@@ -5,12 +5,13 @@
         $data = $column->data;   
         $articleId = "article_".$column->id;
         $editMode = true;
+
     @endphp
 
     <div>
         @if ($editMode)
             <div class = "row">
-                <a href="#" class="nav-link" onClick="loadEditArticle({{$column}}, '{{$pageName}}')">
+                <a href="#" class="nav-link" onClick=" loadEditArticle({{$column}},'{{json_encode($location)}}')">
                     <span class="menu-icon"><img src="{{ asset('icons/pen.svg') }}"></span>
                 </a>
             </div>
