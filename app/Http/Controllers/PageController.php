@@ -59,8 +59,7 @@ class PageController extends Controller
         if ($column) {
             $column->image = $request->image_select;
             $column->save();
-            $returnPage = ContentItem::findOrFail($request->page_id_at_select);
-            return redirect()->route('root', ['newLocation' => $returnPage->id]);
+            return redirect()->route('root', ['newLocation' => $request->page_id_at_select]);
         } else {
             return response()->json(['error' => 'Column not found'], 404);
         }
@@ -78,7 +77,7 @@ class PageController extends Controller
             }
             $page->title = $request->page_title;
             $page->save();
-            return redirect()->route('root', ['newLocation' => $page->id]);
+            return redirect()->route('root', ['newLocation' => $request->page_id]);
 
         } else {
             return response()->json(['error' => 'Page not found'], 404);
@@ -140,10 +139,8 @@ class PageController extends Controller
         foreach ($removedItems as $record) {
             $record->delete();
         }
-
-        $returnPage = ContentItem::findOrFail($request->page_id);
-        return redirect()->route('root', ['newLocation' => $returnPage]);
-    }
+        return redirect()->route('root', ['newLocation' => $request->page_id.'_'.$request->scroll_to]);
+    } 
 
     public function upload(Request $request)
     {

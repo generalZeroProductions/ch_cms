@@ -28,20 +28,35 @@ function decodeRoutes(encodedString) {
     return array;
 }
 
-function editTabsList(tabList, tabDiv, location) {
-    const divID = document.getElementById(tabDiv);  
-    const locItem = JSON.parse(location); 
-   console.log(tabList);
+function editTabsList(tabList, tabId,contentId, location) {
+   
+    const contentDiv = document.getElementById(contentId);
+    if (contentDiv) {
+        contentDiv.className = "";
+        contentDiv.classList.add("col-md-8");
+    }
+    else
+    {
+        console.log("CANT FIND CONENT");
+    }
+    const tabDiv = document.getElementById(tabId);
+    if (tabDiv) {
+        tabDiv.className = "";
+        tabDiv.classList.add("col-md-4");
+    }
+    const locItem = JSON.parse(location);
+    console.log(tabList);
     tabIndex = 1;
     newTabId = -1;
-    fetch('/edit_tabs')
+    fetch("/edit_tabs")
         .then((response) => response.text())
         .then((html) => {
-            if (divID) {
-                divID.innerHTML = html;
+            if (tabDiv) {
+                tabDiv.innerHTML = html;
                 var listDiv = document.getElementById("tab_list");
-                var rowDiv = document.getElementById("row_id").value = locItem.row.id;
-                var pageid = document.getElementById("page_id").value = locItem.page.id;
+                document.getElementById("row_id").value = locItem.row.id;
+                document.getElementById("page_id").value =locItem.page.id;
+                    document.getElementById("scroll_to").value = window.scrollY;
                 tabList.forEach(function (tab) {
                     newTabFromSource(tab, listDiv);
                 });
@@ -59,7 +74,7 @@ function createTabItem() {
     };
     subNavIndex += 1;
     newNavId -= 1;
-    addTab(newItem,list);
+    addTab(newItem, list);
 }
 function newTabFromSource(tab, listDiv) {
     var newTab = {
@@ -68,10 +83,10 @@ function newTabFromSource(tab, listDiv) {
         route: tab.route,
         index: tab.index,
     };
-    addTab(newTab,listDiv);
+    addTab(newTab, listDiv);
 }
 
-function addTab(newTab,listDiv) {
+function addTab(newTab, listDiv) {
     tabData.push(newTab);
     var newDiv = document.createElement("div");
     newDiv.classList.add("row");
@@ -84,7 +99,7 @@ function addTab(newTab,listDiv) {
     listDiv.appendChild(newDiv);
     var img = document.createElement("img");
     img.classList.add("link_icon_spacer");
-    img.src = iconsAsset+"link.svg";
+    img.src = iconsAsset + "link.svg";
     newDiv.appendChild(img);
     var newSelect = document.createElement("select");
     newSelect.classList.add("form-control", "col");
@@ -128,43 +143,71 @@ function updateTabData() {
     console.log("tab update made ");
 }
 
-function menuFolder(routes) {
-    const menuItems = document.querySelectorAll('.menuFold');
+function menuFolder2(routes) {
+    const menuItems = document.querySelectorAll(".menuFold");
     const tabRoutes = decodeRoutes(routes);
-    menuItems.forEach((item,index) => {
-        const menuItem = item.querySelector('.menu-item');
-        const hiddenContent = item.querySelector('.hidden-content');
-        const route = tabRoutes[index]; 
+    menuItems.forEach((item, index) => {
+        const menuItem = item.querySelector(".menu-item");
+        const hiddenContent = item.querySelector(".hidden-content");
+        const route = tabRoutes[index];
         fetch("/load-tab/" + route)
-            .then(response => response.text()) // Parse response as text
-            .then(html => {
+            .then((response) => response.text()) // Parse response as text
+            .then((html) => {
                 hiddenContent.innerHTML = html;
             })
-            .catch(error => console.error("Error loading page:", error));
-        menuItem.addEventListener('click', function() {
+            .catch((error) => console.error("Error loading page:", error));
+        menuItem.addEventListener("click", function () {
             console.log("clicked");
             // Toggle visibility of hidden content
-            if (hiddenContent.style.display === 'block') {
-                hiddenContent.style.display = 'none';
+            if (hiddenContent.style.display === "block") {
+                hiddenContent.style.display = "none";
             } else {
                 // Hide other hidden contents
-                document.querySelectorAll('.hidden-content').forEach(content => {
-                    if (content !== hiddenContent && content.style.display === 'block') {
-                        content.style.display = 'none';
-                    }
-                });
-                hiddenContent.style.display = 'block';
+                document
+                    .querySelectorAll(".hidden-content")
+                    .forEach((content) => {
+                        if (
+                            content !== hiddenContent &&
+                            content.style.display === "block"
+                        ) {
+                            content.style.display = "none";
+                        }
+                    });
+                hiddenContent.style.display = "block";
             }
         });
     });
 }
 
+function setAccordian(route,content)
+{
+    var contentItem = document.getElementById(content);
+        fetch("/load-tab/" + route)
+            .then((response) => response.text()) // Parse response as text
+            .then((html) => {
+                if (contentItem) {
+                    contentItem.innerHTML = html;
+                }
+            })
+            .catch((error) => console.error("Error loading page:", error));
+}
+
+function menuFolder(route) {
+    var contentItem = document.getElementById("content_0");
+    fetch("/load-tab/" + route)
+        .then((response) => response.text()) // Parse response as text
+        .then((html) => {
+            contentItem.innerHTML = html;
+        })
+        .catch((error) => console.error("Error loading page:", error));
+}
+
 function highlightListItem(ulId, linkId) {
     // Get the <ul> element
     var ulElement = document.getElementById(ulId);
-   
+
     console.log("highlight link id " + linkId);
-    
+
     // Get all <a> elements inside the <ul>
     var linkElements = ulElement.getElementsByTagName("a");
 

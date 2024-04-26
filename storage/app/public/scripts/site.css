@@ -170,7 +170,6 @@
     margin-left: 12px !important;
     margin-bottom: 12px;
    
-   
 }
 .delete_row_button{
     text-align: right !important;
@@ -200,16 +199,6 @@
     padding-right: 14px;
     height: 20px;
     margin-bottom: 3px;
-}
-
-.title_indicator{
-    font-size: medium;
-    font-weight: 600;
-    display: inline-block;
-}
-.title_reference{
-    font-size: large;
-    display: inline-block;
 }
 
 .form-section-header {
@@ -306,3 +295,66 @@
   .text-box-slide-caption {
     width: 100%; /* Fill the width of the column */
   }
+
+
+.general-btn {
+    margin-top:2px;
+    height: 40px;
+    font-size: medium;
+    font-weight: 600;
+}
+.col-white{
+    background-color:white;
+}
+.red_row {
+    background-color: rgb(249, 178, 178);
+    height: 44px;
+}
+.blue_row {
+    background-color: rgb(178, 180, 249);
+    height: 44px;
+}
+.green_row {
+    background-color: rgb(4, 125, 44);
+    height: 44px;
+    margin-top:12px;
+}
+.top-left-edits {
+    margin-top: 1vh;
+    margin-left: 3vw;
+}
+.row-middle-edits {
+    margin-top: 1vh;
+}
+.title-indicator {
+    color: white;
+    font-size: medium;
+    font-weight: 600;
+}
+.title_reference {
+    margin-left:1vw;
+    color:white;
+    font-size: large;
+}
+.space_icon_left {
+    margin-right: 1.5vw;
+    height: 24px;
+    margin-bottom: 6px;
+}
+.space_icon_right {
+    margin-left: 1vw;
+    margin-bottom: 6px;
+    height: 24px;
+}
+.space_icon_right-sm {
+    margin-bottom: 1.5vh;
+    margin-left: 1vw;
+    height: 18px;
+}
+.add_row_btn {
+    color: white !important;
+}
+.add_row_btn:hover span {
+    color: white !important;
+}
+

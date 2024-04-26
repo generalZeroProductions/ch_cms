@@ -18,5 +18,6 @@
         <input type="hidden" id="tabData" name="data">
         <input type="hidden" id="row_id" name="row_id">
         <input type="hidden" id="page_id" name="page_id">
+        <input type="hidden" id="scroll_to" name="scroll_to">
         <input type="hidden" id="route_list">
 </form>

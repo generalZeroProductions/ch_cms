@@ -11,8 +11,8 @@
     $tabs = [];
     foreach ($tabData as $tabId) {
         $nextTab = Navigation::findOrFail($tabId);
-        if($nextTab){
-        $tabs[] = $nextTab;
+        if ($nextTab) {
+            $tabs[] = $nextTab;
         }
     }
 
@@ -23,14 +23,15 @@
     $ulId = 'ul_' . $location['row']['id'];
 
 @endphp
-
+@if ($editMode)
+    @include('rows.delete_row_button', ['location' => $location, 'slideshow' => true])
+@endif
 <div class="row space-row" style= "padding-left:15px; margin-left:18px">
     <div class="col-md-2" id = "{{ $menuId }}">
         @if ($editMode)
             <div class = "row">
                 <a href = "#" class = "edit-nav-pen"
-                onClick="editTabsList({{ json_encode($tabs) }},'{{$menuId}}','{{ json_encode($location) }}')">
-                    {{-- onClick="editTabsList({{ json_encode($tabs) }},'{{$menuId}}',{{ json_encode($location) }}')"> --}}
+                    onClick="editTabsList({{ json_encode($tabs) }},'{{ $menuId }}', '{{ $contentId }}', '{{ json_encode($location) }}')">
                     <img src = "{{ asset('icons\pen.svg') }}">
                 </a>
             </div>
@@ -53,7 +54,9 @@
     <div class="col-md-10" id = "{{ $contentId }}">
     </div>
 </div>
-
+@if ($editMode)
+    @include('rows.add_row_button', ['location' => $location, 'index' => $location['row']['index']])
+@endif
 <div id= "runScripts">
     <script>
         loadTab('{{ $contentId }}', '{{ $defaultRoute }}', '{{ $ulId }}', '{{ $defaultLink }}');

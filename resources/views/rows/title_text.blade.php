@@ -2,16 +2,19 @@
         use App\Models\ContentItem;
         $title = $column->title;
         $body = $column->body;
-        $data = $column->data;   
-        $articleId = "article_".$column->id;
-        $editMode = true;
-
+        $data = $column->data;
+        $articleId = 'article_' . $column->id;
+        $editMode = false;
+        if (isset($_SESSION['edit'])) {
+            $editMode = $_SESSION['edit'];
+        }
     @endphp
 
     <div>
         @if ($editMode)
             <div class = "row">
-                <a href="#" class="nav-link" onClick=" loadEditArticle({{$column}},'{{json_encode($location)}}')">
+                <a href="#" class="nav-link"
+                    onClick=" loadEditArticle({{ $column }},'{{ json_encode($location) }}')">
                     <span class="menu-icon"><img src="{{ asset('icons/pen.svg') }}"></span>
                 </a>
             </div>

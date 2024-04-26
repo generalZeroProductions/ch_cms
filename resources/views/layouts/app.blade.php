@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Laravel</title>
+    <title>{{ config('app.name') }}</title>
 
     <!-- Fonts -->
     <meta charset="UTF-8">
@@ -15,11 +15,12 @@
     <title>凤凰纵横</title>
     <link rel="stylesheet" href="{{ asset('scripts/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('scripts/site.css') }}">
-     <link rel="stylesheet" href="{{ asset('scripts/grids.css') }}">
+    <link rel="stylesheet" href="{{ asset('scripts/grids.css') }}">
     <script src="{{ asset('scripts/main.js') }}"></script>
     <script src="{{ asset('scripts/navCtl.js') }}"></script>
     <script src="{{ asset('scripts/tabsCtl.js') }}"></script>
     <script src="{{ asset('scripts/editors.js') }}"></script>
+    <script src="{{ asset('scripts/dashboard.js') }}"></script>
 
 </head>
 
@@ -34,5 +35,11 @@
     <script src="{{ asset('scripts/bootstrap.min.js') }}"></script>
 
 </body>
+<script>
+    window.onload = function() {
+        scriptAsset = "{{ asset('scripts/') }}/";
+        paginatePages();
+    }
+</script>
 
 </html>

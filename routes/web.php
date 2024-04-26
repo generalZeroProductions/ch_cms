@@ -15,14 +15,30 @@ use App\Http\Controllers\PageController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+
 //  BUILDER ROUTES
 Route::post('/create_slideshow', [ConsoleController::class, 'createSlideshow'])->name('create_slideshow');
+Route::post('/create_one_column', [ConsoleController::class, 'createOneColumn'])->name('create_one_column');
+Route::post('/create_two_column', [ConsoleController::class, 'createTwoColumn'])->name('create_two_column');
+Route::post('/create_tabbed', [ConsoleController::class, 'createTabbed'])->name('create_tabbed');
+Route::post('/create_image_article', [ConsoleController::class, 'createImageArticls'])->name('create_image_article');
+
 
 
 // CONSOLE ROUTING
+
+// Route::get('/console/login', [ConsoleController::class, 'loginForm'])->middleware('guest')->name('login');
+Route::post('/console/login', [ConsoleController::class, 'login']);
+Route::get('/console/logout', [ConsoleController::class, 'logout']);
+Route::get('/console/hash', [ConsoleController::class, 'hashAndLogPassword']);
+
+Route::post('/register', [ConsoleController::class, 'createUser']);
+
 Route::get('/login', function () {
     return View::make('layouts.login');
 })->name('login');
+
 
 Route::get('/changeSlideImage', function () {
     return View::make('console.edit_slide_image');
@@ -64,11 +80,6 @@ Route::get('/set_mobile', function () {
 })->name('setMobile');
 
 
-
-// Route::get('/', function () {
-//     return View::make('index');
-// })->name('root');
-
 Route::get('/load-page/{routeName}', [PageController::class, 'loadPage']);
 Route::get('/load-tab/{routeName}', [PageController::class, 'loadTabContent']);
 
@@ -82,7 +93,6 @@ Route::get('/update_article', function () {
 })->name('update_article');
 
 
-
 Route::get('/edit_tabs', function () {
     return View::make('forms.edit_tabs_form');
 })->name('editTabs');
@@ -94,7 +104,9 @@ Route::post('/update_article', [PageController::class, 'updateArticle'])->name('
 Route::post('/update_tabs', [PageController::class, 'updateTabs'])->name('update_tabs');
 
 
-
+// Route::get('/', function () {
+//     return View::make('index');
+// })->name('root');
 
 
 //  NAV ROUTES
@@ -136,8 +148,27 @@ Route::post('/update_drop_nav', [NavController::class,'updateDrop'])->name('upda
 Route::post('/add_drop_nav', [NavController::class,'addDropdown'])->name('add_drop_nav');
 
 
+Route::get('/paginatin_form', function () {
+    return View::make('console.pages_pagination');
+})->name('paginatin_form');
+
+Route::get('/get-pages', [ConsoleController::class, 'getPages'])->name('get-pages');
+
+Route::get('/screen/get/{route}', function ($route) {
+    return view('/screen/get_screen', ['route' => $route]);
+})->name('getScreen');
+
+Route::get('/screen/wreck', function(){
+    return view('/screen/wreck_session');
+})->name('testScreen');
+
+Route::get('/screen/set/{settings?}', function ($settings = null) {
+    return view('/screen/set_screen', ['settings' => $settings]);
+})->name('setScreen');
 
 Route::get('/{newLocation?}', function ($newLocation = null) {
     return view('index', ['newLocation' => $newLocation]);
 })->name('root');
+
+
 

@@ -1,12 +1,12 @@
 <?php
-if (isset($_SESSION['screenWidth'])) {
+if (isset($_SESSION['screenwidth'])) {
     echo "<style>
         .banner_container {
             width: " .
-        $_SESSION['screenWidth'] .
+        $_SESSION['screenwidth'] .
         "px;
             height: " .
-        $_SESSION['screenWidth'] / 3 .
+        $_SESSION['screenwidth'] / 3 .
         "px;
             overflow: hidden; /* Ensure that the image is cropped to fit within the container */
         }
@@ -41,25 +41,13 @@ $slideBox = 'slide_box_' . $location['row']['id'];
 $slideshowId = 'slide_show_' . $location['row']['id'];
 
 ?>
-<div class="row title_change_div">
-    @include('/rows/page_title_edit', ['location' => $location])
-</div>
+
 
 @if (count($slideList) > 0)
     <div id="{{ $slideBox }}">
-        @if ($editMode)
-            <div class="row title_change_div">
-                <div class="col-md-10" id = "{{ $location['row']['id'] }}">
-                    <p class = "title_indicator"> Edit Slideshow</p>
-                    <a href="#"
-                        onClick = "editSlidesForm('{{ $slideBox }}','{{ json_encode($location) }}', '{{ json_encode($slideJson) }}')">
-                        <img src="{{ asset('icons/pen.svg') }}" style = "margin-bottom: 4px; margin-left:8px">
-                    </a>
-                </div>
-                <div class = "col-md-2 delete_row_button">
-                    @include('rows/delete_row_button')
-                </div>
-            </div>
+        @if ($editMode && !$tabContent)
+            @include('rows.delete_row_button', ['location' => $location, 'slideshow'=>true])
+           
         @endif
         @if (count($slideList) > 1)
 
@@ -113,9 +101,10 @@ $slideshowId = 'slide_show_' . $location['row']['id'];
 
 @endif
 @endif
-<div class="row row_add_button">
-    @include('rows/add_row_button', ['location' => $location])
-
+@if($editMode && !$tabContent)
+ @include('rows.edit_slideshow_label', ['location' => $location])
+    @include('rows.add_row_button', ['location' => $location,'index'=>$location['row']['index']])
+@endif
 </div>
 
 

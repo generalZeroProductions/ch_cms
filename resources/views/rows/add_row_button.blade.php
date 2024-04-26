@@ -1,6 +1,17 @@
-@if ($editMode)
-    <hr>
-
-    <button class = "btn btn-warning" onClick = "openBaseModal('createRow', null,'{{json_encode($location)}}')">
-    <img src = {{asset('icons/white_add.svg')}} class='add_row_icon'>创建行</button>
-@endif
+<hr>
+<div class="container-fluid" style='height:5.2vh'>
+    <div class="row">
+        <div class="col-md-10" id = "{{ $location['row']['id'] }}">
+        </div>
+        <div class="col-6 col-md-2">
+            <button class = "btn btn-warning general-btn add_row_btn"
+                onClick = "openBaseModal('createRow', '{{ $index }}','{{ json_encode($location) }}')">
+                创建行<img src={{ asset('icons/white_add.svg') }} class='space_icon_right'></button>
+            <br>
+        </div>
+    </div>
+</div>
+<br>
+<style>
+   
+</style>

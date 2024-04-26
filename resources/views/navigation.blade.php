@@ -26,17 +26,17 @@
                         <div class = "row" id = "{{ $nav->id }}_{{ $nav->title }}">
                     @endif
                     <li class="nav-item {{ $loop->first ? 'active' : '' }}">
-                        <a href="#" class="nav-link" onClick="loadPageFromNav('{{$nav->route}}')">
+                        <a href="#" class="nav-link" onClick="loadPageFromNav('{{ $nav->route }}')">
                             <span class="menu-name">{{ $nav->title }}</span>
                         </a>
                     </li>
                     @if ($editMode)
                         <a href="#" class="edit-nav-pen"
-                            onClick="loadEditNav('{{ json_encode($nav) }}','{{ $nav->id }}_{{ $nav->title }}','{{json_encode($location)}}')">
+                            onClick="loadEditNav('{{ json_encode($nav) }}','{{ $nav->id }}_{{ $nav->title }}','{{ json_encode($location) }}')">
                             <img src = "{{ asset('icons\pen.svg') }}">
                         </a>
                         <a href = "#" class = "edit-nav-trash"
-                            onClick="openBaseModal('removeItem','{{ json_encode($nav) }}', '{{json_encode($location)}}')">
+                            onClick="openBaseModal('removeItem','{{ json_encode($nav) }}', '{{ json_encode($location) }}')">
                             <img src = "{{ asset('icons\trash.svg') }}">
                         </a>
     </div>
@@ -75,48 +75,38 @@
                 <img src = "{{ asset('icons\pen.svg') }}">
             </a>
             <a href = "#" class = "edit-nav-trash"
-                onClick="openBaseModal('removeItem','{{ json_encode($nav) }}', '{{json_encode($location)}}')">
+                onClick="openBaseModal('removeItem','{{ json_encode($nav) }}', '{{ json_encode($location) }}')">
                 <img src = "{{ asset('icons\trash.svg') }}">
             </a>
             </div>
         @endif
     @endif
     @endforeach
-
+    <li class="nav-item">
+<div style="width:5vw"></div>
+    </li>
 
 
     </ul>
     @if ($editMode)
         <div class = "col-auto ">
             <a href = "#" class = "edit-nav-add"
-                onClick="openBaseModal('selectNavType', null,'{{json_encode($location)}}')">
+                onClick="openBaseModal('selectNavType', null,'{{ json_encode($location) }}')">
                 <img src = "{{ asset('icons\add.svg') }}" id = "hoverIcon">
             </a>
             <div class="tooltip-text" id="tooltip-1">将新项目添加到导航栏</div>
         </div>
-        <form class="form-inline my-2 my-lg-0">
-            <button class="btn btn-secondary my-2 my-sm-0" type="submit">仪表板
-             <img src = "{{ asset('icons\dashboard.svg') }}" style = "margin-bottom: 2 px; margin-left:4px">
+        <div class="form-inline my-2 my-lg-0">
+            <button class="btn btn-secondary my-2 my-sm-0" onClick="returnToDashboard()">仪表板
+                <img src = "{{ asset('icons\meter.svg') }}"
+                    style = "margin-bottom: 2 px; margin-left:4px; height:24px">
             </button>
-        </form>
+        </div>
     @endif
     </div>
 </nav>
 
 <script>
-    var element = document.getElementById('hoverIcon');
-
-    element.addEventListener('mouseover', function() {
-        showTooltip('tooltip-1');
-    });
-
-    element.addEventListener('mouseout', function() {
-        hideTooltip('tooltip-1');
-    });
-
-
-  
-
     document.addEventListener('DOMContentLoaded', function() {
         var navLinks = document.querySelectorAll('.nav-link');
 
@@ -131,12 +121,13 @@
             });
         });
     });
-        function loadPageFromNav(route) {
+
+    function loadPageFromNav(route) {
         // Run your loadPage function
         loadPage(route);
 
         // Collapse the navbar after a short delay
-        setTimeout(function () {
+        setTimeout(function() {
             $('.navbar-collapse').collapse('hide');
         }, 100);
     }
