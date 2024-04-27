@@ -4,7 +4,11 @@ function returnToDashboard() {
 
 function paginatePages() {
     const pagesDiv = document.getElementById("pagesDiv");
-    fetch("/get-pages")
+    if(!pagesDiv)
+    {
+        console.log("NO PAGE DIV");
+    }
+    fetch("/display_all_pages")
         .then((response) => response.json()) // Parse response as JSON
         .then((data) => {
             pagesDiv.innerHTML = data.html;
@@ -38,7 +42,7 @@ function toggleEditMode(toggle) {
 }
 
 
-function goToView()
+function viewSite()
 {
     window.location.href = "/";
 }

@@ -1,12 +1,10 @@
-@extends('layouts.app')
+@extends('console.console')
 @section('content')
     @php
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
+        use Illuminate\Support\Facades\Session;
         $editMode = false;
-        if (isset($_SESSION['edit'])) {
-            $editMode = $_SESSION['edit'];
+        if (Session::has('edit')) {
+            $editMode = Session::get('edit');
         }
     @endphp
     <br>
@@ -18,26 +16,31 @@
             <div class="col-md-2 ">
             </div>
             <div class="col-md-2 " style = "padding-right:0vw; margin-right:0px">
-                <button class = "btn btn-secondary btn-top-dash">登出<img src = "{{ asset('/icons/logout.svg') }}" style="height: 22px; margin-left: 10px;margin-bottom: 3px"></button>
+                <button class = "btn btn-secondary btn-top-dash">登出<img src = "{{ asset('/icons/logout.svg') }}"
+                        style="height: 22px; margin-left: 10px;margin-bottom: 3px"></button>
             </div>
         </div>
         <br>
         <div class="row justify-content-between">
-            <button class="btn btn-secondary btn-dash col-sm">新页面
-                <img src="{{ asset('icons/new_page.svg') }}" style="height: 30px; margin-left: 15px; margin-bottom: 5px">
-            </button>
+            <form method = 'POST' action = "/page_edit/create_new">
+                @csrf
+                <button type = "submit" class="btn btn-secondary btn-dash col-sm">新页面
+                    <img src="{{ asset('icons/new_page.svg') }}"
+                        style="height: 30px; margin-left: 15px; margin-bottom: 5px">
+                </button>
+            </form>
             @if ($editMode)
-                <button class="btn btn-success btn-dash col-sm" id ="edit_switch_on" onClick="toggleEditMode(false)">编辑模式
+                <button class="btn btn-success btn-dash col-sm" id ="edit_switch_green" onClick="setEditMode('off')">编辑模式
                     <img src="{{ asset('icons/switch_on.svg') }}"
                         style="height: 44px; margin-left: 20px;margin-bottom: 5px">
                 </button>
             @else
-                <button class="btn btn-secondary btn-dash col-sm" id ="edit_switch_off" onClick="toggleEditMode(true)">编辑模式
+                <button class="btn btn-secondary btn-dash col-sm" id ="edit_switch_gray" onClick="setEditMode('on')">编辑模式
                     <img src="{{ asset('icons/switch_off.svg') }}"
                         style="height: 44px; margin-left: 20px;margin-bottom: 5px">
                 </button>
             @endif
-            <button class="btn btn-secondary btn-dash col-sm" onClick="goToView()">查看网站
+            <button class="btn btn-secondary btn-dash col-sm" onClick="viewSite()">查看网站
                 <img src="{{ asset('icons/view.svg') }}" style="height: 30px; margin-left: 5px;  margin-bottom: 5px">
             </button>
         </div>
@@ -62,7 +65,7 @@
         </div>
     </div>
 
-    @if ($editMode)
+    @if (Auth::check())
         <h2 style = "color:red"> AUTH </h2>
     @endif
 @endsection
@@ -90,11 +93,17 @@
         transition: background-color 0.3s ease;
     }
 
-    .btn-top-dash{
+    .btn-top-dash {
         display: block;
         font-size: large !important;
         font-weight: 600 !important;
         height: 40px;
     }
 </style>
-<script></script>
+
+<script>
+    window.onload = function() {
+        scriptAsset = "{{ asset('scripts/') }}/";
+        paginatePages();
+    };
+</script>

@@ -1,21 +1,16 @@
 <?php
+use Illuminate\Support\Facades\Session;
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-if(isset($_POST['action']) && $_POST['action'] === 'startSession') {
+if (isset($_POST['action']) && $_POST['action'] === 'startSession') {
     replaceSessionVars();
     echo json_encode(array("success" => true));
-} 
-elseif (isset($_POST['action']) && $_POST['action'] === 'updateRoute') {
+} elseif (isset($_POST['action']) && $_POST['action'] === 'updateRoute') {
     replaceSessionVars();
     echo json_encode(array("success" => true));
-} 
-elseif (isset($_POST['action']) && $_POST['action'] === 'refreshScreen') {
+} elseif (isset($_POST['action']) && $_POST['action'] === 'refreshScreen') {
     replaceSessionVars();
     echo json_encode(array("success" => true));
-} 
-elseif (isset($_POST['action']) && $_POST['action'] === 'editToggle') {
+} elseif (isset($_POST['action']) && $_POST['action'] === 'editToggle') {
     replaceSessionVars();
     echo json_encode(array("success" => true));
 } else {
@@ -24,25 +19,20 @@ elseif (isset($_POST['action']) && $_POST['action'] === 'editToggle') {
 
 function replaceSessionVars()
 {
-    $_SESSION['mobile'] = false;
+    Session::put('mobile', false);
     if (isset($_POST['width'])) {
-        $_SESSION['screenwidth'] = $_POST['width'];
+        Session::put('screenwidth', $_POST['width']);
         if ($_POST['width'] < 800) {
-            $_SESSION['mobile'] = true;
+            Session::put('mobile', true);
         }
     }
-    if(isset($_POST['routeId'])) {
-        $_SESSION['routeId'] = $_POST['routeId'];
+    if (isset($_POST['scrollTo'])) {
+        Session::put('scrollTo', $_POST['scrollTo']);
     }
-    if(isset($_POST['scrollTo'])) {
-        $_SESSION['scrollTo'] = $_POST['scrollTo'];
-    }
-    if(isset($_POST['edit'])) {
-        $_SESSION['edit'] = false;
-        if( $_POST['edit']==='true')
-        {
-            $_SESSION['edit'] =true;
+    if (isset($_POST['edit'])) {
+        Session::put('edit', false);
+        if ($_POST['edit'] === 'true') {
+            Session::put('edit', true);
         }
-       
     }
 }

@@ -20,12 +20,6 @@ class ConsoleController extends Controller
         if (auth()->attempt($attributes, $remember = false)) {
             return redirect('/dashboard');
         }
-        // if (auth()->attempt($attributes)) {
-           
-        //     return redirect()->intended('/console/dashboard');
-        // }
-    
-        // If authentication failed, return back with errors
         return back()->withInput()->withErrors(['password' => 'Invalid credentials']);
         
     }
@@ -51,22 +45,11 @@ class ConsoleController extends Controller
         return response()->json(['message' => 'User created successfully'], 201);
     }
 
-    public function getPages()
+    public function displayAllPages()
     {
-        // try {
         $records = ContentItem::where('type', 'page')->paginate(15);
-        $html = view('console.pages_pagination', ['records' => $records])->render();
+        $html = view('console.page_pagination_form', ['records' => $records])->render();
         return response()->json(['html' => $html]);
-        // } catch (\Exception $e) {
-        //     return response()->json(['error' => $e->getMessage()], 500);
-        // }
-        // dd("route works");
-        // $records = ContentItem::where('type', 'page')->paginate(15);
-        // // Render the Blade view with records and return the HTML content
-        // $html = view('console.pages_pagination', ['records' => $records])->render();
-
-        // // Return the HTML content as a response
-        // return response()->json(['html' => $html]);
     }
     public function storeImage(Request $request)
     {
@@ -81,91 +64,14 @@ class ConsoleController extends Controller
                 $column = ContentItem::findOrFail($request->column_id);
                 $column->image = $filename;
                 $column->save();
-                return redirect()->route('root', ['pageName' => $request->page_name]);
+                return redirect()->route('reroute', ['pageName' => $request->page_name.'_'.$request->scroll_to]);
             } else {
                 return response()->json(['message' => 'Failed to upload file'], 500);
             }
         }
         return response()->json(['message' => 'No file uploaded'], 400);
     }
-    public function makeNewPage()
-    {
-        $allPages = ContentItem::where('type', 'page')->get();
-        $pageCount = count($allPages);
-        $title = 'New_Page_' . $pageCount;
-        $ids = [];
-        $data = ["rows" => $ids];
-        $page = ContentItem::create([
-            'type' => 'page',
-            'title' => $title,
-            'data' => $data,
-        ]);
-        return redirect()->route('root', ['pageName' => $title]);
-    }
-    public function updateSlideshow(Request $request)
-    {
-        $slideData = json_decode($request->data);
-        $slides = [];
-        foreach ($slideData as $slide) {
-            $newSlide = [
-                'image' => $slide->image,
-                'caption' => $slide->caption,
-                'record' => $slide->record,
-                'source' => $slide->source,
-            ];
-            $slides[] = $newSlide;
-        }
-        $slideIds = [];
-
-        foreach ($slides as $slide) {
-            if ($slide['record'] === null) {
-
-                $newSlide = ContentItem::create([
-                    'type' => 'column',
-                    'image' => $slide['image'],
-                    'body' => $slide['caption'],
-                    'heading' => 'slide',
-                ]);
-                $slideIds[] = $newSlide->id;
-            } else {
-                $slideIds[] = $slide['record'];
-                $oldSlide = ContentItem::find($slide['record']);
-                $oldSlide->image = $slide['image'];
-                $oldSlide->body = $slide['caption'];
-                $oldSlide->save();
-            }
-
-        }
-        $row = ContentItem::findOrFail($request->row_id);
-        $removeUnused = [];
-        foreach ($row->data['slides'] as $id) {
-            if (!in_array($id, $slideIds)) {
-                $removeUnused[] = $id;
-            }
-        }
-
-        if (count($removeUnused) > 0) {
-            foreach ($removeUnused as $id) {
-                $item = ContentItem::findOrFail($id);
-                $item->delete();
-            }
-        }
-
-        $writeSlides = [
-            'slides' => $slideIds,
-        ];
-        $row = ContentItem::findOrFail($request->row_id);
-        $row->data = $writeSlides;
-        $row->save();
-
-        if ($request->files->count() > 0) {
-            foreach ($request->files as $file) {
-                $filename = $file->getClientOriginalName();
-                Storage::putFileAs('public/images', $file, $filename);
-            }
-        }
-        return redirect()->route('root', ['pageName' => $request->page_name]);
-    }
+    
 
     public function createSlideshow(Request $request)
     {

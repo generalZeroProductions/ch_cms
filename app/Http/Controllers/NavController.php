@@ -44,7 +44,7 @@ class NavController extends Controller
         return redirect()->route('root',['newLoction'=> $location]);
     }
 
-    public function deleteItem(Request $request)
+    public function deleteNavItem(Request $request)
     {
         $request->validate([
             'nav_id' => 'required|numeric', // Validation rules for the id parameter
@@ -73,7 +73,7 @@ class NavController extends Controller
         return redirect()->route('root',['newLoction'=> $location]);
     }
 
-    public function updateDrop(Request $request)
+    public function updateDropdown(Request $request)
     {
         $subData = json_decode($request->data);
         $unusedItems = [];

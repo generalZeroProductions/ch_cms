@@ -2,11 +2,19 @@ var imagesAsset;
 var iconsAsset;
 var scriptAsset;
 var allRoutes;
+var resizeTimeout;
+
+const csrfToken = document
+    .querySelector('meta[name="csrf-token"]')
+    .getAttribute("content");
+
 
 function loadPage(routeName) {
-    fetch("/load-page/" + routeName)
+    console.log("load page " + routeName);
+    fetch("/load_page/" + routeName)
         .then((response) => response.text()) // Parse response as text
         .then((html) => {
+           
             document.getElementById("main_content").innerHTML = html;
             var runScriptsDiv = document.getElementById("runScripts");
             if (runScriptsDiv) {
@@ -57,27 +65,12 @@ function openBaseModal(action, item, location) {
         .catch((error) => console.error("Error loading baseModal:", error));
 }
 
-function showUploadImageStandard(modContent, item, location) {
-    var itemItem = JSON.parse(item);
-    var locItem = JSON.parse(location);
-    document.getElementById("base-modal-title").innerHTML = "选择图像";
-    fetch("/image_upload")
-        .then((response) => response.text())
-        .then((html) => {
-            modContent.innerHTML = html;
-            document.getElementById("page_id").value = locItem.page.id;
-            document.getElementById("column_id").value = itemItem.id;
-            document.getElementById("page_id_at_select").value =
-                locItem.page.id;
-            document.getElementById("column_id_select").value = itemItem.id;
-        })
-        .catch((error) =>
-            console.error("Error loading image select form:", error)
-        );
-}
-
 function CreateRowForm(modContent, location) {
     const locItem = JSON.parse(location);
+    if(!locItem.row)
+    {
+        locItem.row = {"row":{"id":0}};
+    }
     fetch("/row_type")
         .then((response) => response.text())
         .then((html) => {
@@ -116,119 +109,32 @@ function closeModal() {
     modal.remove();
 }
 
-function changePageTitle(location, divId) {
-    const locItem = JSON.parse(location);
-    var titleDiv = document.getElementById(divId);
-    fetch("/title_change")
-        .then((response) => response.text())
-        .then((html) => {
-            titleDiv.innerHTML = html;
-            document.getElementById("page_title").value = locItem.page.title;
-            document.getElementById("page_id").value = locItem.page.id;
-        })
-        .catch((error) => console.error("Error loading newNavSelect:", error));
-}
-
-const csrfToken = document
-    .querySelector('meta[name="csrf-token"]')
-    .getAttribute("content");
 
 
-var resizeTimeout;
 
-function handleResize() {
-    console.log("Window size changed!");
+
+function handleResize(route) {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(function () {
         console.log("Resizing stopped. Calling updateScreenSettings...");
-        updateScreenSettings();
+        window.location.href="/session/screen?"+ window.innerWidth + "?" + route;
     }, 200);
 }
 
-function updateScreenSettings() {
-    var path = scriptAsset + "session_mgr.php";
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", path, true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4) {
-            if (xhr.status == 200) {
-                if (currentRoute) {
-                    var newLoc = currentRoute + "_" + window.scrollY;
-                    window.location.href = "/" + newLoc;
-                }
+
+function windowVisible()
+{
+    if (document.visibilityState) {
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'visible') {
+                console.log("User returned to the window");
             } else {
-                console.log("Error setting session variable");
+                console.log("User left the window");
             }
-        }
-    };
-
-    var width = window.innerWidth;
-
-    var data = "action=refreshScreen" + "&width=" + width;
-    xhr.send(data);
-}
-
-var currentRoute;
-function setSessionScreenSize2() {
-    var pathtophp = scriptAsset + "session_mgr.php";
-    console.log(pathtophp);
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", scriptAsset + "session_mgr.php?action=setMobile", true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    var postData = "width=" + window.innerWidth;
-    xhr.send(postData);
-}
-
-function setEditMode(toggle) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "editMode.php", true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    var postData = "editMode =" + toggle;
-    xhr.send(postData);
-}
-
-var tooltipTimeout;
-
-function showTooltip(tooltipId) {
-    var tooltip = document.getElementById(tooltipId);
-    if (tooltip) {
-        tooltip.style.display = "block";
-        clearTimeout(tooltipTimeout);
+        });
+    } else {
+        console.log("Page Visibility API is not supported");
     }
 }
 
-function hideTooltip(tooltipId) {
-    tooltipTimeout = setTimeout(function () {
-        var tooltip = document.getElementById(tooltipId);
-        if (tooltip) {
-            tooltip.style.display = "none";
-        }
-    }, 10);
-}
 
-function toolTipStart() {
-    for (let i = 0; i < 6; i++) {
-        var element = document.getElementById("trash_icon_" + i);
-        element.addEventListener("mouseover", function () {
-            showTooltip("tooltip_trash" + i);
-        });
-        element.addEventListener("mouseout", function () {
-            hideTooltip("tooltip_trash" + i);
-        });
-        var element = document.getElementById("file_icon_" + i);
-        element.addEventListener("mouseover", function () {
-            showTooltip("tooltip_file" + i);
-        });
-        element.addEventListener("mouseout", function () {
-            hideTooltip("tooltip_file" + i);
-        });
-        var element = document.getElementById("upload_icon_" + i);
-        element.addEventListener("mouseover", function () {
-            showTooltip("tooltip_upload" + i);
-        });
-        element.addEventListener("mouseout", function () {
-            hideTooltip("tooltip_upload" + i);
-        });
-    }
-}

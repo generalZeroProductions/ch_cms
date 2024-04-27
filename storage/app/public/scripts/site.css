@@ -319,6 +319,13 @@
     height: 44px;
     margin-top:12px;
 }
+.yellow_row {
+    background-color: rgb(248, 212, 135);
+    height: 44px;
+    margin-top:12px;
+}
+
+
 .top-left-edits {
     margin-top: 1vh;
     margin-left: 3vw;

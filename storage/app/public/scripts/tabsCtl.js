@@ -4,7 +4,7 @@ var newTabId;
 
 function loadTab(tabId, routeName, ulId, linkId) {
     console.log(tabId);
-    fetch("/load-tab/" + routeName)
+    fetch("/load_tab/" + routeName)
         .then((response) => response.text()) // Parse response as text
         .then((html) => {
             document.getElementById(tabId).innerHTML = html;
@@ -14,7 +14,7 @@ function loadTab(tabId, routeName, ulId, linkId) {
 }
 
 function loadVertTab(tabId, routeName) {
-    fetch("/load-tab/" + routeName)
+    fetch("/load_tab/" + routeName)
         .then((response) => response.text()) // Parse response as text
         .then((html) => {
             document.getElementById(tabId).innerHTML = html;
@@ -138,8 +138,8 @@ function updateTab(tabId, newData) {
 }
 
 function updateTabData() {
-    var hiddenField = document.getElementById("tabData"); // Assuming 'data' is the ID of the hidden field
-    hiddenField.value = JSON.stringify(tabData); // Convert the object to a JSON string and set it as the value of the hidden field
+    var hiddenField = document.getElementById("tabData"); 
+    hiddenField.value = JSON.stringify(tabData); 
     console.log("tab update made ");
 }
 
@@ -202,23 +202,17 @@ function menuFolder(route) {
         .catch((error) => console.error("Error loading page:", error));
 }
 
-function highlightListItem(ulId, linkId) {
-    // Get the <ul> element
-    var ulElement = document.getElementById(ulId);
-
-    console.log("highlight link id " + linkId);
-
-    // Get all <a> elements inside the <ul>
-    var linkElements = ulElement.getElementsByTagName("a");
-
-    // Loop through each <a> element
-    for (var i = 0; i < linkElements.length; i++) {
-        // If the current <a> element has the specified id, set its color to blue
-        if (linkElements[i].id === linkId) {
-            linkElements[i].style.color = "blue";
-        } else {
-            // Otherwise, set its color to black
-            linkElements[i].style.color = "black";
-        }
-    }
-}
+// function highlightListItem(ulId, linkId) {
+//     var ulElement = document.getElementById(ulId);
+//     console.log("highlight link id " + linkId);
+//     var linkElements = ulElement.getElementsByTagName("a");
+//     for (var i = 0; i < linkElements.length; i++) {
+//         // If the current <a> element has the specified id, set its color to blue
+//         if (linkElements[i].id === linkId) {
+//             linkElements[i].style.color = "blue";
+//         } else {
+//             // Otherwise, set its color to black
+//             linkElements[i].style.color = "black";
+//         }
+//     }
+// }
