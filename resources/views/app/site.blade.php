@@ -31,6 +31,9 @@
         use Illuminate\Support\Facades\Session;
         use App\Models\Navigation;
         use App\Models\ContentItem;
+
+        use Illuminate\Support\Facades\Storage;
+
         $route = 'none';
         $page; //   for every user
         if (isset($newLocation)) {
@@ -51,7 +54,7 @@
         ];
         $mobile = false;
         $newSession = true;
-        $screenWidth;
+        $screenWidth = 1920;
         if (Session::has('screenwidth')) {
             $newSession = false;
             $screenWidth = Session::get('screenwidth');
@@ -63,39 +66,38 @@
         $scrollTo = 0;
         $allRoutes = null;
         $buildMode = false;
-        if (Auth::check()) {
-            if (Session::has('edit')) {
-                $editMode = Session::get('edit');
-                if ($editMode) {
-                    $getRoutes = ContentItem::where('type', 'page')->pluck('title')->toArray();
-                    $allRoutes = json_encode($getRoutes);
-                }
+        $getRoutes = ContentItem::where('type', 'page')->pluck('title')->toArray();
+        $allRoutes = json_encode($getRoutes);
+        $directory = 'public/images';
+        $files = Storage::allFiles($directory);
+        $allImages = [];
+        foreach ($files as $file) {
+            if ($file !== '.' && $file !== '..') {
+                $allImages[] = pathinfo($file, PATHINFO_BASENAME);
             }
-            if (Session::has('scrollTo')) {
-                $scrollTo = Session::get('scrollTo');
-            }
-            if (Session::get('buildMode')) {
-                $buildMode = Session::get('buildMode');
-            }
+        }
+        if (Session::has('edit')) {
+            $editMode = Session::get('edit');
+        }
+        if (Session::has('scrollTo')) {
+            $scrollTo = (int) Session::get('scrollTo');
+        }
+        if (Session::get('buildMode')) {
+            $buildMode = Session::get('buildMode');
         }
 
     @endphp
     <script src="{{ asset('scripts/jquery-3.2.1.slim.min.js') }}"></script>
+    <h5>"scroll= {{ Session::get('scrollTo') }}</h5>
+    <h5>"Edit = {{ Session::get('edit') }}</h5>
+    <h5>"build= {{ Session::get('buildMode') }}</h5>
     @if (Auth::check())
     @endif
-    @if(!$buildMode)
-    @include('app.navigation')
+    @if (!$buildMode)
+        @include('app.navigation')
     @endif
     <div id = "main_content">
     </div>
-
-
-
-    <h5>"screenWidth= {{ Session::get('screenwidth') }}</h5>
-    <h5>"mobile= {{ Session::get('mobile') }}</h5>
-    <h5>"Edit = {{ Session::get('edit') }}</h5>
-    <h5>"build= {{ Session::get('builder') }}</h5>
-
 
 
 
@@ -106,24 +108,23 @@
     window.onload = function() {
         scriptAsset = "{{ asset('scripts/') }}/"
         if ('{{ $newSession }}') {
-           window.location.href="/session/screen?"+window.window.innerWidth+"?"+"{{$route}}";
+            window.location.href = "/session/screen?" + window.window.innerWidth + "?" + "{{ $route }}";
         }
-         if (window.innerWidth != '{{ $screenWidth }}') {
-           window.location.href="/session/screen?"+window.window.innerWidth+"?"+"{{$route}}";
+        if (window.innerWidth != '{{ $screenWidth }}') {
+            window.location.href = "/session/screen?" + window.window.innerWidth + "?" + "{{ $route }}";
         }
         window.addEventListener('resize', function() {
             handleResize("{{ $route }}");
         });
         windowVisible();
-        if ('{{ $editMode }}') {
-            iconsAsset = "{{ asset('icons/') }}/";
-            imagesAsset = "{{ asset('images/') }}/";
-            allRoutes = decodeRoutes('{{ $allRoutes }}');
-        }
-        loadPage("{{ $route }}");
-        window.scrollTo(0, '{{ $scrollTo }}');
+        iconsAsset = "{{ asset('icons/') }}/";
+        imagesAsset = "{{ asset('images/') }}/";
+        allRoutes = decodeRoutes('{{ $allRoutes }}');
+
+        loadPage("{{ $route }}", '{{ $scrollTo }}');
+        console.log("PAGE LOAD");
     };
 </script>
 
 </html>
-{{--  --}}
+{{--         allImages = '{{ $allImages }}'; --}}

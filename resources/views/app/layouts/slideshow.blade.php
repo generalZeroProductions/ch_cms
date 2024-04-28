@@ -28,7 +28,7 @@ foreach ($slideData as $slideId) {
     $slide = ContentItem::findOrFail($slideId);
     $jSlide = [
         'image' => $slide->image,
-        'caption' => $slide->title,
+        'caption' => $slide->body,
         'record' => $slide->id,
     ];
     $slideJson[] = $jSlide;
@@ -44,9 +44,10 @@ $slideshowId = 'slide_show_' . $location['row']['id'];
 
 
 @if (count($slideList) > 0)
+
     <div id="{{ $slideBox }}">
         @if ($editMode && !$tabContent)
-            @include('app/layouts/partials.delete_row_button', ['location' => $location, 'slideshow'=>true])
+            @include('app/layouts/partials.delete_row_button', ['index' => $location['row']['index']])
         @endif
         @if (count($slideList) > 1)
 
@@ -83,26 +84,34 @@ $slideshowId = 'slide_show_' . $location['row']['id'];
                     $index += 1;
                 @endphp
         @endforeach
-   
-    <a class="carousel-control-prev" href="#{{ $slideshowId }}" data-slide="prev">
-        <span class="carousel-control-prev-icon"></span>
-    </a>
-    <a class="carousel-control-next" href="#{{ $slideshowId }}" data-slide="next">
-        <span class="carousel-control-next-icon"></span>
-    </a>
+
+        <a class="carousel-control-prev" href="#{{ $slideshowId }}" data-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </a>
+        <a class="carousel-control-next" href="#{{ $slideshowId }}" data-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </a>
     </div>
     </div>
 @else
-<div class = 'banner_container'>
-    <img src ="{{ asset('images/' . $slideList[0]['image']) }} " class = "image-fluid">
+    <div class = 'banner_container'>
+        <img src ="{{ asset('images/' . $slideList[0]['image']) }} " class = "image-fluid">
     </div>
-    </div>
+
 
 @endif
 @endif
-@if($editMode && !$tabContent)
- @include('app/layouts/partials.edit_slideshow_label', ['location' => $location])
-    @include('app/layouts/partials.add_row_button', ['location' => $location,'index'=>$location['row']['index']])
+@if ($editMode && !$tabContent)
+    @include('slides.edit_slideshow_label', [
+        'slideBox' => $slideBox,
+        'location' => $location,
+        'slideJson' => $slideJson,
+    ])
+
+    @include('app.layouts.partials.add_row_button', [
+        'location' => $location,
+        'index' => $location['row']['index'],
+    ])
 @endif
 </div>
 

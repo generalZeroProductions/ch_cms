@@ -1,24 +1,29 @@
 var slideShowItems = [];
 var previewList;
+var scrollAt = 0;
+var slideDiv;
 
-
-function editSlidesForm(divId, location, slideList) {
+function editSlidesForm(modBody, location, slideList) {
+    console.log("EDIT BY MODAL");
+    scrollAt = window.scrollY;
     slideShowItems = [];
-    const slideDiv = document.getElementById(divId);
+    slideDiv = modBody;
+
     const parseSlides = JSON.parse(slideList);
     const locItem = JSON.parse(location);
     parseSlides.forEach((slide) => {
         createNewSlide(slide);
     });
 
-    fetch("/slideShowEdit")
+    fetch("/slideshow_edit")
         .then((response) => response.text())
         .then((html) => {
-            slideDiv.innerHTML = html;
-            document.getElementById("row_id").value = locItem.row.id;
+            modBody.innerHTML = html;
+            if (slideDiv)
+                document.getElementById("row_id").value = locItem.row.id;
             document.getElementById("page_id").value = locItem.page.id;
-            initializeSlideshowEditor();
-            showSlideshowPreview();
+            document.getElementById("scroll_to").value = window.scrollY;
+
             var runScriptsDiv = document.getElementById("run_scripts");
             if (runScriptsDiv) {
                 var innerHtml = runScriptsDiv.innerHTML;
@@ -27,55 +32,63 @@ function editSlidesForm(divId, location, slideList) {
                     eval(toolTipCall[0]);
                 }
             }
+            showAllSlides();
         })
         .catch((error) => {
             console.error("Error loading slideshowEdit:", error);
         });
 }
 
-
-function initializeSlideshowEditor() {
+function showAllSlides() {
+    var listFinished = false;
+    var cards = slideDiv.querySelectorAll(".card");
     for (let i = 0; i < 6; i++) {
-        const captionId = "caption_capture" + i;
-        const captionElement = document.getElementById(captionId);
-        captionElement.addEventListener("change", function (event) {
-            var caption = event.target.value;
-            updateSlideCaption(i, { caption: caption });
-        });
-        const fileId = "file_capture_" + i;
-        const fileElement = document.getElementById(fileId);
-        if(!fileElement){console.log("no file element");}
-        fileElement.addEventListener("change", (event) => {
-            const selectedFile = event.target.files[0];
-            displayUploadedImage(i);
-        });
-        const selectID = "image_capture_" + i;
-        const selectElement = document.getElementById(selectID);
-        if(!selectElement){console.log("no select element");}
-        selectElement.addEventListener("change", (event) => {
-            var image = event.target.value;
-            changeSlideImage(i, image);
-        });
+        (function (index) {
+            var slide = slideShowItems[index];
+            cards.forEach((card) => {
+                if (card.id === "card" + index) {
+                    if (listFinished) {
+                        const card = document.getElementById("card" + index);
+                        card.innerHTML = "";
+                    } else {
+                        if (slide) {
+                            insertSlidePreview(index);
+                        } else {
+                            insertAddSlideCard(index);
+                            listFinished = true;
+                        }
+                    }
+                }
+            });
+        })(i);
     }
-    updateSlideData();
 }
-function displayUploadedImage(slideId) {
-    const thumbId = "thumb_" + slideId;
-    const thumbElement = document.getElementById(thumbId);
-    const imgElement = thumbElement.querySelector("img");
-    const fileElement = document.getElementById("file_capture_" + slideId);
-    const file = fileElement.files[0];
-    const reader = new FileReader();
-    reader.onload = function (event) {
-        imgElement.src = event.target.result;
-    };
-    reader.readAsDataURL(file);
-    var slide = slideShowItems[slideId];
-    slide.image = file.name;
-    slide.file = file;
-    slide.source = "upload";
 
-    updateSlideData();
+function insertSlidePreview(id) {
+    const card = document.getElementById("card" + id);
+    fetch("/insert_slide_card")
+        .then((response) => response.text())
+        .then((html) => {
+            card.innerHTML = html;
+            displayEditIcons(id);
+        })
+        .catch((error) => {
+            console.error("Error loading slideshowEdit:", error);
+        });
+    console.log(" Preview set " + id);
+}
+
+function insertAddSlideCard(id) {
+    const card = document.getElementById("card" + id);
+    fetch("/insert_add_image_card")
+        .then((response) => response.text())
+        .then((html) => {
+            card.innerHTML = html;
+            displayEditIcons(id);
+        })
+        .catch((error) => {
+            console.error("Error loading slideshowEdit:", error);
+        });
 }
 
 function updateSlideCaption(slideId, caption) {
@@ -96,24 +109,25 @@ function changeSlideImage(slideId, image) {
     slide.source = "server";
     slide.image = image;
     slide.file = null;
-    var thumbElement = document.getElementById("thumb_" + slideId);
-    const imgElement = thumbElement.querySelector("img");
+    var card = document.getElementById("card" + slideId);
+    const imgElement = card.querySelector("img");
     if (imgElement) {
         imgElement.src = imagesAsset + image;
     }
-    const fileElement = document.getElementById("file_capture_" + slideId);
-    fileElement.value = "";
+    // const fileElement = document.getElementById("file_capture_" + slideId);
+    // fileElement.value = "";
     updateSlideData();
 }
 
-function deleteItemAtIndex(slide) {
+function deleteSlide(slide) {
     slideShowItems.splice(slide, 1);
     for (let i = slide; i < slideShowItems.length; i++) {
         slideShowItems[i].index--;
     }
     updateSlideData();
     showSlideshowPreview();
-  }
+    setTimeout(resetScroll, 1);
+}
 
 function createNewSlide(slide) {
     if (slide === null) {
@@ -123,12 +137,12 @@ function createNewSlide(slide) {
             image: "defaultBanner.jpg",
             file: null,
             caption: "Enter Caption Here",
-            record:null
+            record: null,
         };
         slideShowItems.push(newSlide);
         updateSlideData();
         showSlideshowPreview();
-        
+        setTimeout(resetScroll, 1);
     } else {
         var newSlide = {
             id: slideShowItems.length,
@@ -136,107 +150,8 @@ function createNewSlide(slide) {
             image: slide.image,
             file: null,
             caption: slide.caption,
-            record:slide.record
+            record: slide.record,
         };
         slideShowItems.push(newSlide);
     }
 }
-
-function showUploadElement(i)
-{
-    const editorId = "edit_icons_" + i;
-        const editElement = document.getElementById(editorId);
-        const fileId = "file_input_" + i;
-        const fileElement = document.getElementById(fileId);
-        const selectID = "image_select_" + i;
-        const selectElement = document.getElementById(selectID);
-        editElement  && (editElement.style.display = "none");
-        selectElement  && (selectElement.style.display = "none");
-        fileElement  && (fileElement.style.display = "block");
-}
-
-function showSelectElement(i)
-{
-    const editorId = "edit_icons_" + i;
-        const editElement = document.getElementById(editorId);
-        const fileId = "file_input_" + i;
-        const fileElement = document.getElementById(fileId);
-        const selectID = "image_select_" + i;
-        const selectElement = document.getElementById(selectID);
-        editElement  && (editElement.style.display = "none");
-        selectElement  && (selectElement.style.display = "block");
-        fileElement  && (fileElement.style.display = "none");
-}
-function showEditElement(i)
-{
-        const editorId = "edit_icons_" + i;
-        const editElement = document.getElementById(editorId);
-        const fileId = "file_input_" + i;
-        const fileElement = document.getElementById(fileId);
-        const selectID = "image_select_" + i;
-        const selectElement = document.getElementById(selectID);
-        selectElement  && (selectElement.style.display = "none");
-        fileElement  && (fileElement.style.display = "none");
-        editElement  && (editElement.style.display = "block");
-}
-
-function showSlideshowPreview() {
-    var listFinished = false;
-    for (let i = 0; i < 6; i++) {
-        const previewId = "preview_" + i;
-        const previewElement = document.getElementById(previewId);
-        const editorId = "edit_icons_" + i;
-        const editElement = document.getElementById(editorId);
-        const fileId = "file_input_" + i;
-        const fileElement = document.getElementById(fileId);
-        const selectID = "image_select_" + i;
-        const selectElement = document.getElementById(selectID);
-        const thumbId = "thumb_" + i;
-        const thumbElement = document.getElementById(thumbId);
-        const captionId = "caption_" + i;
-        const captionElement = document.getElementById(captionId);
-        const captionContentId = 'caption_capture' + i;
-        const captionContentElement = document.getElementById(captionContentId);
-        fileElement && (fileElement.style.display = "none");
-        selectElement && (selectElement.style.display = "none");
-
-        const addId = "add_" + i;
-        const addElement = document.getElementById(addId);
-        if (listFinished) {
-            previewElement.style.display = "none";
-        } else {
-            previewElement.style.display = "block";
-            var slide = slideShowItems[i];
-            if (slide) {
-                editElement  && (editElement.style.display = "block");
-                thumbElement && (thumbElement.style.display = "block");
-                captionElement && (captionElement.style.display = "block");
-                const imgElement = thumbElement.querySelector("img");
-                if (imgElement) {
-                    if (slide.source === "server") {
-                        imgElement.src = imagesAsset + slide.image;
-                    } else {
-                        if (slide.source == "upload") {
-                            const reader = new FileReader();
-                            reader.onload = function (event) {
-                                imgElement.src = event.target.result;
-                            };
-                            reader.readAsDataURL(slide.file);
-                        }
-                    }
-                }
-                if (captionContentElement) {
-                    captionContentElement.value = slide.caption;
-                }
-                addElement && (addElement.style.display = "none");
-            } else {
-                editElement && (editElement.style.display = "none");
-                thumbElement && (thumbElement.style.display = "none");
-                captionElement && (captionElement.style.display = "none");
-                addElement && (addElement.style.display = "block");
-                listFinished = true;
-            }
-        }
-    }
-}
-

@@ -55,9 +55,6 @@ class PageController extends Controller
             }
             $page->title = $request->page_title;
             $page->save();
-            if (Session::get('buildMode')) {
-                return redirect()->route('pageEdit', ['newLocation' => $page->title]);
-            }
             return redirect()->route('root', ['newLocation' => $page->title]);
 
         } else {

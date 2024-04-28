@@ -11,13 +11,15 @@ use App\Http\Controllers\ArticleController;
 
 
 //  BUILDER ROUTES
-Route::post('/create_slideshow', [ConsoleController::class, 'createSlideshow'])->name('create_slideshow');
-Route::post('/create_one_column', [ConsoleController::class, 'createOneColumn'])->name('create_one_column');
-Route::post('/create_two_column', [ConsoleController::class, 'createTwoColumn'])->name('create_two_column');
+Route::post('/create_slideshow', [SlideController::class, 'createSlideshow'])->name('create_slideshow');
+Route::post('/create_one_column', [ArticleController::class, 'createOneColumn'])->name('create_one_column');
+Route::post('/create_two_column', [ArticleController::class, 'createTwoColumn'])->name('create_two_column');
 Route::post('/create_tabbed', [ConsoleController::class, 'createTabbed'])->name('create_tabbed');
 Route::post('/create_image_article', [ConsoleController::class, 'createImageArticls'])->name('create_image_article');
 
-
+Route::get('/editBlade', function () {
+    return View::make('slides.editor_layout');
+})->name('editBlade');
 
 // CONSOLE ROUTING
 Route::get('/console/logout', [ConsoleController::class, 'logout']);
@@ -59,6 +61,25 @@ Route::get('/change_slide_image', function () {
 Route::post('/upload_image', [ImageController::class, 'uploadImage'])->name('uploadImage');
 Route::post('/use_image', [ImageController::class, 'useImage'])->name('use_image');
 
+Route::get('/insert_image_icons_3', function () {
+    return View::make('images.partials.image_icons_3');
+})->name('insertImageIcons3');
+
+Route::get('/insert_upload_file', function () {
+    return View::make('images.partials.upload_file_bar');
+})->name('insertUploadFile');
+
+Route::get('/insert_file_select', function () {
+    return View::make('images.partials.select_file_bar');
+})->name('insertFileSelect');
+
+Route::get('/insert_slide_card', function () {
+    return View::make('images.partials.image_preview_card');
+})->name('insertSlideCard');
+
+Route::get('/insert_add_image_card', function () {
+    return View::make('images.partials.add_slide_card');
+})->name('insertAddImageCard');
 
 
 //TABS
@@ -74,7 +95,7 @@ Route::get('/dispay_slide_data', function () {
     return View::make('slides.slide_data_form');
 })->name('dispaySlideData');
 Route::get('/slideshow_edit', function () {
-    return View::make('slides.edit_slideshow_form');
+    return View::make('slides.editor_layout');
 })->name('slideShowEdit');
 Route::post('/update_slideshow', [SlideController::class, 'updateSlideshow'])->name('updateSlideshow');
 

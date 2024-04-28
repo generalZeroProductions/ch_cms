@@ -7,25 +7,22 @@
     $parameterParts = explode('?', $parameters);
     $returnLocation;
     if ($parameterParts[0] === 'screen') {
-        
         Session::put('screenwidth', $parameterParts[1]);
         Session::put('mobile', false);
-        if ($parameterParts[1] <800) {
+        if ($parameterParts[1] < 800) {
             Session::put('mobile', true);
         }
-        $returnLocation = "/".$parameterParts[2];
+        $returnLocation = '/' . $parameterParts[2];
     }
 
     if ($parameterParts[0] === 'edit') {
         Session::put('edit', false);
         if ($parameterParts[1] === 'on') {
             Session::put('edit', true);
-             $returnLocation = "/";
+            $returnLocation = '/';
+        } else {
+            $returnLocation = '/dashboard';
         }
-        else{
-           $returnLocation = "/dashboard"; 
-        }
-       
     }
     if ($parameterParts[0] === 'build') {
         Session::put('builder', false);
@@ -33,7 +30,10 @@
             Session::put('builder', true);
         }
     }
-
+    
+    if (isset($parameterParts[3])) {
+        Session::put('scrollTo', $parameterParts[3]);
+    }
 
 @endphp
 <script>

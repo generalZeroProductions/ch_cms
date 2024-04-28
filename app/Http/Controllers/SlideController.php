@@ -10,6 +10,46 @@ use Illuminate\Support\Facades\Storage;
 
 class SlideController extends Controller
 {
+    public function createSlideshow(Request $request)
+    {
+       
+        $firstSlide = ContentItem::create([
+            'type' => 'column',
+            'title'=>'slide 1 title',
+            'image' => 'defaultBanner.jpg',
+            'body' => 'slide 1 caption',
+            'heading' => 'slide',
+        ]);
+        $slideIds = [$firstSlide->id];
+        $rowData = [
+            'slides' => $slideIds,
+        ];
+        $newRow = ContentItem::create([
+            'title' => $request->page_name . '_' . $request->rowIndex,
+            'index' => $request->row_index_slide+1,
+            'type' => 'row',
+            'heading' => 'banner',
+            'data' => $rowData,
+        ]);
+        $page = ContentItem::findOrFail($request->page_id);
+
+        $pData = $page->data['rows'];
+        
+        foreach($pData as $data)
+        {
+            $row = ContentItem::findOrFail($data);
+            if($row->index>$request->row_index_slide)
+            {
+                $row->index = $row->index + 1;
+            }
+            $row->save();
+        }
+        $pData[] = $newRow->id;
+        $page->data = ["rows" => $pData];
+        $page->save();
+
+        return redirect()->route('root', ['newLocation' => $page->title]);
+    }
     public function updateSlideshow(Request $request)
     {
         $slideData = json_decode($request->data);
@@ -36,6 +76,7 @@ class SlideController extends Controller
                 ]);
                 $slideIds[] = $newSlide->id;
             } else {
+               
                 $slideIds[] = $slide['record'];
                 $oldSlide = ContentItem::find($slide['record']);
                 $oldSlide->image = $slide['image'];
@@ -72,6 +113,7 @@ class SlideController extends Controller
                 Storage::putFileAs('public/images', $file, $filename);
             }
         }
+        Session::put('scrollTo', $request->scroll_to);
         return redirect()->route('root', ['pageName' => $request->page_name]);
     }
 }

@@ -9,7 +9,7 @@
         }
     }
 @endphp
-
+<div id="top_of_edit_form" class= row> top of div here</div>
 <form method="POST" action="update_slideshow" enctype="multipart/form-data" id="slideEditForm">
     @csrf
     <div class="form-group">
@@ -86,6 +86,7 @@
     <input type="hidden" id="slide_show_data" name="data">
     <input type="hidden" id="row_id" name="row_id">
     <input type="hidden" id="page_id" name="page_id">
+    <input type="hidden" id="scroll_to" name = "scroll_to">
 </form>
 
 

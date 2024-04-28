@@ -298,10 +298,13 @@
 
 
 .general-btn {
-    margin-top:2px;
+    margin-bottom:4px;
     height: 40px;
     font-size: medium;
     font-weight: 600;
+}
+.btn-right-space{
+    margin-right:5vh;
 }
 .col-white{
     background-color:white;
@@ -324,6 +327,15 @@
     height: 44px;
     margin-top:12px;
 }
+.white_row {
+    background-color:white;
+    height: 44px;
+    margin-top:2px; 
+}
+.no-top-space{
+    margin-top:2px !important;
+    padding-top:2px !important;
+}
 
 
 .top-left-edits {
@@ -335,6 +347,11 @@
 }
 .title-indicator {
     color: white;
+    font-size: medium;
+    font-weight: 600;
+}
+.title-indicator_dark {
+    color: rgb(173, 110, 7);
     font-size: medium;
     font-weight: 600;
 }
