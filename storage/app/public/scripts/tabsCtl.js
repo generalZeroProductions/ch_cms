@@ -2,24 +2,119 @@ var tabData = [];
 var tabIndex;
 var newTabId;
 
-function loadTab(tabId, routeName, ulId, linkId) {
-    console.log(tabId);
-    fetch("/load_tab/" + routeName)
-        .then((response) => response.text()) // Parse response as text
-        .then((html) => {
-            document.getElementById(tabId).innerHTML = html;
-        })
-        .catch((error) => console.error("Error loading page:", error));
+function startTabs(title, route, ul, link, div, tabId) {
+    console.log(tabId + " this was tab Id");
+    const content = document.getElementById(div);
+        fetch("/load_tab/"+route)
+            .then((response) => response.text()) // Parse response as text
+            .then((html) => {
+                content.innerHTML = html;
+                if(route ==='no_tab_assigned')
+                {
+                    var tabLabel = content.querySelector("#no-tab-content");
+                    tabLabel.innerHTML = title;
+                    executeScriptsInTab(tabId);
+                }
+            })
+            .catch((error) => console.error("Error loading page:", error));
+   
+    highlightListItem(ul, link);
+}
+function populateRoutesNoTab(tabId)
+{
+    console.log("tab id came in as: "+tabId);
+    const selectRoutes = document.getElementById('no_tab_route_select');
+    allRoutes.forEach(function (page) {
+        var option = document.createElement("option");
+        option.value = page;
+        option.text = page;
+        selectRoutes.appendChild(option);
+    });
+   
+        var selectElement = document.getElementById("no_tab_route_select");
+        document.getElementById("tab_scroll_to").value= window.scrollY;
+        document.getElementById("quick_tab_id").value = tabId;
+        var routeSelect = document.getElementById("route");
+        var form = document.getElementById("tab_quick_select"); // Replace "your_form_id" with the actual ID of your form
+        selectElement.addEventListener("change", function() {
+            routeSelect.value = selectElement.value;
+            form.submit();
+    
+    });
+    
+}
+function loadTab(tab, div, ulId, linkId) {
+    preventScrolling();
+    const tabItem = JSON.parse(tab);
+    const content = document.getElementById(div);
+        fetch("/load_tab/" + tabItem.route)
+            .then((response) => response.text()) // Parse response as text
+            .then((html) => {
+                content.innerHTML = html;
+                if(tabItem.route ==='no_tab_assigned')
+                {
+                    var tabLabel = content.querySelector("#no-tab-content");
+                    tabLabel.innerHTML = tabItem.title;
+                    executeScriptsInTab(tabItem.id);
+                }
+                enableScrolling();
+            })
+            .catch((error) => console.error("Error loading page:", error));
+   
     highlightListItem(ulId, linkId);
 }
+function executeScriptsInContent() {
 
-function loadVertTab(tabId, routeName) {
-    fetch("/load_tab/" + routeName)
-        .then((response) => response.text()) // Parse response as text
-        .then((html) => {
-            document.getElementById(tabId).innerHTML = html;
-        })
-        .catch((error) => console.error("Error loading page:", error));
+    var runScripts = document.querySelectorAll("#runScript");
+    runScripts.forEach((script) => {
+        var innerHtml = script.innerHTML;
+        var loadTabCall = innerHtml.match(/startTabs\([^)]*\)/);
+        if (loadTabCall !== null) {
+            eval(loadTabCall[0]);
+        }
+    });
+} 
+
+
+function executeScriptsInTab(tabId) {
+    var runScriptsTab = document.querySelectorAll("#runScriptTab");
+    runScriptsTab.forEach((script) => {
+        var innerHtml = script.innerHTML;
+        innerHtml = innerHtml.replace(/populateRoutesNoTab\(([^)]*)\)/, `populateRoutesNoTab(${tabId})`);
+        var setRoutesCall = innerHtml.match(/populateRoutesNoTab\([^)]*\)/);
+        if (setRoutesCall !== null) {
+            eval(setRoutesCall[0]);
+        }
+    });
+}
+function highlightListItem(ulId, linkId) {
+    var ulElement = document.getElementById(ulId);
+    var links = ulElement.querySelectorAll("a");
+
+    links.forEach(function (link) {
+        link.className = "tab-item-off";
+    });
+    var link = document.getElementById(linkId);
+    if (link) {
+        link.className = "tab-item-on";
+    }
+    var clickedTab = link.parentNode;
+}
+
+function loadTabAcc(tab, div) {
+    const tabItem = JSON.parse(tab);
+    const content = document.getElementById(div);
+    if (tabItem.route != "no_tab_assigned") {
+        fetch("/load-tab/" + tabItem.route)
+            .then((response) => response.text()) // Parse response as text
+            .then((html) => {
+                content.innerHTML = html;
+            })
+            .catch((error) => console.error("Error loading page:", error));
+    } else {
+        var tabLabel = content.querySelector("#no-tab-content");
+        tabLabel.innerHTML = tabItem.title;
+    }
 }
 
 function decodeRoutes(encodedString) {
@@ -29,7 +124,7 @@ function decodeRoutes(encodedString) {
 }
 
 function editTabsList(tabList, tabId,contentId, location) {
-   
+   scrollBackTo = window.scrollY;
     const contentDiv = document.getElementById(contentId);
     if (contentDiv) {
         contentDiv.className = "";
@@ -59,11 +154,14 @@ function editTabsList(tabList, tabId,contentId, location) {
                     document.getElementById("scroll_to").value = window.scrollY;
                 tabList.forEach(function (tab) {
                     newTabFromSource(tab, listDiv);
+                    window.scrollTo(0,scrollBackTo);
                 });
             }
         })
         .catch((error) => console.error("Error loading newNavSelect:", error));
 }
+
+
 function createTabItem() {
     var list = document.getElementById("tab_list");
     var newItem = {
@@ -104,6 +202,10 @@ function addTab(newTab, listDiv) {
     var newSelect = document.createElement("select");
     newSelect.classList.add("form-control", "col");
     newSelect.id = "select_" + newTab.id;
+    var defOption = document.createElement("option");
+    defOption.value = "select a page";
+    defOption.text = "select a page";
+    newSelect.appendChild(defOption);
     allRoutes.forEach(function (page) {
         var option = document.createElement("option");
         option.value = page;
@@ -124,7 +226,11 @@ function addTab(newTab, listDiv) {
     newInput.addEventListener("input", function (event) {
         var text = event.target.value;
         var itemId = newTab.id;
-        updateTab(itemId, { title: text });
+        if (text != "select a page")
+        {
+            updateTab(itemId, { title: text });
+        }
+        
     });
     updateTabData();
 }
@@ -138,81 +244,7 @@ function updateTab(tabId, newData) {
 }
 
 function updateTabData() {
-    var hiddenField = document.getElementById("tabData"); 
-    hiddenField.value = JSON.stringify(tabData); 
+    var hiddenField = document.getElementById("tabData");
+    hiddenField.value = JSON.stringify(tabData);
     console.log("tab update made ");
 }
-
-function menuFolder2(routes) {
-    const menuItems = document.querySelectorAll(".menuFold");
-    const tabRoutes = decodeRoutes(routes);
-    menuItems.forEach((item, index) => {
-        const menuItem = item.querySelector(".menu-item");
-        const hiddenContent = item.querySelector(".hidden-content");
-        const route = tabRoutes[index];
-        fetch("/load-tab/" + route)
-            .then((response) => response.text()) // Parse response as text
-            .then((html) => {
-                hiddenContent.innerHTML = html;
-            })
-            .catch((error) => console.error("Error loading page:", error));
-        menuItem.addEventListener("click", function () {
-            console.log("clicked");
-            // Toggle visibility of hidden content
-            if (hiddenContent.style.display === "block") {
-                hiddenContent.style.display = "none";
-            } else {
-                // Hide other hidden contents
-                document
-                    .querySelectorAll(".hidden-content")
-                    .forEach((content) => {
-                        if (
-                            content !== hiddenContent &&
-                            content.style.display === "block"
-                        ) {
-                            content.style.display = "none";
-                        }
-                    });
-                hiddenContent.style.display = "block";
-            }
-        });
-    });
-}
-
-function setAccordian(route,content)
-{
-    var contentItem = document.getElementById(content);
-        fetch("/load-tab/" + route)
-            .then((response) => response.text()) // Parse response as text
-            .then((html) => {
-                if (contentItem) {
-                    contentItem.innerHTML = html;
-                }
-            })
-            .catch((error) => console.error("Error loading page:", error));
-}
-
-function menuFolder(route) {
-    var contentItem = document.getElementById("content_0");
-    fetch("/load-tab/" + route)
-        .then((response) => response.text()) // Parse response as text
-        .then((html) => {
-            contentItem.innerHTML = html;
-        })
-        .catch((error) => console.error("Error loading page:", error));
-}
-
-// function highlightListItem(ulId, linkId) {
-//     var ulElement = document.getElementById(ulId);
-//     console.log("highlight link id " + linkId);
-//     var linkElements = ulElement.getElementsByTagName("a");
-//     for (var i = 0; i < linkElements.length; i++) {
-//         // If the current <a> element has the specified id, set its color to blue
-//         if (linkElements[i].id === linkId) {
-//             linkElements[i].style.color = "blue";
-//         } else {
-//             // Otherwise, set its color to black
-//             linkElements[i].style.color = "black";
-//         }
-//     }
-// }

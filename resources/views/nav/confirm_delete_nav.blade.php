@@ -9,4 +9,5 @@
     </div>
     <input type="hidden" id="nav_id" name="nav_id" class="col-auto">
     <input type="hidden" id="page_id" name="page_id" class="col-auto">
+    <input type="hidden" id="scroll_to" name="scroll_to" class="col-auto">
 </form>

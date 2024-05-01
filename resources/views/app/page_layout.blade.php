@@ -13,27 +13,65 @@
     {
         return $a['index'] - $b['index'];
     }
-    $editMode = true;
+    $editMode = false;
     $buildMode = false;
+    $mobile = false;
     if (Session::has('edit')) {
         $editMode = Session::get('edit');
     }
     if (Session::has('buildMode')) {
         $buildMode = Session::get('buildMode');
     }
+    if (Session::has('mobile')) {
+        $mobile = Session::get('mobile');
+    }
+//$tabTrack;
+    //if (isset($tabAt)) {
+    //    $tabTrack = $tabAt;
+    //}
 
     // Sort the array using the comparison function
     usort($allRows, 'compareByIndex');
     $rowIndex = 0;
- 
 @endphp
-@if ($editMode && !$tabContent)
 
-    @include('/app/layouts/partials/page_title_edit', ['location' => $location])
-    @if(count($allRows)===0)
-@include('app/layouts/partials/start_adding')
-@endif
-    @include('/app/layouts/partials/empty', ['location' => $location])
+
+@if (!$tabContent)
+    @if (Auth::check())
+        @if ($editMode)
+            @if ($buildMode)
+                <div class=under-build>
+                </div>
+            @else
+                @if ($mobile)
+                    <div class=under-edit-mobile>
+                    </div>
+                @else
+                    <div class=under-edit>
+                    </div>
+                @endif
+            @endif
+            @if (count($allRows) === 0)
+                @include('app/layouts/partials/start_adding')
+            @endif
+            @include('/app/layouts/partials/page_title_edit', ['location' => $location])
+            @include('/app/layouts/partials/empty', ['location' => $location])
+        @else
+            <div class=under-auth></div>
+        @endif
+    @else
+        <div class=under-nav></div>
+    @endif
+@else
+    @if (Auth::check())
+        @if ($editMode)
+            @if (count($allRows) === 0)
+                @include('app/layouts/partials/start_adding')
+            @endif
+            @include('/app/layouts/partials/page_title_edit_at_tab', ['location' => $location])
+            @include('/app/layouts/partials/empty', ['location' => $location])
+        @endif
+    @endif
 @endif
 
 @foreach ($allRows as $nextRow)
@@ -72,50 +110,79 @@
         ])
     @endif
     @if (isset($nextRow->heading) && $nextRow->heading === 'tabs')
-        @if ($mobile)
-            @include ('app/layouts//accordian', [
-                'location' => $location,
-                'tabContent' => $tabContent,
-            ])
+        @if ($tabContent)
+            @include ('app.cant_display_tabs')
         @else
-            @include ('app/layouts//tabs', [
-                'location' => $location,
-                'tabContent' => $tabContent,
-            ])
+            @if ($mobile)
+                @include ('app/layouts/accordian', [
+                    'location' => $location,
+                    'tabContent' => $tabContent,
+                ])
+            @else
+                @include ('app/layouts/tabs', [
+                    'location' => $location,
+                    'tabContent' => $tabContent
+                ])
+            @endif
         @endif
     @endif
+    <br> <br>
 @endforeach
 @if ($buildMode)
-@include('app/layouts/partials/save_page_button',['page' => $location['page']['id']])
+    @include('app/layouts/partials/save_page_button', ['page' => $location['page']['id']])
 @endif
 
 
-<button type="button" class="btn btn-primary" onclick="openMainModal('modal-xl')">
-  Open Main Modal (Width: 600px)
-</button>
-
 <!-- Main Modal -->
 <div class="modal fade" id="main_modal" tabindex="-1" role="dialog" aria-labelledby="main_modal_label" aria-hidden="true">
-  <div class="modal-dialog modal-xl" role="document" id ='main_modal_dialog'>
-    <div class="modal-content" id= "main_modal_content">
-      <!-- Modal Header -->
-      <div class="modal-header" >
-        <h5 class="modal-title" id="main_modal_label">Main Modal Title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      
-      <!-- Modal Body -->
-      <div class="modal-body" id = "main_modal_body">
-        Main Modal Body
-      </div>
-      
-      <!-- Modal Footer (Optional) -->
-      <!-- <div class="modal-footer">
+    <div class="modal-dialog modal-xl" role="document" id ='main_modal_dialog'>
+        <div class="modal-content" id= "main_modal_content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="main_modal_label">Main Modal Title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id ="close_main_modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body" id = "main_modal_body">
+                Main Modal Body
+            </div>
+
+            <!-- Modal Footer (Optional) -->
+            <!-- <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-primary">Save changes</button>
       </div> -->
+        </div>
     </div>
-  </div>
 </div>
+
+
+<style>
+    .under-edit {
+        height: 179px;
+        background-color: black;
+    }
+
+    .under-edit-mobile {
+        height: 147px;
+        background-color: black;
+    }
+
+    .under-nav {
+        height: 58px;
+        background-color: black;
+    }
+
+    .under-build {
+        height: 100px;
+        background-color: black;
+    }
+
+    .under-auth {
+        height: 148px;
+        background-color: black;
+    }
+</style>

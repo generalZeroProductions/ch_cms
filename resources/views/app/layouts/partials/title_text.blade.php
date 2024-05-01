@@ -5,8 +5,9 @@
         $data = $column->data;
         $articleId = 'article_' . $column->id;
         $editMode = false;
-        if (isset($_SESSION['edit'])) {
-            $editMode = $_SESSION['edit'];
+        if(Session::has('edit'))
+        {
+            $editMode=Session::get('edit');
         }
     @endphp
 
@@ -20,5 +21,12 @@
             </div>
         @endif
         <h3>{{ $title }}</h3>
-        <p> {{ $body }}</p>
+        <p class = "indented-paragraph">{!! $body !!}</p>
+        {{-- <p> {{ $body }}</p> --}}
     </div>
+<style>
+
+.indented-paragraph {
+    text-indent: 20px; /* Adjust the value as needed */
+}
+</style>

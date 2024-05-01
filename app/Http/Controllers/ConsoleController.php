@@ -58,39 +58,5 @@ class ConsoleController extends Controller
 
    
 
-    public function makeArticlaImageColumn(Request $request)
-    {
-        if($request->has('row_index_left'))
-        {
-            $d = 9;
-        }
-        $image = ContentItem::create([
-            'type' => 'column',
-            'heading' => 'image',
-            'body' => 'new column body content here',
-            'title' => 'new column title',
-        ]);
-        $columnIds = [$image->id];
-        $column = ContentItem::create([
-            'type' => 'column',
-            'body' => 'new column body content here',
-            'title' => 'new column title',
-            'heading' => 'title_text',
-        ]);
-        $columnIds = [$column->id];
-        $rowData = [
-            'columns' => $columnIds,
-        ];
-        $newRow = ContentItem::create([
-            'title' => $request->page_name . '_' . $request->rowIndex,
-            'index' => $request->row_index,
-            'type' => 'row',
-            'heading' => 'one_column',
-            'data' => $rowData,
-        ]);
-        $page = ContentItem::findOrFail($request->page_id);
-        $page->data['rows'][] = $newRow->id;
-        $page->save();
-    }
 
 }

@@ -14,23 +14,31 @@
         }
         $returnLocation = '/' . $parameterParts[2];
     }
+     if ($parameterParts[0] === 'cancel') {
+        $returnLocation = '/' . $parameterParts[1];
+         Session::put('scrollTo', $parameterParts[2]);
+    }
 
     if ($parameterParts[0] === 'edit') {
         Session::put('edit', false);
+        Session::put('buildMode',false);
+        Session::put('scrollTo',$parameterParts[3]-400);
         if ($parameterParts[1] === 'on') {
             Session::put('edit', true);
-            $returnLocation = '/';
-        } else {
-            $returnLocation = '/dashboard';
+             Session::put('scrollTo',$parameterParts[3]+400);
         }
+        $returnLocation = '/' . $parameterParts[2];
     }
     if ($parameterParts[0] === 'build') {
-        Session::put('builder', false);
-        if ($parameterParts[1] === 'on') {
-            Session::put('builder', true);
-        }
+            Session::put('buildMode', true);
+            $returnLocation = '/'.$parameterParts[1];
+            Session::put('scrollTo',0);
     }
-    
+    if ($parameterParts[0] === 'endbuild') {
+        Session::put('builder', false);
+         $returnLocation = '/dashboard';
+    }
+
     if (isset($parameterParts[3])) {
         Session::put('scrollTo', $parameterParts[3]);
     }

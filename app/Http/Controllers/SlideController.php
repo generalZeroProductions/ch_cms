@@ -12,7 +12,7 @@ class SlideController extends Controller
 {
     public function createSlideshow(Request $request)
     {
-       
+        Session::put('scrollTo',$request->scroll_to);
         $firstSlide = ContentItem::create([
             'type' => 'column',
             'title'=>'slide 1 title',

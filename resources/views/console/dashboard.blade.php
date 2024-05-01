@@ -2,50 +2,45 @@
 @section('content')
     @php
         use Illuminate\Support\Facades\Session;
-        $editMode = false;
-        if (Session::has('edit')) {
-            $editMode = Session::get('edit');
-        }
+        Session::put('edit', false);
+        Session::put('buildMode', false);
     @endphp
     <br>
+    @include('app//auth_on_off')
     <div class="container">
-        <div class = "row d-flex justify-content-between">
-            <div class="col-md-8">
+
+
+        <div class = "row d-flex justify-content-between rounded-box">
+            <div class="p-2">
+                <button class="btn btn-secondary btn-top-console " onClick="viewSite()">查看网站
+                    <img src="{{ asset('icons/view.svg') }}" class="top-console-icon">
+                </button>
+            </div>
+            <div class="p-2 ">
                 <h3 class="text-left">{{ config('app.name') }}.com 仪表板</h3>
             </div>
-            <div class="col-md-2 ">
+            <div class="p-2"> <button class = "btn btn-secondary btn-top-console">登出
+                    <img src = "{{ asset('/icons/logout.svg') }}" class="top-console-icon">
+                </button>
             </div>
-            <div class="col-md-2 " style = "padding-right:0vw; margin-right:0px">
-                <button class = "btn btn-secondary btn-top-dash">登出<img src = "{{ asset('/icons/logout.svg') }}"
-                        style="height: 22px; margin-left: 10px;margin-bottom: 3px"></button>
-            </div>
+
         </div>
         <br>
         <div class="row justify-content-between">
-            <form method = 'POST' action = "/page_edit/create_new">
-                @csrf
-                <button type = "submit" class="btn btn-secondary btn-dash col-sm">新页面
-                    <img src="{{ asset('icons/new_page.svg') }}"
-                        style="height: 30px; margin-left: 15px; margin-bottom: 5px">
-                </button>
-            </form>
-            @if ($editMode)
-                <button class="btn btn-success btn-dash col-sm" id ="edit_switch_green" onClick="setEditMode('off')">编辑模式
-                    <img src="{{ asset('icons/switch_on.svg') }}"
-                        style="height: 44px; margin-left: 20px;margin-bottom: 5px">
-                </button>
-            @else
-                <button class="btn btn-secondary btn-dash col-sm" id ="edit_switch_gray" onClick="setEditMode('on')">编辑模式
-                    <img src="{{ asset('icons/switch_off.svg') }}"
-                        style="height: 44px; margin-left: 20px;margin-bottom: 5px">
-                </button>
-            @endif
-            <button class="btn btn-secondary btn-dash col-sm" onClick="viewSite()">查看网站
-                <img src="{{ asset('icons/view.svg') }}" style="height: 30px; margin-left: 5px;  margin-bottom: 5px">
-            </button>
+            <div class="p-2">
+                <h5> 当前使用的所有页面 </h5>
+            </div>
+            <div class="p-2">
+            </div>
+            <div class="p-2">
+                <form method = 'POST' action = "/page_edit/create_new/dashboard">
+                    @csrf
+                    <button type = "submit" class="btn btn-success btn-top-console">新页面
+                        <img src="{{ asset('icons/new_page.svg') }}" class="top-console-icon">
+                    </button>
+                </form>
+            </div>
         </div>
-        <br>
-        <h5> 当前使用的所有页面 </h5>
         <hr>
         <div class = "row ">
             <div class=col-md-4>
@@ -71,33 +66,32 @@
 @endsection
 
 <style>
+    .btn-top-console {
+        height: 100%;
+        margin-left: 10px;
+        margin-right: 10px;
+        display: block;
+        font-size: large !important;
+        font-weight: 600 !important;
+    }
+
     .page_list_heading {
         font-size: large !important;
         font-weight: 400 !important;
     }
 
-    .btn-dash {
-        display: block;
-        font-size: x-large !important;
-        font-weight: 700 !important;
-        height: 60px;
-        padding: 10px 20px;
-        margin-left: 20px;
-        margin-right: 20px;
-        text-align: center;
-        text-decoration: none;
-        color: #333;
-        background-color: #ddd;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        transition: background-color 0.3s ease;
+    .top-console-icon {
+        height: 22px;
+        margin-bottom: 4px
     }
 
-    .btn-top-dash {
-        display: block;
-        font-size: large !important;
-        font-weight: 600 !important;
-        height: 40px;
+    .rounded-box {
+        border-radius: 8px;
+        /* Adjust the value to control the roundness of the corners */
+        padding: 2px;
+        /* Adjust the value to control the padding */
+        border: 2px solid #ccc;
+        /* Optional: add a border for better visibility */
     }
 </style>
 

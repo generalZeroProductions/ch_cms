@@ -7,22 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Navigation extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'title', 'type', 'route', 'index', 'data',
+        'title', 'type', 'route', 'index', 'data', 'styles'
     ];
 
     protected $casts = [
         'data' => 'array',
+        'style'=>'array'
     ];
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-
-        // Define default values for attributes if they are not provided
-        $this->attributes = array_merge([
-            'title' => '', // Default value for title
-            'type' => '', // Default value for type
-            'route' => '',
-        ], $this->attributes);
-    }
 }

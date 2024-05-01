@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Session;
 
 class PageController extends Controller
 {
-    public function createPage()
+    public function createPage($returnTo)
     {
         $allPages = ContentItem::where('type', 'page')->get();
         $pageCount = count($allPages);
@@ -22,12 +22,15 @@ class PageController extends Controller
             'data' => $data,
         ]);
         Session::put('buildMode', true);
-        return redirect()->route('root', ['newLocation' => $page->title]);
+        if($returnTo==='dashboard')
+        {
+            return redirect()->route('root', ['newLocation' => $page->title]);
+        }
+        return redirect()->route('root', ['newLocation' => Session::get('location')]);
     }
 
     public function loadPage($routeName)
     {
-       
         $page = ContentItem::where('title', $routeName)
             ->where('type', 'page')
             ->first();
@@ -55,11 +58,13 @@ class PageController extends Controller
             }
             $page->title = $request->page_title;
             $page->save();
-            return redirect()->route('root', ['newLocation' => $page->title]);
+            Session::put('location',$page->title);
+            return redirect()->route('root', ['newLocation' => Session::get('location')]);
 
         } else {
             return response()->json(['error' => 'Page not found'], 404);
         }
     }
 
+    
 }

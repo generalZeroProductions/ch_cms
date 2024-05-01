@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('type');
-            $table->string('route');
-            $table->integer('index');
+            $table->string('route')->nullable();
+            $table->integer('index')->nullable();
             $table->json('data')->nullable();
             $table->timestamps();
         });

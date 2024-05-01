@@ -5,22 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\Navigation;
 use App\Models\ContentItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class NavController extends Controller
 {
     public function updateNavItem(Request $request)
     {
+        Session::put('scrollTo', $request->scroll_to);
         $navItem = Navigation::findOrFail($request->nav_id);
         $navItem->title = $request->nav_title;
         $navItem->route = $request->route;
         $navItem->save();
-        $returnPage = ContentItem::findOrFail($request->page_id);
-        $location = [
-            'page'=>$returnPage,
-            'row'=>null,
-            'column'=>null
-        ];
-        return redirect()->route('root',['newLoction'=> $location]);
+        $page = ContentItem::findOrFail($request->page_id);
+
+        return redirect()->route('root',['newLoction'=> $page->title]);
     }
     public function newNavItem(Request $request)
     {
@@ -46,6 +44,7 @@ class NavController extends Controller
 
     public function deleteNavItem(Request $request)
     {
+        Session::put('scrollTo', $request->scroll_to);
         $request->validate([
             'nav_id' => 'required|numeric', // Validation rules for the id parameter
         ]);

@@ -3,6 +3,7 @@
     $directory = 'public/images'; // Adjust the directory path as per your setup
     $files = Storage::allFiles($directory);
     $imageNames = [];
+    $imageNames[] = " ";
     foreach ($files as $file) {
         if ($file !== '.' && $file !== '..') {
             $imageNames[] = pathinfo($file, PATHINFO_BASENAME);
@@ -32,6 +33,7 @@
                 <div class = "row parent" id="image_select_{{ $i }}">
                     <div class = 'child'>
                         <select name="image_select_{{ $i }}" class="form-control" id="image_capture_{{$i}}" style="width:28vh">
+                             <option value="">Select an option</option> 
                             @foreach ($imageNames as $imageName)
                                 <option value="{{ $imageName }}">{{ $imageName }}</option>
                             @endforeach
@@ -79,7 +81,7 @@
     </div>
     <div class="row justify-content-end align-items-end" style = "margin-right:10px">
         <button type="submit" class="btn btn-primary">
-            保存幻灯片
+            保存幻灯片   保存对幻灯片的更改
         </button>
     </div>
     </div>

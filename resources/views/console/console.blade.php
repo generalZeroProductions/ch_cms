@@ -15,12 +15,12 @@
     <link rel="stylesheet" href="{{ asset('scripts/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('scripts/site.css') }}">
     <script src="{{ asset('scripts/main.js') }}"></script>
-    <script src="{{ asset('scripts/navigation.js') }}"></script>
+
     <script src="{{ asset('scripts/articles.js') }}"></script>
     <script src="{{ asset('scripts/tabsCtl.js') }}"></script>
     <script src="{{ asset('scripts/editors.js') }}"></script>
     <script src="{{ asset('scripts/dashboard.js') }}"></script>
-    <script src="{{ asset('scripts/session_calls.js') }}"></script>
+
     <script src="{{ asset('scripts/images.js') }}"></script>
     <script src="{{ asset('scripts/tooltips.js') }}"></script>
 

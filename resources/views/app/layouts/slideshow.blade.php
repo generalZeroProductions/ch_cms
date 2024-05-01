@@ -36,17 +36,20 @@ foreach ($slideData as $slideId) {
 }
 
 $index = 0;
-$editMode = true;
 $slideBox = 'slide_box_' . $location['row']['id'];
 $slideshowId = 'slide_show_' . $location['row']['id'];
-
+$editMode = false;
+if(Session::has('edit'))
+{
+    $editMode = Session::get('edit');
+}
 ?>
 
 
 @if (count($slideList) > 0)
 
     <div id="{{ $slideBox }}">
-        @if ($editMode && !$tabContent)
+        @if ($editMode)
             @include('app/layouts/partials.delete_row_button', ['index' => $location['row']['index']])
         @endif
         @if (count($slideList) > 1)
@@ -101,7 +104,7 @@ $slideshowId = 'slide_show_' . $location['row']['id'];
 
 @endif
 @endif
-@if ($editMode && !$tabContent)
+@if ($editMode)
     @include('slides.edit_slideshow_label', [
         'slideBox' => $slideBox,
         'location' => $location,

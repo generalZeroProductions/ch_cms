@@ -24,8 +24,7 @@
             </div>
         </div>
     </div>
-
-    <input type = "hidden" id="page_id" name ="page_id">
+<input type = "hidden" id="page_id" name ="page_id">
     <input type = "hidden" id = "column_id" name = "column_id">
        <input type="hidden" id="scroll_to" name="scroll_to">
 </form>
@@ -49,6 +48,6 @@
     </div>
     <input type = "hidden" id= "page_id_at_select" name ="page_id_at_select">
     <input type = "hidden" id = "column_id_select" name = "column_id_select">
-       <input type="hidden" id="scroll_to_select" name="scroll_to">
+       <input type="hidden" id="scroll_to_select" name="scroll_to_select">
 </form>
 </div>

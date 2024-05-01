@@ -8,18 +8,38 @@ use App\Http\Controllers\SlideController;
 use App\Http\Controllers\TabController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\ArticleController;
+use Illuminate\Support\Facades\Auth;
+
+use Illuminate\Http\Response;
+
+Route::post('admin/off', function () {
+    Auth::logout();
+    return redirect()->back();
+});
+
+Route::post('admin/on', function () {
+    $username = 'super';
+    $password = '123';
+    
+    if (Auth::attempt(['name' => $username, 'password' => $password])) {
+        return redirect()->back();
+    } 
+    return response()->json(['status' => 'login_failed'], 401);
+});
+
 
 
 //  BUILDER ROUTES
 Route::post('/create_slideshow', [SlideController::class, 'createSlideshow'])->name('create_slideshow');
 Route::post('/create_one_column', [ArticleController::class, 'createOneColumn'])->name('create_one_column');
 Route::post('/create_two_column', [ArticleController::class, 'createTwoColumn'])->name('create_two_column');
-Route::post('/create_tabbed', [ConsoleController::class, 'createTabbed'])->name('create_tabbed');
-Route::post('/create_image_article', [ConsoleController::class, 'createImageArticls'])->name('create_image_article');
+Route::post('/create_tabbed', [TabController::class, 'createTabbed'])->name('createTabbed');
+Route::post('/create_image_article', [ArticleController::class, 'createImageArticle'])->name('create_image_article');
 
-Route::get('/editBlade', function () {
-    return View::make('slides.editor_layout');
-})->name('editBlade');
+Route::post('/delete_row', [PageController::class, 'deleteRow'])->name('deleteRow');
+Route::get('/delete_row_form', function () {
+    return View::make('app.layouts.partials.delete_row_form');
+})->name('deleteRowForm');
 
 // CONSOLE ROUTING
 Route::get('/console/logout', [ConsoleController::class, 'logout']);
@@ -39,14 +59,15 @@ Route::get('/pagination_form', function () {
 Route::get('/display_all_pages', [ConsoleController::class, 'displayAllPages'])->name('displayAllPages');
 Route::post('console/register', [ConsoleController::class, 'createUser']);
 Route::post('/console/login', [ConsoleController::class, 'login']);
-Route::post('page_edit/create_new', [PageController::class, 'createPage'])->name('createPage');
+Route::post('page_edit/create_new/{returnTo}', [PageController::class, 'createPage'])->name('createPage');
 
 
 //ARTICLES   
-Route::get('/update_article', function () {
+Route::get('/insert_update_article', function () {
     return View::make('articles.editColumn');
-})->name('update_article');
-Route::post('/update_article', [ArticleController::class, 'updateArticle'])->name('update_article');
+})->name('insertUpdateArticle');
+
+Route::post('/submit_update_article', [ArticleController::class, 'updateArticle'])->name('submitUpdateArticle');
 
 
 
@@ -58,6 +79,7 @@ Route::get('/select_image_upload', function () {
 Route::get('/change_slide_image', function () {
     return View::make('images.edit_slide_image');
 })->name('changeSlideImage');
+
 Route::post('/upload_image', [ImageController::class, 'uploadImage'])->name('uploadImage');
 Route::post('/use_image', [ImageController::class, 'useImage'])->name('use_image');
 
@@ -83,12 +105,25 @@ Route::get('/insert_add_image_card', function () {
 
 
 //TABS
-Route::get('/load_tab/{routeName}', [TabController::class, 'loadTabContent']);
+Route::get('/load_anything', function () {
+    return '<h1>This is HTML content</h1><p>You can return any valid HTML markup here.</p>';
+});
+Route::get('/load_tab/no_tab_assigned',function () {
+    return View::make('tabs.no_tab_assigned');
+})->name('displayNoTabs');
+
+
+Route::post('/quick_tab_asign', [TabController::class, 'quickAssign'])->name('QuickTabAssign');
 Route::get('/edit_tabs', function () {
     return View::make('tabs.edit_tabs_form');
 })->name('editTabs');
+
 Route::post('/update_tabs', [TabController::class, 'updateTabs'])->name('update_tabs');
 
+Route::get('/no_tab_assigned',function () {
+    View::make('tabs.no_tab_assigned');
+})->name('noTabAssigned');
+Route::get('/load_tab/{routeName}', [TabController::class, 'loadTabContent']);
 
 //SLIDES
 Route::get('/dispay_slide_data', function () {
@@ -102,6 +137,11 @@ Route::post('/update_slideshow', [SlideController::class, 'updateSlideshow'])->n
 
 
 // PAGES AND ROWS
+Route::get('/changelocation/{location}', function ($location = null) {
+    Session::put('location', $location);
+    return response()->json(['message' => 'Session variable changed successfully']);
+})->name('changeLocation');
+
 Route::get('/load_page/{routeName}', [PageController::class, 'loadPage']);
 
 Route::get('/title_change', function () { 
@@ -156,6 +196,15 @@ Route::post('/add_dropdown', [NavController::class,'addDropdown'])->name('addDro
 
 
 // APP LEVEL ROUTES
+
+
+Route::get('/no_pages', function () {
+    return View::make('app.no_pages_found');
+})->name('noPages');
+
+Route::get('/load_anything', function () {
+    return '<h1>This is HTML content</h1><p>You can return any valid HTML markup here.</p>';
+});
 
 Route::get('/open_base_modal', function () {
     return View::make('forms.base_modal');
