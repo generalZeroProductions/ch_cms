@@ -19,29 +19,10 @@ function loadEditArticle(article, location) {
     fetch("/insert_update_article")
         .then((response) => response.text())
         .then((html) => {
-            // Replace the content of the specified div with the fetched HTML
             document.getElementById(articleId).innerHTML = html;
-            // var title = document.getElementById("edit_article_title");
-            // if (title) {
-            //     title.value = article.title;
-            //     // console.log("title is : "+ title.value);
-            // }
-            // var body = document.getElementById("edit_article_body");
-            // if (body) {
-            //     body.innerText = article.body;
-            // }
-            // var text = document.getElementById("body_text");
-            // if (text) {
-            //     text.value = article.body;
-            //     body.addEventListener("input", function () {
-            //         // Update the value of the hidden field body_text with the content of edit_article_body
-            //         text.value = body.innerText;
-            //     });
-            // }
             var title = document.getElementById("article_title");
             if (title) {
                 title.value = article.title;
-                // console.log("title is : "+ title.value);
             }
             var body = document.getElementById("article_body");
             if (body) {
@@ -61,17 +42,41 @@ function loadEditArticle(article, location) {
             }
             var cancelBtn = document.getElementById("cancel_article");
             if (cancelBtn) {
-                cancelBtn.onclick = function() {
-                    window.location.href = "/session/cancel?" + locItem.page.title + "?" + scrollBackTo;
+                cancelBtn.onclick = function () {
+                    window.location.href =
+                        "/session/cancel?" +
+                        locItem.page.title +
+                        "?" +
+                        scrollBackTo;
                 };
             }
             tinymce.init({
-                selector: '#article_body',
-                plugins: 'autolink lists link',
-                toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link',
-                promotion: false
+                selector: "#article_body",
+                plugins: "autolink lists link",
+                menubar: false, 
+                toolbar:
+                    "undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link",
+                font_formats:
+                    "Hanyi Senty,STHeiti=STHeiti,华文黑体,serif;STFangSong=STFangSong,华文仿宋,serif;",
+                promotion: false,
+                license_key: "gpl",
+                content_style:
+                    "@import url(../storage/app/public/fonts'?family=/Hanyi Senty Vimalakirti Regular.ttf&display=swap');",
             });
+
+            tinymce.init({
+                selector: "#article_title",
+                height:"160px",
+                plugins: "autolink lists link",
+                menubar: false, 
+                toolbar:
+                    "undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link",
+                font_formats:
+                    "SimSun=SimSun;",
+                    promotion: false,
+                license_key: "gpl",
+            });
+
             window.scrollTo(0, scrollBackTo);
         });
-    
 }

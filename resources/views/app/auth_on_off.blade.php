@@ -20,7 +20,7 @@ $authState = 'on';
         </form>
     </div>
     <div class="p-2 bd-highlight">
-        <h2>Admin {{ $authState }}</h2>
+        <h6> {{ $authState }}</h6>
     </div>
 </div>
 

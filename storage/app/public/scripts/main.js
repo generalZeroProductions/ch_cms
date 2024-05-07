@@ -1,5 +1,6 @@
 var imagesAsset;
 var iconsAsset;
+var fontsAsset;
 var scriptAsset;
 var allRoutes;
 var resizeTimeout;
@@ -9,6 +10,13 @@ var locItem;
 var modBody;
 var modTitleLabel;
 
+function decodeRoutes(encodedString) {
+    var decodedString = encodedString.replace(/&quot;/g, '"');
+    var array = JSON.parse(decodedString);
+    return array;
+}
+
+//  add scroll to into this. after we get tabs working again.
 function loadPage(route) {
     console.log("load at LOADER: " + route);
     fetch("/load_page/" + route)
@@ -19,7 +27,17 @@ function loadPage(route) {
         })
         .catch((error) => console.error("Error loading page:", error));
 }
-
+function executeScriptsInContent() {
+    var runScripts = document.querySelectorAll("#runScript");
+    runScripts.forEach((script) => {
+        var innerHtml = script.innerHTML;
+        var loadTabCall = innerHtml.match(/startTabs\([^)]*\)/);
+        if (loadTabCall !== null) {
+            eval(loadTabCall[0]);
+        }
+    });
+    console.log('ran scripts ');
+}
 
 function openMainModal(action, item, location, modalSize) {
     scrollBackTo = window.scrollY;
@@ -38,7 +56,7 @@ function openMainModal(action, item, location, modalSize) {
     } else if (action === "removeItem") {
         removeNavWarning(item);
     } else if (action === "removeRow") {
-        removeRowWarning(item);
+        removeRowWarning();
     } else if (action === "uploadImage") {
         showUploadImageStandard(item);
     } else if (action === "createRow") {
@@ -47,6 +65,8 @@ function openMainModal(action, item, location, modalSize) {
         editSlidesForm(item);
     } else if (action === "editTabs") {
         editTabsForm(item);
+    } else if (action === "deletePage") {
+        deletePageWarning(item);
     }
 }
 
@@ -104,18 +124,21 @@ function set_rescroll() {
         enableScrolling();
     });
 }
+var currentScreen;
 function handleResize(route) {
+
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(function () {
-        console.log("Resizing stopped. Calling updateScreenSettings...");
-        window.location.href =
-            "/session/screen?" +
-            window.innerWidth +
-            "?" +
-            route +
-            "?" +
-            window.scrollY;
-    }, 200);
+        if (Math.abs(window.innerWidth - currentScreen) > 15) {
+            window.location.href =
+                "/session/screen?" +
+                window.innerWidth +
+                "?" +
+                route +
+                "?" +
+                window.scrollY;
+        }
+    }, 50);
 }
 
 function windowVisible() {
@@ -130,52 +153,4 @@ function windowVisible() {
     } else {
         console.log("Page Visibility API is not supported");
     }
-}
-
-function authOn() {
-    fetch("/admin/on", {
-        method: "POST", // Assuming the route uses the POST method
-        headers: {
-            "Content-Type": "application/json",
-            // Add any additional headers if required
-        },
-        // Add any request body if required
-    })
-        .then((response) => {
-            if (response.ok) {
-                console.log("Authentication turned on successfully");
-            } else {
-                console.error("Failed to turn on authentication");
-            }
-        })
-        .catch((error) => {
-            console.error(
-                "Error occurred while turning on authentication:",
-                error
-            );
-        });
-}
-
-function authOff() {
-    fetch("/admin/off", {
-        method: "POST", // Assuming the route uses the POST method
-        headers: {
-            "Content-Type": "application/json",
-            // Add any additional headers if required
-        },
-        // Add any request body if required
-    })
-        .then((response) => {
-            if (response.ok) {
-                console.log("Authentication turned off successfully");
-            } else {
-                console.error("Failed to turn off authentication");
-            }
-        })
-        .catch((error) => {
-            console.error(
-                "Error occurred while turning off authentication:",
-                error
-            );
-        });
 }

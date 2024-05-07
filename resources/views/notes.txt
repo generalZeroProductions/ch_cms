@@ -153,3 +153,378 @@ public function deleteRow(Request $request)
     $row->delete();
     return redirect()->route('root', ['newLocation' => $page->title]);
 }
+
+
+
+
+
+
+
+ <p class = "chinese-font"> 华文黑体</p>
+         <p class = "chinese-font2"> 华文黑体</p>
+          <p class = "chinese-font3"> 华文黑体</p>
+           <p class = "chinese-font4"> 华文黑体</p>
+            <p class = "chinese-font5"> 华文黑体</p>
+             <p class = "chinese-font6"> 华文黑体</p>
+
+
+
+                <p class = "apple-font"> 华文黑体</p>
+           <p class = "apple-font2"> 华文黑体</p>
+            <p class = "apple-font3"> 华文黑体</p>
+             <p class = "apple-font4"> 华文黑体</p>
+
+
+        <p> 华文黑体</p>
+
+
+         <style>
+        .yellow-back {
+            background-color: rgb(250, 248, 220);
+        }
+
+        .long-text {
+            height: 500px
+        }
+
+        .chinese-font {
+            font-family: "Siyuan Heiti";
+        }
+
+        .chinese-font2 {
+            font-family: "Source Han Sans";
+        }
+
+        .chinese-font3 {
+            font-family: "FangSong";
+        }
+
+        .chinese-font4 {
+            font-family: "KaiTi";
+        }
+
+        .chinese-font4 {
+            font-family: "SimHei";
+        }
+
+        .chinese-font5 {
+            font-family: "SimSun";
+        }
+/*8APPLE*/
+        .apple-font {
+            font-family: "STHeiti";
+        }
+          .apple-font2 {
+            font-family: "STKaiti cursive";
+        }  .apple-font3 {
+            font-family: "STHeitiSC-Medium";
+        }
+        .apple-font4 {
+            font-family: "PingFang TC";
+        }
+  {{-- PingFang SC / TC / HK --}}
+
+    </style>
+
+
+    
+<div class="d-flex justify-content-start">
+    <div class="col-3" id = "{{ $tabCol }}">
+        <div id="{{ $scrollTabs }}">
+            <ul id="tabs">
+                @foreach ($tabs as $tab)
+                    <li class=" {{ $loop->first ? 'active' : '' }} tab-body-on ">
+                        <a href="#" id = "tab_{{ $tab->id }}"
+                            onClick = "loadTab('{{ $tab }}','{{ $rowId }}')">
+                            {{ $tab->title }}
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+    </div>
+    <div class="col-9 " id="{{ $contentCol }}">
+        <div class="d-flex align-items-start" id = "{{ $contentDiv }}">
+            @include('tabs/no_tab_assigned')
+        </div>
+    </div>
+
+</div>
+
+    {{-- </div>
+
+  
+            {{-- TAB COLUMN --}}
+
+
+
+
+    {{--   
+    <div class="col-9 " id="{{ $contentCol }}">
+        <div class="d-flex align-items-start" id = "{{ $contentDiv }}">
+            @include('tabs/no_tab_assigned')
+        </div>
+    </div> --}}
+
+    <div id="runScript">
+        <script>
+            startTabs('{{ $tab0Title }}', '{{ $tab0Route }}', '{{ $firstLink }}',
+                '{{ $tab0Id }}', '{{ $rowId }}');
+        </script>
+    </div>
+
+
+
+
+    @php
+    use App\Models\ContentItem;
+    use App\Models\Navigation;
+    use Illuminate\Support\Facades\View;
+
+    $tabData = $location['row']['data']['tabs'];
+    $rowId = $location['row']['id'];
+    $tabs = [];
+    $contents = [];
+    foreach ($tabData as $tabId) {
+        $nextTab = Navigation::findOrFail($tabId);
+        $tabs[] = $nextTab;
+    }
+
+    function compareByIndex($a, $b)
+    {
+        if ($a->index == $b->index) {
+            return 0;
+        }
+        return $a->index < $b->index ? -1 : 1;
+    }
+
+    function getHTML($page)
+    {
+        $mobile = true;
+        $backColor = 'white';
+        $tabContent = true;
+        $tabTrack = '';
+        $allRows = [];
+        $pData = $page->data['rows'];
+
+        foreach ($pData as $rowId) {
+            $row = ContentItem::findOrFail($rowId);
+            $allRows[] = $row;
+        }
+
+        usort($allRows, 'compareByIndex');
+        $htmlString = '<div class="d-flex flex-column bd-highlight mb-3" style="background-color:' . $backColor . ';">';
+
+        foreach ($allRows as $nextRow) {
+            $location['row'] = $nextRow;
+
+            if (isset($nextRow->heading) && $nextRow->heading === 'image_right') {
+                $htmlString .= View::make('app.layouts.image_right', [
+                    'location' => $location,
+                    'tabContent' => $tabContent,
+                ])->render();
+            }
+
+            if (isset($nextRow->heading) && $nextRow->heading === 'two_column') {
+                $htmlString .= View::make('app.layouts.two_column', [
+                    'location' => $location,
+                    'tabContent' => $tabContent,
+                ])->render();
+            }
+
+            if (isset($nextRow->heading) && $nextRow->heading === 'image_left') {
+                $htmlString .= View::make('app.layouts.image_left', [
+                    'location' => $location,
+                    'tabContent' => $tabContent,
+                ])->render();
+            }
+
+            if (isset($nextRow->heading) && $nextRow->heading === 'one_column') {
+                $htmlString .= View::make('app.layouts.one_column', [
+                    'location' => $location,
+                    'tabContent' => $tabContent,
+                ])->render();
+            }
+
+            if (isset($nextRow->heading) && $nextRow->heading === 'banner') {
+                $htmlString .= View::make('app.layouts.slideshow', [
+                    'location' => $location,
+                    'tabContent' => $tabContent,
+                ])->render();
+            }
+
+            if (isset($nextRow->heading) && $nextRow->heading === 'tabs') {
+                if ($mobile) {
+                    $htmlString .= View::make('app.layouts.accordian', [
+                        'location' => $location,
+                        'tabContent' => $tabContent,
+                        'tabId' => $tabTrack,
+                        'mobile' => $mobile,
+                    ])->render();
+                } else {
+                    $htmlString .= View::make('app.layouts.tabs', [
+                        'location' => $location,
+                        'tabContent' => $tabContent,
+                        'tabId' => $tabTrack,
+                        'mobile' => $mobile,
+                    ])->render();
+                }
+            }
+        }
+
+        $htmlString .= '</div>'; // Close the wrapping div
+
+        return $htmlString;
+    }
+
+    foreach ($tabs as $tab) {
+        if ($tab->route === 'no_tab_assigned') {
+            $html = View::make('tabs/no_tab_assigned', ['mobile' => true]);
+            $contents[] = $html;
+        } else {
+            $page = ContentItem::where('type', 'page')
+                ->where('title', $tab->route)
+                ->first();
+
+            if ($page) {
+                $html = getHTML($page);
+                $contents[] = $html;
+            }
+        }
+    }
+
+    $idx = 0;
+    $tab0 = $tabs[0];
+    $tab0Title = $tab0->title;
+    $tab0Route = $tab0->route;
+    $tab0Id = $tab0->id;
+    $ulId = 'ul_' . $location['row']['id'];
+    $firstLink = 'tab_' . $tabs[0]->id;
+
+@endphp
+
+<div class="accordion" id="accordionExample">
+    @foreach ($tabs as $tab)
+        <div class="card">
+            <div class="card-header tab_colors" id="heading{{ $idx }}">
+                <h2 class="mb-0">
+                    <button class="btn btn-link btn-block text-left tab_header_def" type="button" data-toggle="collapse"
+                        data-target="#collapse{{ $idx }}" aria-expanded="{{ $loop->first ? 'true' : 'false' }}"
+                        aria-controls="collapse{{ $idx }}"
+                        onClick="loadTabAcc('{{ $tabs[$idx] }}','content_{{ $idx }}')">
+                        {{ $tab->title }}
+                    </button>
+                </h2>
+            </div>
+            <div id="collapse{{ $idx }}" class="collapse {{ $loop->first ? 'show' : '' }}"
+                aria-labelledby="heading{{ $idx }}" data-parent="#accordionExample">
+                <div class="card-body" id="content_{{ $idx }}">
+
+                    @include('{{ $contents[$idx] }}')
+                </div>
+            </div>
+        </div>
+        @php
+            $idx++;
+        @endphp
+    @endforeach
+</div>
+
+
+
+
+
+<style>
+    .tab_header_def {
+        color: #333 !important;
+    }
+
+    .tab_header_def:hover {
+        text-decoration: none !important;
+        /* Remove text decoration on hover */
+        color: #333 !important;
+        /* Reset text color on hover */
+    }
+
+    .tab_colors {
+        background-color: #bdc3ca;
+    }
+
+    .tab_colors:hover {
+        background-color: #5499e3;
+    }
+</style>
+    @include('{{ $contents[$idx] }}')
+
+
+PAGE PAGINATION ?????
+
+    @php
+    use App\Models\ContentItem;
+    $index = 0;
+    dd('whay');
+@endphp
+
+
+
+@foreach ($records as $record)
+    @php
+          $heading = 'movie';
+          $rowIds = $record->data['rows'];
+          foreach ($rowIds as $id) {
+              $row = ContentItem::findOrFail($id);
+              if ($row->index === 1) {
+                  $heading = $row->heading;
+                  $break;
+              }
+         }
+    @endphp
+    @if ($index % 2 === 0)
+        <div class = "row">
+        @else
+            <div class = "row" style= "background-color:#ced8e3;">
+    @endif
+    <div class= 'col-md-4'>
+        <p>{{ $record->title }}</p>
+    </div>
+    <div class= 'col-md-4'>
+        <p>{{ $heading }}</p>
+    </div>
+    <div class= 'col-md-2' style="text-align:center">
+        <button onClick="enterPageBuild('{{ $record->title }}',null,null)" class='btn btn-primary' style='margin-top:4px'>
+            <img src="{{ asset('icons/build.svg') }}">
+        </button>
+    </div>
+    <div class= 'col-md-2' style="text-align:center">
+        <button class='btn btn-danger' style='margin-top:4px'
+            onClick="openMainModal('deletePage','{{ json_encode($record) }}','null','model-sm')">
+            <img src="{{ asset('icons/trash_white.svg') }}">
+        </button>
+    </div>
+    </div>
+    @php
+        $index++;
+    @endphp
+@endforeach
+<br>
+<div class="pagination">
+    <div class = "row">
+        <div class="col-md-1">
+        </div>
+        <div class="col-md-8">
+            <span>Total Records: {{ $records->total() }}</span>
+            <span>Current Page: {{ $records->currentPage() }}</span>
+        </div>
+        <div class= "col-md-1">
+            <a href="{{ $records->previousPageUrl() }}" class="btn btn-primary"
+                @if (!$records->previousPageUrl()) disabled @endif><img src="{{ asset('icons/arrow_left.svg') }}"></a>
+        </div>
+        <div class= "col-md-1">
+            <a href="{{ $records->nextPageUrl() }}" class="btn btn-primary"
+                @if (!$records->nextPageUrl()) disabled @endif><img src="{{ asset('icons/arrow_right.svg') }}"></a>
+
+        </div>
+        <div class="col-md-1">
+        </div>
+    </div>
+</div>

@@ -1,84 +1,74 @@
 @php
-    use App\Models\ContentItem;
-    use App\Models\Navigation;
-
-    $editMode = false;
-    if (Session::has('edit')) {
-        $editMode = Session::get('edit');
-    }
     $tabData = $location['row']['data']['tabs'];
-    $tabs = [];
-    foreach ($tabData as $tabId) {
-        $nextTab = Navigation::findOrFail($tabId);
-        if ($nextTab) {
-            $tabs[] = $nextTab;
+    $tabs = tabsList($tabData);
+    $rowId = $location['row']['id'];
+    $tabCol = 'tab_col_' . $rowId;
+    $scrollTabs = 'scroll_' . $rowId;
+$editMode = getEditMode();
+    $tab0 = $tabs[0];
+    $trackTab = getTabTrack();
+    if (isset($tabTrack)) {
+        $tabData = explode('?', $tabId); //  store this as pageIdrowIndex id and tabId ? tabId
+        if (isset($tabData[0])) {
+            $checkTab = $location['page']['id'] . $location['row']['index'];
+            if ($tabData[0] === $checkTab) {
+                $tab0 = findTab($tabData[1]);
+            }
         }
     }
-    $menuId = 'menu_' . $location['row']['id'];
-    $contentId = 'content_' . $location['row']['id'];
-    $tab0 = $tabs[0];
-    if (isset($tabAt)) {
-        $tab0 = Navigation::findOrFail($tabAt);
-    }
-
-    $tab0Title = $tab0->title;
+    $contentBoxId = 'content_'.$rowId;
+    $tabContents = getTabContents($tabs, $rowId);
     $tab0Route = $tab0->route;
-    $tab0Id = $tab0->id;
-    $ulId = 'ul_' . $location['row']['id'];
-    $firstLink = 'tab_' . $tabs[0]->id;
-
+    $tabIndex = $tab0->index;
+    $tagAnchor = "tab_".$tab0->index
 @endphp
-<div class = 'container-fluid'>
-    @if ($editMode)
-        @include('app/layouts/partials.delete_row_button', ['index' => $location['row']['index']])
-    @endif
-    <div class = 'container-fluid'>
-        <div class="row space-row" style= "padding-left:15px; margin-left:18px">
-            <div class="col-md-2" id = "{{ $menuId }}">
-                @if ($editMode)
-                    <div class = "row">
-                        <a href = "#" class = "edit-nav-pen"
-                            onClick="editTabsList({{ json_encode($tabs) }},'{{ $menuId }}', '{{ $contentId }}', '{{ json_encode($location) }}')">
-                            <img src = "{{ asset('icons\pen.svg') }}">
-                        </a>
-                    </div>
-                @endif
 
-                <div style = "margin-left:18px">
-                    <ul id="{{ $ulId }}">
-                        @foreach ($tabs as $tab)
-                            <li class=" {{ $loop->first ? 'active' : '' }} tab-body-on ">
-                                <a href="#" id = "tab_{{ $tab->id }}"
-                                    onClick = "loadTab('{{ $tab }}', '{{ $contentId }}','{{ $ulId }}', 'tab_{{ $tab->id }}')">
-                                    {{ $tab->title }}
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
+@if ($editMode && !$tabContent)
+    @include('app/layouts/partials.delete_row_button', ['index' => $location['row']['index']])
+@endif
+
+
+<div class="d-flex justify-content-start" id="{{ $rowId }}">
+    <div class="col-3" id = "{{ $tabCol }}">
+        @if ($editMode)
+            <div>
+                <a href = "#"
+                    onClick="editTabsList({{ json_encode($tabs) }},'{{ $rowId }}', '{{ json_encode($location) }}')">
+                    <span><img src="{{ asset('icons/pen.svg') }}" class="pen-icon"></span>
+                </a>
             </div>
-            <div class="col-md-10" id = "{{ $contentId }}">
-                @include('tabs/no_tab_assigned')
-            </div>
+        @endif
+        <div id="{{ $scrollTabs }}">
+            <ul id="tabs">
+                @foreach ($tabs as $tab)
+                  @php
+                        $anchorId = "tab_".$tab->index;
+                    @endphp
+                    <li class =  "{{ $loop->first ? 'active' : '' }} no_dots" >
+                        <a href="#" id = "{{$anchorId}}" class = "tab-body-on"
+                            onClick= "changeTab('{{ $rowId }}','{{ $anchorId }}', '{{ $loop->index }}')">
+                            {{ $tab->title }}
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
         </div>
     </div>
+    <div class="col-9 ">
+            <div id="{{ $contentBoxId }}" class="tabContent_{{ $rowId }}">
+            </div>
+    </div>
 </div>
-<div id="runScript">
-    <script>
-        startTabs('{{ $tab0Title }}', '{{ $tab0Route }}', '{{ $ulId }}', '{{ $firstLink }}',
-            '{{ $contentId }}', '{{ $tab0Id }}');
-    </script>
-</div>
+
+<script>
+    changeTab('{{ $rowId }}', '{{$tagAnchor }}', '{{ $tabIndex }}');
+</script>
 
 <style>
-    .tab-body-on {
-        list-style: none;
-
-    }
-
-    .tab-body-off {
-        list-style: none;
-    }
+.no_dots{
+     list-style: none;
+}
+   
 
     .tab-item-on {
         font-size: 30px;
@@ -94,14 +84,18 @@
     }
 
     .tab-item-off:hover {
+        font-size: 26px;
         text-decoration: none;
-        background-color: #ccc;
         color: black;
     }
 
     .tab-item-on:hover {
         text-decoration: none;
-        background-color: #ccc;
         color: black;
+    }
+
+    .space-top-40 {
+        background-color: orange;
+        height: 40px;
     }
 </style>

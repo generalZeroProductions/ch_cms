@@ -9,7 +9,7 @@ use Illuminate\Database\Seeder;
 
 class InitDbSeeder extends Seeder
 {
-    /**
+    /** 
      * Run the database seeds.
      *
      * @return void
@@ -42,14 +42,14 @@ class InitDbSeeder extends Seeder
                 'type'=> 'row',
                 'heading' => 'one_column',
                 'data' => $rData,
-                'index' => 0,
+                'index' => 1,
             ]);
 
             $pData = ['rows' => [$row->id]];
 
             ContentItem::create([
                 'type'=> 'page',
-                'title' => 'Page 1',
+                'title' => 'Page_1',
                 'data' => $pData,
             ]);
 

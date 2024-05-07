@@ -13,8 +13,9 @@ class Navigation extends Model
         'title', 'type', 'route', 'index', 'data', 'styles'
     ];
 
+
     protected $casts = [
         'data' => 'array',
-        'style'=>'array'
+        'styles'=>'array'
     ];
 }

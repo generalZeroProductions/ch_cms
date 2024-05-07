@@ -74,26 +74,6 @@ function addNavItemStandard() {
 }
 
 
-function removeRowWarning()
-{
-    document.getElementById("main_modal_label").innerHTML =
-    "确认删除此行 ";
-    fetch("/delete_row_form")
-        .then((response) => response.text())
-        .then((html) => {
-            modBody.innerHTML = html;
-            document.getElementById("row_id").value = locItem.row.id;
-            document.getElementById("delete_btn").innerHTML =
-                "删除";
-            document.getElementById("page_id").value = locItem.page.id;
-            document.getElementById("scroll_to").value = scrollBackTo;
-
-        })
-        .catch((error) =>
-            console.error("Error loading remove nav item:", error)
-        );
-}
-
 
 function removeNavWarning(item)
 {

@@ -29,6 +29,15 @@
 </form>
 
 
+<style>
+.new-nav-select{
+    width:110px;
+    margin-right:10px
+}
+
+</style>
+
+
 
 
 <style>

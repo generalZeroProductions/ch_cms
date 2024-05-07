@@ -18,7 +18,7 @@ class ArticleController extends Controller
         $column = ContentItem::create([
             'type' => 'column',
             'body' => implode("\n\n", $loremIpsumText),
-            'title' => 'first column title',
+            'title' => '<h3>first column title</h3>',
             'heading' => 'title_text',
         ]);
 
@@ -27,7 +27,7 @@ class ArticleController extends Controller
         $column2 = ContentItem::create([
             'type' => 'column',
             'body' => implode("\n\n", $loremIpsumText2),
-            'title' => 'second column title',
+            'title' => '<h3>second column title</h3>',
             'heading' => 'title_text',
         ]);
         $columnIds[] = $column2->id;
@@ -35,7 +35,7 @@ class ArticleController extends Controller
             'columns' => $columnIds,
         ];
         $newRow = ContentItem::create([
-            'index' => $request->row_index_2col + 1,
+            'index' => $request->row_index_2col+1,
             'type' => 'row',
             'heading' => 'two_column',
             'data' => $rowData,
@@ -63,7 +63,7 @@ class ArticleController extends Controller
         $column = ContentItem::create([
             'type' => 'column',
             'body' => implode("\n\n", $loremIpsumText),
-            'title' => 'new column title',
+            'title' => '<h3> new column title</h3>',
             'heading' => 'title_text',
         ]);
         $columnIds = [$column->id];
@@ -71,7 +71,7 @@ class ArticleController extends Controller
             'columns' => $columnIds,
         ];
         $newRow = ContentItem::create([
-            'index' => $request->row_index_1col + 1,
+            'index' => $request->row_index_1col+1,
             'type' => 'row',
             'heading' => 'one_column',
             'data' => $rowData,
@@ -110,7 +110,7 @@ class ArticleController extends Controller
         $column = ContentItem::create([
             'type' => 'column',
             'body' => implode("\n\n", $loremIpsumText),
-            'title' => 'new column title',
+            'title' => '<h3> new column title</h3>',
             'heading' => 'title_text',
         ]);
         

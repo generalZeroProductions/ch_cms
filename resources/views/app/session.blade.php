@@ -3,6 +3,7 @@
 
     $currentUrl = $_SERVER['REQUEST_URI'];
     $urlParts = explode('/', $currentUrl);
+
     $parameters = end($urlParts);
     $parameterParts = explode('?', $parameters);
     $returnLocation;
@@ -14,34 +15,60 @@
         }
         $returnLocation = '/' . $parameterParts[2];
     }
-     if ($parameterParts[0] === 'cancel') {
+    if ($parameterParts[0] === 'cancel') {
+        Session::put('returnPage', '');
         $returnLocation = '/' . $parameterParts[1];
-         Session::put('scrollTo', $parameterParts[2]);
+        Session::put('location', $parameterParts[1]);
+        Session::put('scrollTo', $parameterParts[2]);
     }
 
     if ($parameterParts[0] === 'edit') {
-        Session::put('edit', false);
-        Session::put('buildMode',false);
-        Session::put('scrollTo',$parameterParts[3]-400);
+        Session::put('returnPage', '');
+        Session::put('editMode', false);
+        Session::put('buildMode', false);
+        Session::put('scrollTo', $parameterParts[3]);
+        Session::put('location', $parameterParts[2]);
         if ($parameterParts[1] === 'on') {
-            Session::put('edit', true);
-             Session::put('scrollTo',$parameterParts[3]+400);
+            Session::put('editMode', true);
+            Session::put('scrollTo', $parameterParts[3]);
         }
         $returnLocation = '/' . $parameterParts[2];
     }
+
     if ($parameterParts[0] === 'build') {
-            Session::put('buildMode', true);
-            $returnLocation = '/'.$parameterParts[1];
-            Session::put('scrollTo',0);
+        if ($parameterParts[1] === 'dashboard') {
+            Session::put('location', $parameterParts[1]);
+            Session::put('returnPage', '');
+            Session::put('tabId', '');
+            Session::put('scrollTo', 0);
+            $returnLocation = '/' . $parameterParts[1];
+        } else {
+            Session::put('location', $parameterParts[1]);
+            Session::put('returnPage', $parameterParts[2]);
+            $returnLocation = '/' . $parameterParts[1];
+        }
+
+        Session::put('buildMode', true);
     }
     if ($parameterParts[0] === 'endbuild') {
-        Session::put('builder', false);
-         $returnLocation = '/dashboard';
+        Session::put('buildMode', false);
+        $returnLocation = '/dashboard';
+    }
+    if ($parameterParts[0] === 'view') {
+        Session::put('buildMode', false);
+        Session::put('returnPage', '');
+        $loc = $parameterParts[1];
+        if ($parameterParts[1] === 'dashboard') {
+            $loc = '';
+        }
+        $returnLocation = '/' . $loc;
     }
 
     if (isset($parameterParts[3])) {
         Session::put('scrollTo', $parameterParts[3]);
     }
+
+  
 
 @endphp
 <script>

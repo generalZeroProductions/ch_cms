@@ -12,6 +12,11 @@ use Illuminate\Support\Facades\Session;
 
 class ConsoleController extends Controller
 {
+    public function testPost()
+    {
+        dd("test");
+        $test = ContentItem::create(['title'=>'test','type'=>'test']);
+    }
     public function login()
     {
      
@@ -53,10 +58,4 @@ class ConsoleController extends Controller
         $html = view('console.page_pagination_form', ['records' => $records])->render();
         return response()->json(['html' => $html]);
     }
-   
-    
-
-   
-
-
 }

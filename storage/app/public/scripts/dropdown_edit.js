@@ -2,49 +2,49 @@ var dropdownData = [];
 var subNavIndex = 0;
 var newNavId = -1;
 
-function addDropdownNav() {
-    dropdownData = [];
-    subNavIndex = 1;
-    newNavId = -1;
-    const modal = document.getElementById("main_modal");
-    fetch("/dropdown_adder")
-        .then((response) => response.text())
-        .then((html) => {
-            modBody.innerHTML = html;
-            document.getElementById("drop_title").value = "new dropdown";
-            document.getElementById("page_id").value = modal.dataset.pageId;
-            document.getElementById("scroll_to").value = scrollBackTo;
-            for (let i = 0; i < 3; i++) {
-                createSubNavItem();
-            }
-        })
-        .catch((error) => console.error("Error loading newNavSelect:", error));
-}
+// function addDropdownNav() {
+//     dropdownData = [];
+//     subNavIndex = 1;
+//     newNavId = -1;
+//     const modal = document.getElementById("main_modal");
+//     fetch("/dropdown_adder")
+//         .then((response) => response.text())
+//         .then((html) => {
+//             modBody.innerHTML = html;
+//             document.getElementById("drop_title").value = "new dropdown";
+//             document.getElementById("page_id").value = modal.dataset.pageId;
+//             document.getElementById("scroll_to").value = scrollBackTo;
+//             for (let i = 0; i < 3; i++) {
+//                 createSubNavItem();
+//             }
+//         })
+//         .catch((error) => console.error("Error loading newNavSelect:", error));
+// }
 
-function editDropdown(item) {
-    dropdownData = [];
-    var parseItem = JSON.parse(item);
-    var navItem = parseItem['nav'];
-    var subItems = parseItem['sub'];
-    subIndex = subItems.length;
-    modTitleLabel.innerHTML = "更改下拉菜单";
-    subNavIndex = 1;
-    newNavId = -1;
-    fetch("/dropdown_editor")
-        .then((response) => response.text())
-        .then((html) => {
-            modBody.innerHTML = html;
-            document.getElementById("drop_title").value = navItem.title;
-            document.getElementById("drop_id").value = navItem.id;
-            document.getElementById("page_id").value = locItem.page.id;
-            document.getElementById("scroll_to").value = scrollBackTo;
-            var list = document.getElementById("dropdown_list");
-            subItems.forEach(function (subItem) {
-                newSubnavFromSource(subItem, list);
-            });
-        })
-        .catch((error) => console.error("Error loading form:-> edit_dropdown_form. Details: ", error));
-}
+// function editDropdown(item) {
+//     dropdownData = [];
+//     var parseItem = JSON.parse(item);
+//     var navItem = parseItem['nav'];
+//     var subItems = parseItem['sub'];
+//     subIndex = subItems.length;
+//     modTitleLabel.innerHTML = "更改下拉菜单";
+//     subNavIndex = 1;
+//     newNavId = -1;
+//     fetch("/dropdown_editor")
+//         .then((response) => response.text())
+//         .then((html) => {
+//             modBody.innerHTML = html;
+//             document.getElementById("drop_title").value = navItem.title;
+//             document.getElementById("drop_id").value = navItem.id;
+//             document.getElementById("page_id").value = locItem.page.id;
+//             document.getElementById("scroll_to").value = scrollBackTo;
+//             var list = document.getElementById("dropdown_list");
+//             subItems.forEach(function (subItem) {
+//                 newSubnavFromSource(subItem, list);
+//             });
+//         })
+//         .catch((error) => console.error("Error loading form:-> edit_dropdown_form. Details: ", error));
+// }
 
 function createSubNavItem() {
     var list = document.getElementById("dropdown_list");
@@ -52,31 +52,35 @@ function createSubNavItem() {
         id: newNavId,
         title: "newItem",
         route: allRoutes[0],
-        index: subNavIndex,
+        index: dropdownData.length,
     };
-    subNavIndex += 1;
     newNavId -= 1;
     addSubItem(newItem, list);
 }
 
 function addSubItem(newItem, list) {
+
     dropdownData.push(newItem);
     var newDiv = document.createElement("div");
-    newDiv.classList.add("row");
+    newDiv.classList.add("d-flex");
     newDiv.classList.add("tab_li_spacer");
     var newInput = document.createElement("input");
     newInput.setAttribute("type", "text");
     newInput.id = "text_" + newItem.id;
     newInput.value = newItem.title;
+    newInput.classList.add("form-control" , "local-ctl");
     newInput.setAttribute("autocomplete", "off");
     newDiv.appendChild(newInput);
-    modBody.appendChild(newDiv);
+   
+    list.appendChild(newDiv);
+    var newDiv2 = document.createElement("div");
+    newDiv2.classList.add("d-flex");
     var img = document.createElement("img");
     img.classList.add("link_icon_spacer");
     img.src = iconsAsset + "link.svg";
-    newDiv.appendChild(img);
+    newDiv2.appendChild(img);
     var newSelect = document.createElement("select");
-    newSelect.classList.add("form-control", "col");
+    newSelect.classList.add("form-control", "local-ctl");
     newSelect.id = "select_" + newItem.id;
     allRoutes.forEach(function (page) {
         var option = document.createElement("option");
@@ -87,14 +91,15 @@ function addSubItem(newItem, list) {
         }
         newSelect.appendChild(option);
     });
-    newDiv.appendChild(newSelect);
-    list.appendChild(newDiv);
+    newDiv2.appendChild(newSelect);
+    list.appendChild(newDiv2);
+    
     newSelect.addEventListener("change", function (event) {
         var selection = event.target.value;
         var itemId = newItem.id;
         updateSubnav(itemId, { route: selection });
     });
-
+    
     newInput.addEventListener("input", function (event) {
         var text = event.target.value;
         var itemId = newItem.id;
@@ -108,7 +113,9 @@ function addSubItem(newItem, list) {
         }
         updateSubnav(itemId, { title: text });
     });
+    
     updateDropdownData();
+    
 }
 
 function newSubnavFromSource(subItem, list) {

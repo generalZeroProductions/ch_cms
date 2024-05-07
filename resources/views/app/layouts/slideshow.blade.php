@@ -1,16 +1,15 @@
 <?php
-if (isset($_SESSION['screenwidth'])) {
+if (Session::has('screenwidth')) {
     echo "<style>
         .banner_container {
             width: " .
-        $_SESSION['screenwidth'] .
+        Session::get('screenwidth') .
         "px;
             height: " .
-        $_SESSION['screenwidth'] / 3 .
+        Session::get('screenwidth') / 3 .
         "px;
             overflow: hidden; /* Ensure that the image is cropped to fit within the container */
         }
-
         .banner_container img {
             width: 100%; /* Make the image fill the width of the container */
             height: 100%; /* Make the image fill the height of the container */
@@ -18,34 +17,17 @@ if (isset($_SESSION['screenwidth'])) {
         }
     </style>";
 }
-use App\Models\ContentItem;
 
-$slideData = $location['row']['data']['slides'];
 
-$slideList = [];
-$slideJson = [];
-foreach ($slideData as $slideId) {
-    $slide = ContentItem::findOrFail($slideId);
-    $jSlide = [
-        'image' => $slide->image,
-        'caption' => $slide->body,
-        'record' => $slide->id,
-    ];
-    $slideJson[] = $jSlide;
-    $slideList[] = $slide;
-}
 
 $index = 0;
 $slideBox = 'slide_box_' . $location['row']['id'];
 $slideshowId = 'slide_show_' . $location['row']['id'];
-$editMode = false;
-if(Session::has('edit'))
-{
-    $editMode = Session::get('edit');
-}
+$rowId = $location['row']['id'];
+
 ?>
 
-
+<div class = "row_box" id = {{$rowId}}>
 @if (count($slideList) > 0)
 
     <div id="{{ $slideBox }}">
@@ -82,6 +64,9 @@ if(Session::has('edit'))
                                 <div class="carousel-item banner_container">
                         @endif
                         <img src ="{{ asset('images/' . $slide->image) }} " class = "image-fluid">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h2>{{ $slide->body }}</h2>
+                        </div>
                 </div>
                 @php
                     $index += 1;
@@ -100,8 +85,6 @@ if(Session::has('edit'))
     <div class = 'banner_container'>
         <img src ="{{ asset('images/' . $slideList[0]['image']) }} " class = "image-fluid">
     </div>
-
-
 @endif
 @endif
 @if ($editMode)
@@ -117,6 +100,5 @@ if(Session::has('edit'))
     ])
 @endif
 </div>
-
-
+</div>
 </div>

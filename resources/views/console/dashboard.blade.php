@@ -1,18 +1,21 @@
+@php
+Session::put('returnPage','');
+@endphp
+
 @extends('console.console')
 @section('content')
     @php
         use Illuminate\Support\Facades\Session;
-        Session::put('edit', false);
         Session::put('buildMode', false);
     @endphp
     <br>
     @include('app//auth_on_off')
     <div class="container">
-
+ 
 
         <div class = "row d-flex justify-content-between rounded-box">
             <div class="p-2">
-                <button class="btn btn-secondary btn-top-console " onClick="viewSite()">查看网站
+                <button class="btn btn-primary btn-top-console " onClick="viewSite('dashboard')">查看网站
                     <img src="{{ asset('icons/view.svg') }}" class="top-console-icon">
                 </button>
             </div>
@@ -59,15 +62,16 @@
         <div id="pagesDiv">
         </div>
     </div>
-
+<button onClick='testPost()'>test</button>
     @if (Auth::check())
         <h2 style = "color:red"> AUTH </h2>
     @endif
 @endsection
-
+@include('forms.main_modal')
 <style>
     .btn-top-console {
-        height: 100%;
+        height: 50px;
+        width:150px;
         margin-left: 10px;
         margin-right: 10px;
         display: block;

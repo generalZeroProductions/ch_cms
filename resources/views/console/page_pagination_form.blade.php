@@ -1,21 +1,20 @@
-@php
+hit
+ @php
     use App\Models\ContentItem;
     $index = 0;
 @endphp
 
-
-
 @foreach ($records as $record)
     @php
-        $heading = 'movie';
-        $rowIds = $record->data['rows'];
-        foreach ($rowIds as $id) {
-            $row = ContentItem::findOrFail($id);
-            if ($row->index === 1) {
-                $heading = $row->heading;
-                $break;
-            }
-        }
+          $heading = 'movie';
+          $rowIds = $record->data['rows'];
+          foreach ($rowIds as $id) {
+              $row = ContentItem::findOrFail($id);
+              if ($row->index === 1) {
+                  $heading = $row->heading;
+                  $break;
+              }
+         }
     @endphp
     @if ($index % 2 === 0)
         <div class = "row">
@@ -29,18 +28,22 @@
         <p>{{ $heading }}</p>
     </div>
     <div class= 'col-md-2' style="text-align:center">
-        <button onClick="enterPageBuild('{{$record->title}}')" class='btn btn-primary' style='margin-top:4px'><img src="{{ asset('icons/pen_white.svg') }}"></button>
+        <button onClick="enterPageBuild('{{ $record->title }}',null,null)" class='btn btn-primary' style='margin-top:4px'>
+            <img src="{{ asset('icons/build.svg') }}">
+        </button>
     </div>
     <div class= 'col-md-2' style="text-align:center">
-        <button class='btn btn-danger' style='margin-top:4px'><img src="{{ asset('icons/trash_white.svg') }}"></button>
+        <button class='btn btn-danger' style='margin-top:4px'
+            onClick="openMainModal('deletePage','{{ json_encode($record) }}','null','model-sm')">
+            <img src="{{ asset('icons/trash_white.svg') }}">
+        </button>
     </div>
     </div>
-
-
     @php
         $index++;
     @endphp
 @endforeach
+
 <br>
 <div class="pagination">
     <div class = "row">
@@ -51,10 +54,10 @@
             <span>Current Page: {{ $records->currentPage() }}</span>
         </div>
         <div class= "col-md-1">
-           <a href="{{ $records->previousPageUrl() }}" class="btn btn-primary"
+            <a href="{{ $records->previousPageUrl() }}" class="btn btn-primary"
                 @if (!$records->previousPageUrl()) disabled @endif><img src="{{ asset('icons/arrow_left.svg') }}"></a>
-             </div>
-             <div class= "col-md-1">
+        </div>
+        <div class= "col-md-1">
             <a href="{{ $records->nextPageUrl() }}" class="btn btn-primary"
                 @if (!$records->nextPageUrl()) disabled @endif><img src="{{ asset('icons/arrow_right.svg') }}"></a>
 

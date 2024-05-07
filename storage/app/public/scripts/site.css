@@ -1,31 +1,50 @@
+
+/* @import url('../fonts/site.css?family=Hanyi Senty&display=swap');
 .space-row {
     margin-top: 24px;
+} */
+@font-face {
+    font-family: 'Chogokuboso';
+    src: url('../fonts/Chogokuboso.ttf') format('opentype');
+    font-display: swap;
 }
 .tab_ul {
-    padding: 0; /* Remove default padding */
-    margin: 0; /* Remove default margin */
-    list-style-type: none; /* Remove bullet points */
+    padding: 0;
+    /* Remove default padding */
+    margin: 0;
+    /* Remove default margin */
+    list-style-type: none;
+    /* Remove bullet points */
     font-size: x-large;
 }
 
 .menu-item {
-    display: flex; /* Use flexbox */
-    align-items: center; /* Vertically center the content */
-    background-color: rgb(92, 92, 95); /* Replace YourColorHere with your desired background color */
+    display: flex;
+    /* Use flexbox */
+    align-items: center;
+    /* Vertically center the content */
+    background-color: rgb(92, 92, 95);
+    /* Replace YourColorHere with your desired background color */
     color: white;
-    padding: 10px; /* Adjust padding as needed */
-    text-decoration: none; /* Removes default underline */
+    padding: 10px;
+    /* Adjust padding as needed */
+    text-decoration: none;
+    /* Removes default underline */
     list-style-type: none;
-    
+
 }
+
 .menu-item:hover {
     color: white;
 }
+
 .menu-item img {
     display: inline-block;
-    margin-left: auto; /* Push the image to the right */
+    margin-left: auto;
+    /* Push the image to the right */
 }
-.article_edit{
+
+.article_edit {
     min-height: 300px;
     background-color: navajowhite;
 }
@@ -40,10 +59,12 @@
 .nav-name {
     width: 140px;
 }
+
 .hidden-content {
     display: none;
 }
-.confirm-edit-nav{
+
+.confirm-edit-nav {
     margin-right: 60px;
     margin-left: 16px;
     background: none;
@@ -52,7 +73,7 @@
     cursor: pointer;
 }
 
-.confirm-add-nav{
+.confirm-add-nav {
     margin-left: 16px;
     background: none;
     border: none;
@@ -61,11 +82,12 @@
 }
 
 
-.link_icon_spacer{
+.link_icon_spacer {
     margin-left: 16px;
     margin-right: 16px;
 }
-.tab_li_spacer{
+
+.tab_li_spacer {
     margin-top: 10px;
 }
 
@@ -75,9 +97,9 @@
 
 .tooltip {
     position: relative;
-  }
-  
-  .tooltip-text {
+}
+
+.tooltip-text {
     display: none;
     position: absolute;
     z-index: 2;
@@ -93,12 +115,13 @@
     top: calc(100% + 5px);
     left: 50%;
     transform: translateX(50%);
-  }
-  
-  .tooltip:hover + .tooltip-text {
+}
+
+.tooltip:hover+.tooltip-text {
     display: block;
-  }
-  .tooltip-text-slideshow {
+}
+
+.tooltip-text-slideshow {
     display: none;
     position: absolute;
     z-index: 2;
@@ -112,70 +135,90 @@
     top: -30px;
     right: 10%;
     transform: translateX(10%);
-  }
-  
-  .tooltip:hover + .tooltip-text-slideshow {
+}
+
+.tooltip:hover+.tooltip-text-slideshow {
     display: block;
-  }
-  
+}
+
 .new_item_input {
-    height: 40px !important; /* Adjust the height as needed */
-    font-size: 16px; /* Adjust the font size as needed */
+    height: 40px !important;
+    /* Adjust the height as needed */
+    font-size: 16px;
+    /* Adjust the font size as needed */
     /* Add any other styling properties you want */
 }
 
 
+
+.full-page {
+    padding: 0px;
+    margin: 0px;
+}
 
 
 .carousel-inner img {
     width: 100%;
     height: 100%;
     object-fit: cover
-  }
+}
 
-  .banner_container {
-    width: 1920px; /* Set your desired width */
-    height: 400px; /* Set your desired height */
-    overflow: hidden; /* Ensure that the image is cropped to fit within the container */
+.banner_container {
+    width: 1920px;
+    /* Set your desired width */
+    height: 400px;
+    /* Set your desired height */
+    overflow: hidden;
+    /* Ensure that the image is cropped to fit within the container */
 }
 
 .banner_container img {
-    width: 100%; /* Make the image fill the width of the container */
-    height: 100%; /* Make the image fill the height of the container */
-    object-fit: cover; /* Crop the image to cover the container */
+    width: 100%;
+    /* Make the image fill the width of the container */
+    height: 100%;
+    /* Make the image fill the height of the container */
+    object-fit: cover;
+    /* Crop the image to cover the container */
 }
 
 .modal-lg {
     min-width: 600px;
 }
+
 .modal-xl {
     max-width: 90%;
 }
+
 .modal-xxl {
     max-width: 100%;
 }
 
 .title_change_div {
-    min-height: 32px; /* Adjust the value as needed */
+    min-height: 32px;
+    /* Adjust the value as needed */
     margin-left: 12px !important;
     margin-bottom: 12px;
-   
+
 }
-.delete_row_button{
+
+.delete_row_button {
     text-align: right !important;
     padding-right: 26px !important;
     margin-right: 0px !important;
 }
 
-.row_add_button{
-    min-height: 32px; /* Adjust the value as needed */
-    margin-top:12px;
+.row_add_button {
+    min-height: 32px;
+    /* Adjust the value as needed */
+    margin-top: 12px;
     margin-right: 12px !important;
 }
-.row_add_button  button {
+
+.row_add_button button {
     font-weight: 600;
     color: white;
 }
+
 .row_add_button button:hover {
     color: rgb(239, 96, 13);
 
@@ -184,8 +227,9 @@
 .row_add_button button:focus {
     color: rgb(255, 255, 255);
 }
-.add_row_icon{
-    margin-right:12px;
+
+.add_row_icon {
+    margin-right: 12px;
     padding-right: 14px;
     height: 20px;
     margin-bottom: 3px;
@@ -206,134 +250,163 @@
 }
 
 .slide-preview {
-    display:flex;
-}
-.slide-caption {
-    width: 100%; /* Make the input text fill the width of the column */
-}
-.row-slide-thumb{
-    margin-top: 2vh;
-    margin-bottom: 2vh;
-    height:22vh;
+    display: flex;
 }
 
 .slide-caption {
-    width: 100%; /* Make the input text fill the width of the column */
+    width: 100%;
+    /* Make the input text fill the width of the column */
+}
+
+.row-slide-thumb {
+    margin-top: 2vh;
+    margin-bottom: 2vh;
+    height: 22vh;
+}
+
+.slide-caption {
+    width: 100%;
+    /* Make the input text fill the width of the column */
 }
 
 .slide_thumbnail {
     display: flex;
-    align-items: center; /* Vertically center the content */
-    justify-content: center; /* Horizontally center the content */
-    height: 20vh; /* Set the height of the container */
+    align-items: center;
+    /* Vertically center the content */
+    justify-content: center;
+    /* Horizontally center the content */
+    height: 20vh;
+    /* Set the height of the container */
     margin-top: 3vh;
     margin-bottom: 3vh;
-   
+
 }
+
 .add_thumbnail {
-    position: relative; /* Required for absolute positioning */
+    position: relative;
+    /* Required for absolute positioning */
     display: flex;
-    align-items: center; /* Vertically center the content */
-    justify-content: center; /* Horizontally center the content */
-    height: 20vh; /* Set the height of the container */
+    align-items: center;
+    /* Vertically center the content */
+    justify-content: center;
+    /* Horizontally center the content */
+    height: 20vh;
+    /* Set the height of the container */
 }
 
 .add_thumbnail .centered {
     position: absolute;
-    bottom: 40%; /* Align to the bottom of the container */
-    left: 50%; /* Center horizontally */
-    transform: translateX(-50%); /* Center horizontally */
+    bottom: 40%;
+    /* Align to the bottom of the container */
+    left: 50%;
+    /* Center horizontally */
+    transform: translateX(-50%);
+    /* Center horizontally */
 }
-.add_thumbnail .svg{
+
+.add_thumbnail .svg {
     height: 44px;
 }
 
 
-.slide_edit_icon{
+.slide_edit_icon {
     height: 24px;
-    margin-left:18px;
+    margin-left: 18px;
 }
 
 .parent {
     text-align: left;
-  }
-  .child {
+}
+
+.child {
     display: inline-block;
-    width:auto;
-  }
+    width: auto;
+}
 
 .row-of-slides {
-    display: flex; /* Use flexbox layout for the row */
-    justify-content: space-between; /* Space out columns evenly */
-    margin: 1vh 0; /* 1vh margin above and below the row */
-  }
-  
-  /* Individual column */
-  .col-slide-preview {
-    flex: 1; /* Let columns grow and shrink equally to fill available space */
+    display: flex;
+    /* Use flexbox layout for the row */
+    justify-content: space-between;
+    /* Space out columns evenly */
+    margin: 1vh 0;
+    /* 1vh margin above and below the row */
+}
+
+/* Individual column */
+.col-slide-preview {
+    flex: 1;
+    /* Let columns grow and shrink equally to fill available space */
     margin-left: 2vh;
-  } 
-  
-  /* Image container inside each column */
-  .image-slide-thumb {
+}
+
+/* Image container inside each column */
+.image-slide-thumb {
     margin-top: 2vh;
-    height: 200px; /* Set a constant height for the image container */
+    height: 200px;
+    /* Set a constant height for the image container */
     margin-bottom: 2vh;
-  }
-  
-  /* Text box below the image */
-  .text-box-slide-caption {
-    width: 100%; /* Fill the width of the column */
-  }
+}
+
+/* Text box below the image */
+.text-box-slide-caption {
+    width: 100%;
+    /* Fill the width of the column */
+}
 
 
 .general-btn {
-    margin-bottom:4px;
+    margin-bottom: 4px;
     height: 40px;
     font-size: medium;
     font-weight: 600;
 }
-.btn-right-space{
-    margin-right:5vh;
+
+.btn-right-space {
+    margin-right: 5vh;
 }
-.col-white{
-    background-color:white;
+
+.col-white {
+    background-color: white;
 }
+
 .red_row {
     background-color: rgb(249, 178, 178);
     height: 44px;
 }
+
 .blue_row {
     background-color: rgb(178, 180, 249);
     height: 44px;
 }
-.site-blue{
-    background-color:rgb(178, 180, 249); ;
+
+.site-blue {
+    background-color: rgb(178, 180, 249);
+    ;
 }
+
 .blue-green_row {
     background-color: rgb(42, 199, 181);
     height: 44px;
-    margin-top:12px;
+    margin-top: 12px;
 }
+
 .green_row {
     background-color: rgb(4, 125, 44);
     height: 44px;
-    margin-top:12px;
+    margin-top: 12px;
 }
-.yellow_row {
-    background-color: rgb(248, 212, 135);
-    height: 44px;
-    margin-top:12px;
-}
+
 .white_row {
-    background-color:white;
+    background-color: white;
     height: 44px;
-    margin-top:2px; 
+    margin-top: 2px;
 }
-.no-top-space{
-    margin-top:2px !important;
-    padding-top:2px !important;
+
+.no-top-space {
+    margin-top: 1px !important;
+    padding-top: 2px !important;
 }
+
 .top-right-edits {
     margin-top: 1vh;
     margin-right: 3vw;
@@ -343,43 +416,50 @@
     margin-top: 1vh;
     margin-left: 3vw;
 }
+
 .row-middle-edits {
     margin-top: 1vh;
 }
+
 .title-indicator {
     color: white;
     font-size: medium;
     font-weight: 600;
 }
+
 .title-indicator_dark {
     color: rgb(173, 110, 7);
     font-size: medium;
     font-weight: 600;
 }
+
 .title_reference {
-    margin-left:1vw;
-    color:white;
+    margin-left: 1vw;
+    color: white;
     font-size: large;
 }
+
 .space_icon_left {
     margin-right: 1.5vw;
     height: 24px;
     margin-bottom: 6px;
 }
+
 .space_icon_right {
     margin-left: 1vw;
     margin-bottom: 6px;
     height: 24px;
 }
+
 .space_icon_right-sm {
     margin-bottom: 1.5vh;
     margin-left: 1vw;
     height: 18px;
 }
-.add_row_btn {
-    color: white !important;
-}
-.add_row_btn:hover span {
-    color: white !important;
-}
+
+
+
+
+
+
 

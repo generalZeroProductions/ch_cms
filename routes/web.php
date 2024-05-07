@@ -9,8 +9,18 @@ use App\Http\Controllers\TabController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\ArticleController;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Response;
+use PhpMyAdmin\Controllers\NavigationController;
+
+Route::post('/write_nav', [NavController::class,'sortWrite'])->name('writeForm');
+Route::post('/write_tab', [TabController::class,'sortWrite'])->name('writeTab');
+
+
+Route::post('admin/test', function () {
+    [ConsoleController::class, 'testPost'];
+    return response()->json(['status' => 'hit test'], 200);
+});
 
 Route::post('admin/off', function () {
     Auth::logout();
@@ -28,8 +38,8 @@ Route::post('admin/on', function () {
 });
 
 
-
-//  BUILDER ROUTES
+// these might be better placed in there respective sections.  page, slide, etc.
+//  CREATE AND DELETE FOR PAGES
 Route::post('/create_slideshow', [SlideController::class, 'createSlideshow'])->name('create_slideshow');
 Route::post('/create_one_column', [ArticleController::class, 'createOneColumn'])->name('create_one_column');
 Route::post('/create_two_column', [ArticleController::class, 'createTwoColumn'])->name('create_two_column');
@@ -40,6 +50,11 @@ Route::post('/delete_row', [PageController::class, 'deleteRow'])->name('deleteRo
 Route::get('/delete_row_form', function () {
     return View::make('app.layouts.partials.delete_row_form');
 })->name('deleteRowForm');
+
+Route::post('/delete_page', [PageController::class, 'deletePage'])->name('deletePage');
+Route::get('/delete_page_form', function () {
+    return View::make('app.layouts.partials.delete_page_form');
+})->name('deletePageForm');
 
 // CONSOLE ROUTING
 Route::get('/console/logout', [ConsoleController::class, 'logout']);
@@ -105,13 +120,16 @@ Route::get('/insert_add_image_card', function () {
 
 
 //TABS
-Route::get('/load_anything', function () {
-    return '<h1>This is HTML content</h1><p>You can return any valid HTML markup here.</p>';
-});
+
+//which is it??/
 Route::get('/load_tab/no_tab_assigned',function () {
     return View::make('tabs.no_tab_assigned');
 })->name('displayNoTabs');
 
+Route::get('/no_tab_assigned',function () {
+    View::make('tabs.no_tab_assigned');
+})->name('noTabAssigned');
+// two routes returning the same thing??
 
 Route::post('/quick_tab_asign', [TabController::class, 'quickAssign'])->name('QuickTabAssign');
 Route::get('/edit_tabs', function () {
@@ -120,10 +138,14 @@ Route::get('/edit_tabs', function () {
 
 Route::post('/update_tabs', [TabController::class, 'updateTabs'])->name('update_tabs');
 
-Route::get('/no_tab_assigned',function () {
-    View::make('tabs.no_tab_assigned');
-})->name('noTabAssigned');
 Route::get('/load_tab/{routeName}', [TabController::class, 'loadTabContent']);
+
+//this should be renamed to tab/change_tracked
+Route::post('/tab/new/{tabId}', function ($tabId) {
+    Session::put('tabId', $tabId);
+    return response()->json(['message' => $tabId .'Session variable changed successfully']);
+})->name('newTabId');
+
 
 //SLIDES
 Route::get('/dispay_slide_data', function () {
@@ -137,6 +159,9 @@ Route::post('/update_slideshow', [SlideController::class, 'updateSlideshow'])->n
 
 
 // PAGES AND ROWS
+
+
+//not sure if change location is being used??
 Route::get('/changelocation/{location}', function ($location = null) {
     Session::put('location', $location);
     return response()->json(['message' => 'Session variable changed successfully']);
@@ -151,6 +176,8 @@ Route::get('/title_change', function () {
 Route::get('/build', function () {
     return View::make('app.page_builder');
 })->name('builder');
+
+
 Route::get('/row_type', function () {
     return View::make('forms.row_select_form');
 })->name('rowType');
@@ -176,9 +203,9 @@ Route::get('/add_nav_standard', function () {
     return View::make('nav.add_nav_form');
 })->name('addNavStandard');
 
-Route::get('/delete_nav_item', function () {
-    return View::make('nav.confirm_delete_nav');
-})->name('deleteNavItem');
+// Route::get('/delete_nav_item', function () {
+//     return View::make('nav.confirm_delete_nav');
+// })->name('deleteNavItem');
 
 Route::get('/dropdown_editor', function () {
     return View::make('nav.edit_drop_down');
@@ -197,33 +224,76 @@ Route::post('/add_dropdown', [NavController::class,'addDropdown'])->name('addDro
 
 // APP LEVEL ROUTES
 
+Route::get('/form/edit_nav_standard/{page?}', function ($page = null) {
+    return view('app.first_page', ['page' => $page]);
+})->name('newFetch');
 
-Route::get('/no_pages', function () {
-    return View::make('app.no_pages_found');
-})->name('noPages');
-
-Route::get('/load_anything', function () {
-    return '<h1>This is HTML content</h1><p>You can return any valid HTML markup here.</p>';
-});
-
-Route::get('/open_base_modal', function () {
-    return View::make('forms.base_modal');
-})->name('openBaseModal');
-
-Route::get('/page_builder/{newLocation?}', function ($newLocation = null) {
-    return view('app.page_builder', ['newLocation' => $newLocation]);
-})->name('pageBuilder');
+Route::get('/', function () {
+    return View::make('app.opener');
+})->name('opener');
 
 Route::get('/session/{newLocation?}', function ($newLocation = null) {
     return view('app.session', ['newLocation' => $newLocation]);
 })->name('sessionSet');
 
 Route::get('/{newLocation?}', function ($newLocation = null) {
-    return view('app.site', ['newLocation' => $newLocation]);
+    return view('app.site2', ['newLocation' => $newLocation]);
 })->name('root');
 
+Route::get('test_fetch/{action?}', function ($action = null) {
+    return view('app.test_fetch', ['action' => $action]);
+})->name('testFetch');
 
+
+
+Route::get('/site2/site', function () {
+    return View::make('app.site2');
+})->name('site2');
 
 // Route::get('/', function () {
 //     return View::make('index');
 // })->name('root');
+
+// Route::get('/load_anything', function () {
+//     return '<h1>This is HTML content</h1><p>You can return any valid HTML markup here.</p>';
+// });
+
+
+// Route::get('/page_builder/{newLocation?}', function ($newLocation = null) {
+//     return view('app.page_builder', ['newLocation' => $newLocation]);
+// })->name('pageBuilder');
+
+// Route::get('/open_base_modal', function () {
+//     return View::make('forms.base_modal');
+// })->name('openBaseModal');
+
+
+// Route::get('/load_anything', function () {
+//     return '<h1>This is HTML content</h1><p>You can return any valid HTML markup here.</p>';
+// });
+
+
+
+Route::get('/read_/{formName}', function ($formName) {
+    if (strpos($formName, 'nav') !== false) {
+        $htmlResponse = NavController::sortRead($formName);
+        return $htmlResponse;
+    } else {
+        // Handle other cases here if needed
+        return response()->json(['error' => 'Invalid form request'], 400);
+    }
+})->name('readForm');
+
+
+Route::get('/refresh_/{refresh}',function ($refresh) {
+    if (strpos($refresh, 'nav') !== false) {
+        $htmlResponse = NavController::sortRefresh($refresh);
+        return $htmlResponse;
+    } elseif (strpos($refresh, 'tab') !== false) {
+        $htmlResponse = TabController::sortRefresh($refresh);
+        return $htmlResponse;
+    } else {
+        // Handle other cases here if needed
+        return response()->json(['error' => 'Invalid form request'], 400);
+    }
+})->name('refresh');

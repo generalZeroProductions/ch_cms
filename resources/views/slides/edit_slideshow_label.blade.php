@@ -1,18 +1,26 @@
 
-<div class="container-fluid green_row">
-    <div class="row">
-        <div class = 'col-lg-5 col-sm-0 col-white'></div>
-        <div class="col-lg-2 col-sm-12 d-flex justify-content-center">
-            <div class = "row row-middle-edits">
-                <a href="#" style=" text-decoration: none;"
-                 onClick = "openMainModal('editSlideshow', '{{ json_encode($slideJson) }}','{{ json_encode($location) }}','modal-xl')"
-                    class="d-flex align-items-center">
-                    <p class="title-indicator">编辑幻灯片:</p>
-                    <img src="{{ asset('icons/pen_white.svg') }}" class="space_icon_right-sm">
-                </a>
+<div class="container-fluid green-edit">
+    <div class="row flex-d space-top">
+        <div class = 'col-10'></div>
+        <div class="col-2 d-flex justify-content-start align-items-center">
+            <div class = "row">
+                <button href="#" class = "btn btn-primary"
+                 onClick = "openMainModal('editSlideshow', '{{ json_encode($slideJson) }}','{{ json_encode($location) }}','modal-xl')">
+                    编辑幻灯片:
+                    <img src="{{ asset('icons/pen_white.svg') }}">
+                </button>
             </div>
         </div>
-        <div class = 'col-lg-5 col-sm-0 col-white'></div>
+
     </div>
 </div>
 <br>
+
+<style>
+.green-edit{
+    background-color:rgb(127, 228, 137);
+}
+.space-top{
+    margin-top:8px;
+}
+</style>
