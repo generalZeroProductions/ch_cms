@@ -1,32 +1,12 @@
 @php
-    $tabData = $location['row']['data']['tabs'];
-    $tabs = tabsList($tabData);
-    $rowId = $location['row']['id'];
     $tabCol = 'tab_col_' . $rowId;
-    $scrollTabs = 'scroll_' . $rowId;
-$editMode = getEditMode();
-    $tab0 = $tabs[0];
-    $trackTab = getTabTrack();
-    if (isset($tabTrack)) {
-        $tabData = explode('?', $tabId); //  store this as pageIdrowIndex id and tabId ? tabId
-        if (isset($tabData[0])) {
-            $checkTab = $location['page']['id'] . $location['row']['index'];
-            if ($tabData[0] === $checkTab) {
-                $tab0 = findTab($tabData[1]);
-            }
-        }
-    }
     $contentBoxId = 'content_'.$rowId;
-    $tabContents = getTabContents($tabs, $rowId);
     $tab0Route = $tab0->route;
-    $tabIndex = $tab0->index;
-    $tagAnchor = "tab_".$tab0->index
+    $tab0Index = $tab0->index;
+    $tab0Id = $tab0->id;
+    $tagAnchor = "tab_".$tab0->index;
+    $pageId = $location['page']['id'];
 @endphp
-
-@if ($editMode && !$tabContent)
-    @include('app/layouts/partials.delete_row_button', ['index' => $location['row']['index']])
-@endif
-
 
 <div class="d-flex justify-content-start" id="{{ $rowId }}">
     <div class="col-3" id = "{{ $tabCol }}">
@@ -38,21 +18,7 @@ $editMode = getEditMode();
                 </a>
             </div>
         @endif
-        <div id="{{ $scrollTabs }}">
-            <ul id="tabs">
-                @foreach ($tabs as $tab)
-                  @php
-                        $anchorId = "tab_".$tab->index;
-                    @endphp
-                    <li class =  "{{ $loop->first ? 'active' : '' }} no_dots" >
-                        <a href="#" id = "{{$anchorId}}" class = "tab-body-on"
-                            onClick= "changeTab('{{ $rowId }}','{{ $anchorId }}', '{{ $loop->index }}')">
-                            {{ $tab->title }}
-                        </a>
-                    </li>
-                @endforeach
-            </ul>
-        </div>
+      @include('/tabs/tab_menu',['tabs'=>$tabs,'tab0'=>$tab0,'rowId'=>$rowId])
     </div>
     <div class="col-9 ">
             <div id="{{ $contentBoxId }}" class="tabContent_{{ $rowId }}">
@@ -60,10 +26,12 @@ $editMode = getEditMode();
     </div>
 </div>
 
-<script>
-    changeTab('{{ $rowId }}', '{{$tagAnchor }}', '{{ $tabIndex }}');
-</script>
 
+<div class = 'run-scripts'>
+<script>
+    changeTab('{{ $rowId }}', '{{$tagAnchor }}', '{{ $tab0Index }}','{{$tab0Id}}');
+</script>
+</div>
 <style>
 .no_dots{
      list-style: none;

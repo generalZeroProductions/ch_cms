@@ -1,4 +1,4 @@
-<?php
+@php
 if (Session::has('screenwidth')) {
     echo "<style>
         .banner_container {
@@ -21,19 +21,15 @@ if (Session::has('screenwidth')) {
 
 
 $index = 0;
-$slideBox = 'slide_box_' . $location['row']['id'];
-$slideshowId = 'slide_show_' . $location['row']['id'];
-$rowId = $location['row']['id'];
+$slideBox = 'slide_box_' . $rowId;
+$slideshowId = 'slide_show_' . $rowId;
 
-?>
+@endphp
 
-<div class = "row_box" id = {{$rowId}}>
+
 @if (count($slideList) > 0)
 
     <div id="{{ $slideBox }}">
-        @if ($editMode)
-            @include('app/layouts/partials.delete_row_button', ['index' => $location['row']['index']])
-        @endif
         @if (count($slideList) > 1)
 
             <div class="carousel slide" data-ride="carousel" id = "{{ $slideshowId }}">
@@ -72,7 +68,6 @@ $rowId = $location['row']['id'];
                     $index += 1;
                 @endphp
         @endforeach
-
         <a class="carousel-control-prev" href="#{{ $slideshowId }}" data-slide="prev">
             <span class="carousel-control-prev-icon"></span>
         </a>
@@ -87,18 +82,5 @@ $rowId = $location['row']['id'];
     </div>
 @endif
 @endif
-@if ($editMode)
-    @include('slides.edit_slideshow_label', [
-        'slideBox' => $slideBox,
-        'location' => $location,
-        'slideJson' => $slideJson,
-    ])
-
-    @include('app.layouts.partials.add_row_button', [
-        'location' => $location,
-        'index' => $location['row']['index'],
-    ])
-@endif
-</div>
 </div>
 </div>

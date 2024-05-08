@@ -10,15 +10,23 @@ var modBody;
 var modTitleLabel;
 var refreshInline = false;
 
+function renderPageContent(pageId) {
+    const div = document.getElementById("page_content");
+    const sequence = "/refresh_/page^" + pageId;
+    refreshDiv(div, sequence)
+    .then(() => {
+        loadScripts();
+    })
+    .catch((error) => {
+        console.error('Error refreshing page:', error);
+    });
+}
 function decodeRoutes(encodedString) {
     var decodedString = encodedString.replace(/&quot;/g, '"');
     var array = JSON.parse(decodedString);
     return array;
 }
 
-// const csrfToken = document
-//     .querySelector('meta[name="csrf-token"]')
-//     .getAttribute("content");
 
 function insertForm(item, formName, divId, key) {
     preventScrolling();
@@ -42,68 +50,11 @@ function insertForm(item, formName, divId, key) {
                 "Error occurred while loading " + formName,
                 +": " + error
             );
+            enableScrolling();
         });
 }
 
-function filloutNavForms(item, formName, key) {
-    var intercept = false;
 
-    if (formName === "nav_standard") {
-        addFieldAndValue("item_id", item.id);
-        addFieldAndValue("title", item.title);
-        var route_select = document.getElementById("route_select");
-        allRoutes.forEach(function (page) {
-            var option = document.createElement("option");
-            option.value = page;
-            option.text = page;
-            if (page === item.route) {
-                option.selected = true;
-            }
-            route_select.appendChild(option);
-        });
-        intercept = true;
-    }
-    if (formName == "nav_delete") {
-        addFieldAndValue("item_id", item.id);
-        addFieldAndValue("scroll_to", window.scrollY);
-        addFieldAndValue("location", location);
-        addFieldAndValue("key", key);
-        console.log(location);
-    }
-    if (formName === "nav_add") {
-        addFieldAndValue("standard_scroll", window.scrollY);
-        addFieldAndValue("standard_loc", location);
-        addFieldAndValue("standard_item_id", item.id);
-        addFieldAndValue("standard_key", key);
-
-        addFieldAndValue("drop_scroll", window.scrollY);
-        addFieldAndValue("drop_loc", location);
-        addFieldAndValue("dropdown_item_id", item.id);
-        addFieldAndValue("dropdown_key", key);
-
-        addFieldAndValue("cancel_scroll", window.scrollY);
-        addFieldAndValue("cancel_loc", location);
-        addFieldAndValue("cancel_item_id", item.id);
-        addFieldAndValue("cancel_key", key);
-    }
-    if (formName === "nav_dropdown") {
-        dropdownData = [];
-        var navItem = item.nav;
-        var subItems = item.sub;
-        subIndex = subItems.length;
-        subNavIndex = 1;
-        newNavId = -1;
-        addFieldAndValue("title", navItem.title);
-        addFieldAndValue("item_id", navItem.id);
-        addFieldAndValue("key", key);
-        var list = document.getElementById("dropdown_list");
-        subItems.forEach(function (subItem) {
-            newSubnavFromSource(subItem, list);
-        });
-        intercept = true;
-    }
-    return intercept;
-}
 
 function fillForm(item, formName, div, key) {
     var intercept = false;
@@ -127,6 +78,56 @@ function setCusomSubmitNav(formName, item, div, key) {
     }
     form.addEventListener("submit", function (event) {
         submitUpdateRequest(form, item, formName, div, event, key);
+    });
+}
+
+function refreshDiv(div, sequence) {
+    return new Promise((resolve, reject) => {
+        fetch(sequence)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text(); // Parse response as text
+            })
+            .then((html) => {
+                // Set the HTML content of the div
+                div.innerHTML = html;
+                // Resolve the promise to indicate success
+                resolve();
+            })
+            .catch((error) => {
+                // Handle errors by logging or throwing
+                console.error('Error fetching updated data:', error);
+                // Reject the promise to propagate the error
+                reject(error);
+            });
+    });
+}
+
+
+
+function loadScripts() {
+
+    var runScripts = document.querySelectorAll(".run-scripts");
+    runScripts.forEach((script) => {
+        var innerHtml = script.innerHTML;
+        var loadTabCall = innerHtml.match(/changeTab\([^)]*\)/);
+       
+        if (loadTabCall !== null) {
+            eval(loadTabCall[0]);
+        }
+    });
+}
+function loadNoRoutes() {
+    var noRoutesScripts = document.querySelectorAll(".no-route-scripts");
+    noRoutesScripts.forEach((script) => {
+        console.log("OOKK");
+        var innerHtml = script.innerHTML;
+        var noRouteCall = innerHtml.match(/populateRoutesNoTab\([^)]*\)/);
+        if (noRouteCall !== null) {
+            eval(noRouteCall[0]);
+        }
     });
 }
 
@@ -155,16 +156,6 @@ function submitUpdateRequest(form, item, formName, div, event, key) {
         });
 }
 
-function refreshDiv(div, sequence) {
-    fetch(sequence)
-        .then((response) => response.text()) // Parse response as text
-        .then((html) => {
-            div.innerHTML = html;  
-        })
-        .catch((error) => {
-            console.error("Error fetching updated data:", error);
-        });
-}
 
 function authOn() {
     fetch("/admin/on", {

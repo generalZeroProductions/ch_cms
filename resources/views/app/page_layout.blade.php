@@ -75,11 +75,18 @@
         @php
             $location['row'] = $nextRow;
         @endphp
-
         @if (isset($nextRow->heading) && $nextRow->heading === 'image_right')
+          @php
+                $columnData = $location['row']['data']['columns'];
+                $column1 = ContentItem::findOrFail($columnData[0]);
+                $column2 = ContentItem::findOrFail($columnData[1]);
+            @endphp
             @include ('app/layouts/image_right', [
                 'location' => $location,
-                'tabContent' => $tabContent,
+                'tabContent' => false,
+                 'column1' => $column1,
+                'column2' => $column2,
+                 'editMode' => $editMode,
             ])
         @endif
         @if (isset($nextRow->heading) && $nextRow->heading === 'two_column')
@@ -99,9 +106,20 @@
             <br>
         @endif
         @if (isset($nextRow->heading) && $nextRow->heading === 'image_left')
+            @php
+
+                $columnData = $location['row']['data']['columns'];
+                $column1 = ContentItem::findOrFail($columnData[0]);
+                $column2 = ContentItem::findOrFail($columnData[1]);
+            @endphp
+
+
             @include ('app/layouts/image_left', [
                 'location' => $location,
                 'tabContent' => false,
+                'column1' => $column1,
+                'column2' => $column2,
+                'editMode' => $editMode,
             ])
             <br>
             <br>
@@ -115,7 +133,7 @@
                 'location' => $location,
                 'tabContent' => false,
                 'column' => $column,
-                'editMode' => $editMode,
+               // 'editMode' => $editMode,
             ])
             <br>
             <br>
@@ -169,3 +187,5 @@
     @endforeach
 
 </div>
+
+

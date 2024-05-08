@@ -285,8 +285,12 @@ Route::get('/read_/{formName}', function ($formName) {
 })->name('readForm');
 
 
+
 Route::get('/refresh_/{refresh}',function ($refresh) {
-    if (strpos($refresh, 'nav') !== false) {
+    if (strpos($refresh, 'page') !== false) {
+        $htmlResponse = PageController::sortRefresh($refresh);
+        return $htmlResponse;
+    }elseif (strpos($refresh, 'nav') !== false) {
         $htmlResponse = NavController::sortRefresh($refresh);
         return $htmlResponse;
     } elseif (strpos($refresh, 'tab') !== false) {

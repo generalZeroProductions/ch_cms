@@ -24,11 +24,9 @@
     @php
         $currentUrl = $_SERVER['REQUEST_URI'];
         $urlParts = explode('/', $currentUrl);
-       
         $location;
-     
         $page = getPage($urlParts[1]);
-           
+
         if (isset($page)) {
             Session::put('location', $page->title);
             $route = $page->title;
@@ -38,35 +36,37 @@
                 'item' => null,
                 'scroll' => null,
             ];
+        } else {
+            dd('cant find page');
         }
         $editMode = getEditMode();
         $buildMode = getBuildMode();
         $mobile = getMobile();
         $scrollTo = getScroll();
-        $contents = View::make('app.page_layout', ['location' => $location, 'tabContent' => false])->render();
         $allRoutes = setAllRoutes();
 
     @endphp
     @include('app.navigation')
-
-
-
-
-    {!! $contents !!}
+    <div id="headspace"></div>
+    <div id="page_content"></div>
 
 
     <script src="{{ asset('scripts/popper.min.js') }}"></script>
     <script src="{{ asset('scripts/bootstrap.min.js') }}"></script>
-@include('forms.main_modal')
+    @include('forms.main_modal')
 </body>
 <script>
     window.onload = function() {
+        const mainNav = document.getElementById("main_navigtion");
+        const headSpace = document.getElementById("headspace");
+        const mainNavBottom = mainNav.getBoundingClientRect().bottom +24;
+        headSpace.style.height = `${mainNavBottom}px`;
         iconsAsset = "{{ asset('icons/') }}/";
         imagesAsset = "{{ asset('images/') }}/";
         fontsAsset = "{{ asset('fonts/') }}/";
         allRoutes = decodeRoutes('{{ $allRoutes }}');
-        console.log('{{ $scrollTo }}');
-        window.scrollTo(0,190);
+        renderPageContent('{{ $page->id }}');
+        // window.scrollTo('{{ $scrollTo }}');
     }
 </script>
 

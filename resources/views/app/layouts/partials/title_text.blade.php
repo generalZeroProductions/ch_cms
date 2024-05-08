@@ -1,5 +1,4 @@
     @php
-        use App\Models\ContentItem;
         $title = $column->title;
         $body = $column->body;
         $data = $column->data;

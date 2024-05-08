@@ -6,9 +6,24 @@ use App\Models\ContentItem;
 use App\Models\Navigation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-
+use Illuminate\Http\Response;
+use App\Helpers\PageMaker;
 class PageController extends Controller
 {
+    public static function sortRefresh($refresh)
+    {
+        $refreshData = explode('^', $refresh);
+        if ($refreshData[0] === 'page') {
+            $page = ContentItem::where('type', 'page')->where('id',$refreshData[1])->first();
+            $pageMaker = new PageMaker();
+            $htmlString = $pageMaker->pageHTML($page, false);
+           
+            return new Response($htmlString, 200, ['Content-Type' => 'text/html']);
+        }
+        else {
+            return response()->json(['error' => 'Invalid form name'], 400);
+        }
+    }
     public function createPage($returnTo)
     {
         $allPages = ContentItem::where('type', 'page')->get();
@@ -93,7 +108,7 @@ class PageController extends Controller
         $tabs = false;
         if (strpos($row->heading, 'column') !== false || strpos($row->heading, 'image') !== false) {
             $columnIds = $row->data['columns'];
-        } elseif ($row->heading === 'slides') {
+        } elseif ($row->heading === 'slidesshow') {
             $columnIds = $row->data['slides'];
         } else {
             $columnIds = $row->data['tabs'];

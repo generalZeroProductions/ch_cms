@@ -16,7 +16,7 @@ class SlideController extends Controller
         $firstSlide = ContentItem::create([
             'type' => 'column',
             'title'=>'slide 1 title',
-            'image' => 'defaultBanner.jpg',
+            'image' => 'defaultSlide.jpg',
             'body' => 'slide 1 caption',
             'heading' => 'slide',
         ]);
@@ -28,7 +28,7 @@ class SlideController extends Controller
             'title' => $request->page_name . '_' . $request->rowIndex,
             'index' => $request->row_index_slide+1,
             'type' => 'row',
-            'heading' => 'banner',
+            'heading' => 'slideshow',
             'data' => $rowData,
         ]);
         $page = ContentItem::findOrFail($request->page_id);

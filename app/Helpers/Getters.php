@@ -1,5 +1,5 @@
 <?php
-namespace TabFuncs;
+namespace App\Helpers;
 use App\Models\ContentItem;
 use App\Models\Navigation;
 use Illuminate\Http\Request;
@@ -9,9 +9,8 @@ use Illuminate\Support\Facades\View;
 use App\Helpers\TabFuncs; 
 use Illuminate\Support\Facades\Storage;
 
-class sessionGetters
+class Getters
 {
-
     public function getEdit()
     {
         if (Session::has('editMode')) {
@@ -40,18 +39,7 @@ class sessionGetters
         }
         return false;
     }
-    function setAllRoutes()
-    {
-        $getRoutes = ContentItem::where('type', 'page')->pluck('title')->toArray();
-        $allRoutes = json_encode($getRoutes);
-        $directory = 'public/images';
-        $files = Storage::allFiles($directory);
-        $allImages = [];
-        foreach ($files as $file) {
-            if ($file !== '.' && $file !== '..') {
-                $allImages[] = pathinfo($file, PATHINFO_BASENAME);
-            }
-        }
-        return $allRoutes;
-    }
+  
 }
+
+

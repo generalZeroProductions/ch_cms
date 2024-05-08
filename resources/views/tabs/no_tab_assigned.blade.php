@@ -1,25 +1,23 @@
 @php
-    $allRoutes = setAllRoutes();
     $routeSelectId = 'select_' . $rowId . $tabId;
     $saveRoute = 'save_' . $rowId . $tabId;
     $formName = 'form_asign_tab'.$rowId.$tabId;
-  
 @endphp
 
 <div class="center-page site-blue">
     <div class="d-flex flex-column  mb-3">
-        <div class="p-2">
-            <p> 通过 {{ $tabTitle }}</span> 链接分配一个页面通过链接分配页面。</p>
+        <div class="p-2" >
+            <p style = "padding:32px"> 通过 {{ $tabTitle }}</span> 链接分配一个页面通过链接分配页面。</p>
         </div>
         @if (!$mobile)
             <div class="p-2">
                 <form method= 'POST' action="/write_tab" id ="{{$formName}}">
                     @csrf
-                    <div class="row d-flex justify-content-end " style= "margin-right:24px">
-                        <div class="p-2 flex-fill " style= "font-size:24px; margin-right:24px">
+                    <div class="row d-flex justify-content-end " style= "padding:24px">
+                        <div class="p-2 " style= "font-size:24px; ">
                             从这里添加页面，或从标签编辑器中选择
                         </div>
-                        <div class="p-2 flex-fill ">
+                        <div class="p-2 flex-fill " style="margin-left:24px">
                             <select class= "form-control route-select" id="{{ $routeSelectId }}">
                                 <option value = "select a route..">select a route</option>
                             </select>
@@ -27,7 +25,7 @@
                         <input type="hidden" name="route" id="{{ $saveRoute }}">
                         <input type="hidden" name="tab_id" value="{{ $tabId }}">
                         <input type="hidden" name = "form_name" value = "tab_quick">
-                        <input type="submit">
+                      
                      </div>
                 </form>
             </div>
@@ -55,7 +53,10 @@
     }
 </style>
 
+<div class="no-route-scripts">
 <script>
-    allRoutes = decodeRoutes('{{ $allRoutes }}');
-    populateRoutesNoTab('{{ $rowId }}', '{{ $tabId }}');
+  populateRoutesNoTab('{{ $rowId }}', '{{ $tabId }}');
 </script>
+
+</div>
+

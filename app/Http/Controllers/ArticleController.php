@@ -23,10 +23,10 @@ class ArticleController extends Controller
         ]);
 
         $columnIds[] = $column->id;
-        $loremIpsumText2 = $generator->getParagraphs(1);
+       
         $column2 = ContentItem::create([
             'type' => 'column',
-            'body' => implode("\n\n", $loremIpsumText2),
+            'body' => implode("\n\n", $loremIpsumText),
             'title' => '<h3>second column title</h3>',
             'heading' => 'title_text',
         ]);

@@ -1,15 +1,8 @@
 @php
     $articleId1 = 'article_' . $column1->id;
-    $articleId2 = 'article_' . $column2->id;
-    $rowId = $location['page']['id'] . $location['row']['id'];
+    $articleId2 = 'article_' . $column2->id; 
 @endphp
-
-@if ($editMode && !$tabContent)
-    @include('app/layouts/partials.delete_row_button', ['index' => $location['row']['index']])
-@endif
-
-
-<div class = "container-fluid" id={{ $rowId }}>
+<div class = "container-fluid">
    <div class = 'container'>
     <div class = 'row'>
         <div class="col-md-6" id = "{{ $articleId1 }}">
@@ -22,10 +15,4 @@
     </div>
 </div>
 </div>
-@if ($editMode)
-    @include('app.layouts.partials.add_row_button', [
-        'location' => $location,
-        'index' => $location['row']['index'],
-    ])
-@endif
-<br>
+

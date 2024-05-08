@@ -59,7 +59,7 @@ var tabTracker;
 //     highlightListItem(scrollTabs, linkId);
 // }  <div id="{{ $contentId . $i }}" class="tabContent_{{$rowId}}">'content_' . $rowId;
 
-function changeTab(rowId, anchorId, tabIndex) {
+function changeTab(rowId, anchorId, tabIndex, pageId) {
     const row = document.getElementById(rowId); 
     var uls = row.querySelectorAll("#tabs");
     var ulElement = uls[0]; // Access the first <ul> element directly
@@ -72,10 +72,17 @@ function changeTab(rowId, anchorId, tabIndex) {
     link.className = "tab-item-on";
     var contentBox = 'content_'+rowId;
     const content = document.getElementById(contentBox);
-    var sequence = "refresh_/tab_refresh^"+rowId +"^"+tabIndex;
+    var sequence = "refresh_/tab_refresh^"+rowId +"^"+tabIndex+"^"+pageId;
     refreshDiv(content, sequence)
+    .then(() => {
+        loadNoRoutes();
+    })
+    .catch((error) => {
+        console.error('Error refreshing page:', error);
+    });
 
 }
+
 
 // function refreshDiv(div, sequence) {
 
@@ -91,43 +98,6 @@ function tabsScrollWithContent(menuId, contentId) {
         console.log("bottom of content: " + contentBottom);
     });
 }
-
-// function executeScriptsInTab(tabId) {
-//     var runScriptsTab = document.querySelectorAll("#runScriptTab");
-//     runScriptsTab.forEach((script) => {
-//         var innerHtml = script.innerHTML;
-//         innerHtml = innerHtml.replace(
-//             /populateRoutesNoTab\(([^)]*)\)/,
-//             `populateRoutesNoTab(${tabId})`
-//         );
-//         var setRoutesCall = innerHtml.match(/populateRoutesNoTab\([^)]*\)/);
-//         if (setRoutesCall !== null) {
-//             eval(setRoutesCall[0]);
-//         }
-//     });
-// }
-
-// function populateRoutesNoTab(tabId) {
-//     const selectRoutes = document.getElementById("no_tab_route_select");
-//     if (selectRoutes) {
-//         console.log(allRoutes + "ALL ");
-//         allRoutes.forEach(function (page) {
-//             var option = document.createElement("option");
-//             option.value = page;
-//             option.text = page;
-//             selectRoutes.appendChild(option);
-//         });
-//         var selectElement = document.getElementById("no_tab_route_select");
-//         document.getElementById("tab_scroll_to").value = window.scrollY;
-//         document.getElementById("quick_tab_id").value = tabId;
-//         var routeSelect = document.getElementById("route");
-//         var form = document.getElementById("tab_quick_select"); // Replace "your_form_id" with the actual ID of your form
-//         selectElement.addEventListener("change", function () {
-//             routeSelect.value = selectElement.value;
-//             form.submit();
-//         });
-//     }
-// }
 
 function loadTabAcc(tab, div) {
     const tabItem = JSON.parse(tab);
@@ -153,7 +123,7 @@ function populateRoutesNoTab(rowId, tabId) {
     const useRoute = routeValues[0];
     const replaceDivs = row.querySelectorAll('.tabContent_'+rowId+tabId);
     const div = replaceDivs[0];
-
+console.log(allRoutes);
     allRoutes.forEach(function (page) {
         var option = document.createElement("option");
         option.value = page;

@@ -1,3 +1,64 @@
+function filloutNavForms(item, formName, key) {
+    var intercept = false;
+
+    if (formName === "nav_standard") {
+        addFieldAndValue("item_id", item.id);
+        addFieldAndValue("title", item.title);
+        var route_select = document.getElementById("route_select");
+        allRoutes.forEach(function (page) {
+            var option = document.createElement("option");
+            option.value = page;
+            option.text = page;
+            if (page === item.route) {
+                option.selected = true;
+            }
+            route_select.appendChild(option);
+        });
+        intercept = true;
+    }
+    if (formName == "nav_delete") {
+        addFieldAndValue("item_id", item.id);
+        addFieldAndValue("scroll_to", window.scrollY);
+        addFieldAndValue("location", location);
+        addFieldAndValue("key", key);
+        console.log(location);
+    }
+    if (formName === "nav_add") {
+        addFieldAndValue("standard_scroll", window.scrollY);
+        addFieldAndValue("standard_loc", location);
+        addFieldAndValue("standard_item_id", item.id);
+        addFieldAndValue("standard_key", key);
+
+        addFieldAndValue("drop_scroll", window.scrollY);
+        addFieldAndValue("drop_loc", location);
+        addFieldAndValue("dropdown_item_id", item.id);
+        addFieldAndValue("dropdown_key", key);
+
+        addFieldAndValue("cancel_scroll", window.scrollY);
+        addFieldAndValue("cancel_loc", location);
+        addFieldAndValue("cancel_item_id", item.id);
+        addFieldAndValue("cancel_key", key);
+    }
+    if (formName === "nav_dropdown") {
+        dropdownData = [];
+        var navItem = item.nav;
+        var subItems = item.sub;
+        subIndex = subItems.length;
+        subNavIndex = 1;
+        newNavId = -1;
+        addFieldAndValue("title", navItem.title);
+        addFieldAndValue("item_id", navItem.id);
+        addFieldAndValue("key", key);
+        var list = document.getElementById("dropdown_list");
+        subItems.forEach(function (subItem) {
+            newSubnavFromSource(subItem, list);
+        });
+        intercept = true;
+    }
+    return intercept;
+}
+
+
 
 function modalContentNav(action,item)
 {
