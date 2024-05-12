@@ -1,5 +1,6 @@
 @php
     $tabCol = 'tab_col_' . $rowId;
+    $contentCol = 'content_col_'.$rowId;
     $contentBoxId = 'content_'.$rowId;
     $tab0Route = $tab0->route;
     $tab0Index = $tab0->index;
@@ -10,17 +11,9 @@
 
 <div class="d-flex justify-content-start" id="{{ $rowId }}">
     <div class="col-3" id = "{{ $tabCol }}">
-        @if ($editMode)
-            <div>
-                <a href = "#"
-                    onClick="editTabsList({{ json_encode($tabs) }},'{{ $rowId }}', '{{ json_encode($location) }}')">
-                    <span><img src="{{ asset('icons/pen.svg') }}" class="pen-icon"></span>
-                </a>
-            </div>
-        @endif
-      @include('/tabs/tab_menu',['tabs'=>$tabs,'tab0'=>$tab0,'rowId'=>$rowId])
+      @include('/tabs/tab_menu',['tabs'=>$tabs,'tab0'=>$tab0,'rowId'=>$rowId, 'divId'=>$tabCol])
     </div>
-    <div class="col-9 ">
+    <div class="col-9 " id="{{$contentCol}}">
             <div id="{{ $contentBoxId }}" class="tabContent_{{ $rowId }}">
             </div>
     </div>

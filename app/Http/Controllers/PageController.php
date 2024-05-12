@@ -8,13 +8,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Response;
 use App\Helpers\PageMaker;
+use Illuminate\Support\Facades\Log;
 class PageController extends Controller
 {
-    public static function sortRefresh($refresh)
+    public static function render($render)
     {
-        $refreshData = explode('^', $refresh);
-        if ($refreshData[0] === 'page') {
-            $page = ContentItem::where('type', 'page')->where('id',$refreshData[1])->first();
+        $rData = explode('^', $render);
+        if ($rData[0] === 'page') {
+            $page = ContentItem::where('type', 'page')->where('id',$rData[1])->first();
+            if ($page){ Log::info("page found, title: ".$page->title);}else{Log::info('no page found by Page Render');}
+
             $pageMaker = new PageMaker();
             $htmlString = $pageMaker->pageHTML($page, false);
            

@@ -2,77 +2,72 @@ var dropdownData = [];
 var subNavIndex = 0;
 var newNavId = -1;
 
-// function addDropdownNav() {
-//     dropdownData = [];
-//     subNavIndex = 1;
-//     newNavId = -1;
-//     const modal = document.getElementById("main_modal");
-//     fetch("/dropdown_adder")
-//         .then((response) => response.text())
-//         .then((html) => {
-//             modBody.innerHTML = html;
-//             document.getElementById("drop_title").value = "new dropdown";
-//             document.getElementById("page_id").value = modal.dataset.pageId;
-//             document.getElementById("scroll_to").value = scrollBackTo;
-//             for (let i = 0; i < 3; i++) {
-//                 createSubNavItem();
-//             }
-//         })
-//         .catch((error) => console.error("Error loading newNavSelect:", error));
-// }
-
-// function editDropdown(item) {
-//     dropdownData = [];
-//     var parseItem = JSON.parse(item);
-//     var navItem = parseItem['nav'];
-//     var subItems = parseItem['sub'];
-//     subIndex = subItems.length;
-//     modTitleLabel.innerHTML = "更改下拉菜单";
-//     subNavIndex = 1;
-//     newNavId = -1;
-//     fetch("/dropdown_editor")
-//         .then((response) => response.text())
-//         .then((html) => {
-//             modBody.innerHTML = html;
-//             document.getElementById("drop_title").value = navItem.title;
-//             document.getElementById("drop_id").value = navItem.id;
-//             document.getElementById("page_id").value = locItem.page.id;
-//             document.getElementById("scroll_to").value = scrollBackTo;
-//             var list = document.getElementById("dropdown_list");
-//             subItems.forEach(function (subItem) {
-//                 newSubnavFromSource(subItem, list);
-//             });
-//         })
-//         .catch((error) => console.error("Error loading form:-> edit_dropdown_form. Details: ", error));
-// }
-
+function newSubnavFromSource(subItem, list) {
+    var newItem = {
+        id: subItem.id,
+        title: subItem.title,
+        route: subItem.route,
+        index: subItem.index,
+        trash:subItem.title,
+    };
+    addSubItem(newItem, list);
+}
 function createSubNavItem() {
     var list = document.getElementById("dropdown_list");
     var newItem = {
         id: newNavId,
-        title: "newItem",
+        title: "新子菜单"+dropdownData.length,
         route: allRoutes[0],
         index: dropdownData.length,
+        trash:"newItem"+dropdownData.length,
     };
     newNavId -= 1;
     addSubItem(newItem, list);
 }
+function deleteSubNav(index) {
+    var itemIndex = dropdownData.findIndex((item) => item.id === index);
+    var removeItem = dropdownData.find((item) => item.id === index);
+
+    if (itemIndex !== -1) {
+        dropdownData.splice(itemIndex, 1);
+        dropdownData.forEach((item) => {
+            if (item.index > index) {
+                item.index--;
+            }
+        });
+    }
+    var divToRemove = document.getElementById("sub_nav" + removeItem.trash);
+    divToRemove.remove();
+    updateDropdownData();
+}
 
 function addSubItem(newItem, list) {
-
     dropdownData.push(newItem);
+    var subItemDiv = document.createElement("div");
+    subItemDiv.id = "sub_nav" + newItem.title;
     var newDiv = document.createElement("div");
     newDiv.classList.add("d-flex");
     newDiv.classList.add("tab_li_spacer");
+    var deleteLink = document.createElement("a");
+
+    deleteLink.onclick = function () {
+        deleteSubNav(newItem.id);
+    };
+    deleteLink.classList.add("trashcan");
+    var img1 = document.createElement("img");
+    img1.classList.add("link_icon_spacer");
+    img1.src = iconsAsset + "trash.svg";
+    deleteLink.appendChild(img1);
+    newDiv.appendChild(deleteLink);
+    deleteLink.style.cursor = "pointer";
     var newInput = document.createElement("input");
     newInput.setAttribute("type", "text");
     newInput.id = "text_" + newItem.id;
     newInput.value = newItem.title;
-    newInput.classList.add("form-control" , "local-ctl");
+    newInput.classList.add("form-control", "local-ctl", "subItemInput");
     newInput.setAttribute("autocomplete", "off");
     newDiv.appendChild(newInput);
-   
-    list.appendChild(newDiv);
+    subItemDiv.appendChild(newDiv);
     var newDiv2 = document.createElement("div");
     newDiv2.classList.add("d-flex");
     var img = document.createElement("img");
@@ -87,45 +82,28 @@ function addSubItem(newItem, list) {
         option.value = page;
         option.text = page;
         if (page === newItem.route) {
-            option.selected = true; // Set 'selected' attribute for the default value
+            option.selected = true; 
         }
         newSelect.appendChild(option);
     });
     newDiv2.appendChild(newSelect);
-    list.appendChild(newDiv2);
-    
+    subItemDiv.appendChild(newDiv2);
+    list.appendChild(subItemDiv);
+
     newSelect.addEventListener("change", function (event) {
         var selection = event.target.value;
         var itemId = newItem.id;
         updateSubnav(itemId, { route: selection });
     });
-    
+
     newInput.addEventListener("input", function (event) {
-        var text = event.target.value;
+        validateForm(newInput, event);
         var itemId = newItem.id;
-        var text = event.target.value.trim();
-        if (text === "") {
-            newInput.style.backgroundColor = "rgb(210, 210, 223)";
-            newInput.placeholder = "不包括菜单项";
-        } else {
-            newInput.style.backgroundColor = "";
-            newInput.placeholder = "";
-        }
+        var text = event.target.value;
         updateSubnav(itemId, { title: text });
     });
-    
-    updateDropdownData();
-    
-}
 
-function newSubnavFromSource(subItem, list) {
-    var newItem = {
-        id: subItem.id,
-        title: subItem.title,
-        route: subItem.route,
-        index: subItem.index,
-    };
-    addSubItem(newItem, list);
+    updateDropdownData();
 }
 
 function updateSubnav(itemId, newData) {
@@ -136,7 +114,19 @@ function updateSubnav(itemId, newData) {
     updateDropdownData();
 }
 
+
 function updateDropdownData() {
     var hiddenField = document.getElementById("dropDownData");
     hiddenField.value = JSON.stringify(dropdownData);
+    var trash = document.querySelectorAll(".trashcan");
+    if (dropdownData.length === 1) {
+        trash.forEach((element) => {
+            element.style.visibility = "hidden";
+        });
+    } else {
+        trash.forEach((element) => {
+            element.style.visibility = "visible";
+        });
+    }
 }
+

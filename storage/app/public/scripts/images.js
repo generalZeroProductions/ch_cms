@@ -1,4 +1,5 @@
-function showUploadImageStandard(modContent, item, location) {
+function showUploadImageStandard(item, location) {
+    console.log("ITEM " +item);
     var itemItem = JSON.parse(item);
     var locItem = JSON.parse(location);
     document.getElementById("main_modal_label").innerHTML = "选择图像";
@@ -20,8 +21,38 @@ function showUploadImageStandard(modContent, item, location) {
 }
 
 
+
+
 function insertUploadFileBar(id) {
     var iconBar = getIconBar(id);
+    if (iconBar) {
+        fetch("/insert_upload_file")
+            .then((response) => response.text()) // Parse response as text
+            .then((html) => {
+                iconBar.innerHTML = html;
+                var anchors = iconBar.querySelectorAll("a");
+                anchors.forEach((anchor) => {
+                    if (anchor.id === "close") {
+                        anchor.onclick = function () {
+                            displayEditIcons(id);
+                        };
+                    }
+                });
+                var inputs = iconBar.querySelectorAll("input");
+                inputs.forEach((input) => {
+                    if (input.id === "upload") {
+                        input.addEventListener("change", (event) => {
+                            displayUploadedImage(id, input);
+                        });
+                    }
+                });
+            })
+            .catch((error) => console.error("Error loading page:", error));
+    }
+}
+
+function insertUploadFileBar2(iconBar) {
+
     if (iconBar) {
         fetch("/insert_upload_file")
             .then((response) => response.text()) // Parse response as text
@@ -101,8 +132,16 @@ function getIconBar(id) {
     }
 }
 
-function insertFileSelect(id) {
-    var iconBar = getIconBar(id);
+function getIconBarS(id) {
+    var cards = document.querySelectorAll("#edit_icons");
+    console.log("how many catrds " + cards.length)
+    return cards[0];
+}
+
+function insertFileSelect2(iconBar) {
+    
+
+    console.log('CAN I GET HERE???')
     if (iconBar) {
         fetch("/insert_file_select")
             .then((response) => response.text()) // Parse response as text
@@ -122,6 +161,63 @@ function insertFileSelect(id) {
                         select.addEventListener("input", (event) => {
                             displaySelectedFile(id, select.value);
                         });
+                    }
+                });
+            })
+            .catch((error) => console.error("Error loading page:", error));
+    }
+}
+
+function insertFileSelect(id) {
+    var iconBar = getIconBar(id);
+
+    console.log('CAN I GET HERE???')
+    if (iconBar) {
+        fetch("/insert_file_select")
+            .then((response) => response.text()) // Parse response as text
+            .then((html) => {
+                iconBar.innerHTML = html;
+                var anchors = iconBar.querySelectorAll("a");
+                anchors.forEach((anchor) => {
+                    if (anchor.id === "close") {
+                        anchor.onclick = function () {
+                            displayEditIcons(id);
+                        };
+                    }
+                });
+                var selects = iconBar.querySelectorAll("select");
+                selects.forEach((select) => {
+                    if (select.id === "select") {
+                        select.addEventListener("input", (event) => {
+                            displaySelectedFile(id, select.value);
+                        });
+                    }
+                });
+            })
+            .catch((error) => console.error("Error loading page:", error));
+    }
+}
+function displayEditIcons2(id) {
+    var iconBar = getIconBarS(id);
+    console.log("what is icon bar Id? "+ iconBar)
+    if (iconBar) {
+        fetch("/insert_image_icons_2")
+            .then((response) => response.text()) // Parse response as text
+            .then((html) => {
+                iconBar.innerHTML = html;
+                var anchors = iconBar.querySelectorAll("a");
+                console.log('how many anchors fournd ' +anchors.length )
+                anchors.forEach((anchor) => {
+                    if (anchor.id === "file") {
+                        console.log("GOT FILE GETTER")
+                        anchor.onclick = function () {
+                            insertFileSelect2(iconBar);
+                        };
+                    }
+                    if (anchor.id === "upload") {
+                        anchor.onclick = function () {
+                            insertUploadFileBar2(iconBar);
+                        };
                     }
                 });
             })

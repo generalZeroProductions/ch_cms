@@ -528,3 +528,65 @@ PAGE PAGINATION ?????
         </div>
     </div>
 </div>
+
+
+
+
+ public static function sortRefresh($refresh) 
+    {
+        $refreshData = explode('^', $refresh);
+        if ($refreshData[0] === 'tab_refresh') {
+            $tab = Navigation::findOrFail($refreshData[3]);
+           if ($tab->route === 'no_tab_assigned') {
+          
+           $row = ContentItem::find($refreshData[1]);
+          
+           $setter = new Setters();
+           $htmlString = View::make('tabs.no_tab_assigned', [
+                'tabId' => $tab->id,
+                'tabTitle' => $tab->title,
+                'rowId' => $row->id,
+                'mobile' => Session::get('mobile'),
+                'allRoutes' => $setter->setAllRoutes()
+            ])->render();
+            return new Response($htmlString, 200, ['Content-Type' => 'text/html']);
+        } else{
+           
+           $page = ContentItem::where('title', $tab->route);
+           $pageMaker = new PageMaker();
+           $htmlString = $pageMaker->pageHTML($page, true);
+            return new Response($htmlString, 200, ['Content-Type' => 'text/html']);}
+        } else {
+            return response()->json(['error' => 'Invalid form name'], 400);
+        }
+    }
+
+
+
+
+
+    <div class="image-control-bar" id="select_image_ctls">
+
+    @if ($slides)
+        @include('images.partials.image_icons_3')
+    @else
+        {{-- @include('images.partials.image_icons_2') --}}
+    @endif
+    <div class="d-flex flex-row mb-2" id="select_file_bar">
+        <div class="p-2 w-100 ">
+            <select class="form-control" id="select">
+                <option value="选择一个文件...">选择一个文件...</option>
+
+            </select>
+        </div>
+
+    </div>
+    {{-- @include('images.partials.select_file_bar') --}}
+    {{-- @include('images.partials.upload_file_bar') --}}
+</div>
+<div class = "image-thumb" id = "thumb" style ="margin-top:150px">
+    <img src = "{{ asset('images/lake.jpg') }}" class="image-crop">
+</div>
+@if (!$slides)
+    {{-- @include('images.partials.corners_select') --}}
+@endif

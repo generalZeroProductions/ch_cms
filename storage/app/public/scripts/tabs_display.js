@@ -1,90 +1,38 @@
 var tabTracker;
 
-// $tabCol = 'tab_col_' . $rowId;
-// $scrollTabs = 'scroll_' . $rowId;
-// $contentCol = 'content_col_' . $rowId;
-// $contentDiv = 'content_div_' . $rowId;
-
-// function loadTab(tab, rowId) {
-//     preventScrolling();
-//     const tabItem = JSON.parse(tab);
-//     tabTracker = tabItem.id + "T" + rowId;
-//     const linkId = "tab_" + tabItem.id;
-//     const content = document.getElementById("content_div_" + rowId);
-//     const scrollTabs = document.getElementById("scroll_" + rowId);
-
-//     updateTabId(tabTracker);
-//     fetch("/load_tab/" + tabItem.route)
-//         .then((response) => response.text()) // Parse response as text
-//         .then((html) => {
-//             content.innerHTML = html;
-//             if (tabItem.route === "no_tab_assigned") {
-//                 var tabLabel = content.querySelector("#no-tab-content");
-//                 const scrollTo = document.getElementById("tab_scroll_to");
-//                 window.addEventListener("scroll", function () {
-//                     scrollTo.value = window.scrollY;
-//                 });
-//                 tabLabel.innerHTML = tabItem.title;
-//                 executeScriptsInTab(tabItem.id);
-//             }
-//             enableScrolling();
-//         })
-//         .catch((error) => console.error("Error loading page:", error));
-//     console.log("SCROLL IS: " + scroll);
-//     return;
-//     highlightListItem(scrollTabs, linkId);
-// }
-
-// function startTabs(title, route, linkId, tabId, rowId) {
-//     console.log("row id????" + rowId);
-//     const content = document.getElementById("content_div_" + rowId);
-//     const scrollTabs = document.getElementById("scroll_" + rowId);
-//     updateTabId(tabId + "T" + rowId);
-//     fetch("/load_tab/" + route)
-//         .then((response) => response.text()) // Parse response as text
-//         .then((html) => {
-//             content.innerHTML = html;
-//             if (route === "no_tab_assigned") {
-//                 var tabLabel = content.querySelector("#no-tab-content");
-//                 const scrollTo = document.getElementById("tab_scroll_to");
-//                 window.addEventListener("scroll", function () {
-//                     scrollTo.value = window.scrollY;
-//                 });
-//                 tabLabel.innerHTML = title;
-//                 executeScriptsInTab(tabId);
-//             }
-//         })
-//         .catch((error) => console.error("Error loading page:", error));
-
-//     highlightListItem(scrollTabs, linkId);
-// }  <div id="{{ $contentId . $i }}" class="tabContent_{{$rowId}}">'content_' . $rowId;
-
-function changeTab(rowId, anchorId, tabIndex, pageId) {
-    const row = document.getElementById(rowId); 
-    var uls = row.querySelectorAll("#tabs");
-    var ulElement = uls[0]; // Access the first <ul> element directly
-    var links = ulElement.querySelectorAll("a");
-    links.forEach(function (link) {
-        link.className = "tab-item-off";
-    });
-    var link = document.getElementById(anchorId);
-
-    link.className = "tab-item-on";
-    var contentBox = 'content_'+rowId;
-    const content = document.getElementById(contentBox);
-    var sequence = "refresh_/tab_refresh^"+rowId +"^"+tabIndex+"^"+pageId;
-    refreshDiv(content, sequence)
-    .then(() => {
-        loadNoRoutes();
-    })
-    .catch((error) => {
-        console.error('Error refreshing page:', error);
-    });
+function setTabMenuScroll(id)
+{
+var scroll = document.getElementById('scroll_'+id);
+var content = document.getElementById('content_'+id)
+var menu = document.getElementById('menu_'+id)
+var rect = element.getBoundingClientRect();
+var rect = element.getBoundingClientRect();
+var scrollTop = rect.top;
+var scrollBottom = rect.bottom;
 
 }
+// window.addEventListener("scroll", function() {
+//     const dummyDiv = document.getElementById("dummy-div");
+//     const menu = document.getElementById("menu");
+//     const scrollY = window.scrollY;
 
+//     // Adjust the height of the dummy div based on the scroll position
+//     dummyDiv.style.height = menu.clientHeight + "px";
+// });
 
-// function refreshDiv(div, sequence) {
+// window.addEventListener("scroll", function() {
+//     var dummy = document.getElementById("dummy");
+//     var menuContainer = document.getElementById("menu-container");
+//     var menu = document.getElementById("menu");
+//     var scrollPosition = window.scrollY;
+//     var dummyHeight = menu.offsetHeight;
+//     if (scrollPosition >= dummyHeight) {
+//         menuContainer.classList.add("fixed");
+//     } else {
+//         menuContainer.classList.remove("fixed");
+//     }
+//     dummy.style.height = menu.offsetHeight + "px";
+// });
 
 function tabsScrollWithContent(menuId, contentId) {
     window.addEventListener("scroll", function () {
@@ -99,31 +47,45 @@ function tabsScrollWithContent(menuId, contentId) {
     });
 }
 
-function loadTabAcc(tab, div) {
-    const tabItem = JSON.parse(tab);
-    const content = document.getElementById(div);
-    if (tabItem.route != "no_tab_assigned") {
-        fetch("/load-tab/" + tabItem.route)
-            .then((response) => response.text()) // Parse response as text
-            .then((html) => {
-                content.innerHTML = html;
-            })
-            .catch((error) => console.error("Error loading page:", error));
-    } else {
-        var tabLabel = content.querySelector("#no-tab-content");
-        tabLabel.innerHTML = tabItem.title;
-    }
+
+function changeTab(rowId, anchorId, tabIndex, tabId) {
+    preventScrolling();
+    const row = document.getElementById(rowId); 
+    var uls = row.querySelectorAll("#tabs");
+    var ulElement = uls[0]; // Access the first <ul> element directly
+    var links = ulElement.querySelectorAll("a");
+    links.forEach(function (link) {
+        link.className = "tab-item-off";
+    });
+    var link = document.getElementById(anchorId);
+
+    link.className = "tab-item-on";
+    var contentBox = 'content_'+rowId;
+    const content = document.getElementById(contentBox);
+    var sequence = "tab_refresh^"+rowId +"^"+tabIndex+"^"+tabId;
+    renderToDiv(content, sequence)
+    .then(() => {
+        loadNoRoutes();
+        enableScrolling();
+    })
+    .catch((error) => {
+        console.error('Error refreshing page:', error);
+    });
+
 }
 
-function populateRoutesNoTab(rowId, tabId) {
+
+
+
+function populateRoutesNoTab(rowId,tabIndex, tabId) {
     const row = document.getElementById(rowId);
     const selectRoutes = row.querySelectorAll("#select_" + rowId + tabId);
     const routeSelect = selectRoutes[0];
     const routeValues = row.querySelectorAll("#save_" + rowId + tabId);
     const useRoute = routeValues[0];
-    const replaceDivs = row.querySelectorAll('.tabContent_'+rowId+tabId);
+    const replaceDivs = row.querySelectorAll('.tabContent_'+rowId);
     const div = replaceDivs[0];
-console.log(allRoutes);
+    console.log('how many : '+ replaceDivs.length)
     allRoutes.forEach(function (page) {
         var option = document.createElement("option");
         option.value = page;
@@ -135,16 +97,17 @@ console.log(allRoutes);
    
     form.addEventListener("submit", function(event) {
         event.preventDefault();
-        submitUpdateRequest_tab(formName,div);
+       
     });
     routeSelect.addEventListener("change", function (event) {
         useRoute.value = routeSelect.value;
-       form.submit();
+        submitUpdateRequest_tab(formName,div, rowId, tabIndex,tabId);
     });
 
 }
 
-function submitUpdateRequest_tab(formName, div) {
+function submitUpdateRequest_tab(formName, div, rowId, tabIndex, tabId) {
+
     preventScrolling();
     var form = document.getElementById(formName);
     const formData = new FormData(form);
@@ -155,7 +118,7 @@ function submitUpdateRequest_tab(formName, div) {
         .then((response) => {
             if (response.ok) {
                 console.error("Form submitte OK:", response.statusText);
-                fetch("/refresh_tab/" + formName + "^" + tabId)
+                fetch("refresh_/tab_refresh^"+rowId +"^"+tabIndex+"^"+tabId)
                     .then((response) => response.text()) // Parse response as text
                     .then((html) => {
                         div.innerHTML = html;
@@ -174,4 +137,23 @@ function submitUpdateRequest_tab(formName, div) {
             console.error("Error writing to " + formName + ":", error);
             enableScrolling();
         });
+}
+
+
+
+
+function loadTabAcc(tab, div) {
+    const tabItem = JSON.parse(tab);
+    const content = document.getElementById(div);
+    if (tabItem.route != "no_tab_assigned") {
+        fetch("/load-tab/" + tabItem.route)
+            .then((response) => response.text()) // Parse response as text
+            .then((html) => {
+                content.innerHTML = html;
+            })
+            .catch((error) => console.error("Error loading page:", error));
+    } else {
+        var tabLabel = content.querySelector("#no-tab-content");
+        tabLabel.innerHTML = tabItem.title;
+    }
 }

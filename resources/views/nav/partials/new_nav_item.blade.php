@@ -1,26 +1,30 @@
 @php
     $divId = 'add_at' . $nav->index;
+    $item = $nav->index;
 @endphp
-<li class="nav-item add-nav-div" id = "{{ $divId }}">
-    <div class="d-flex align-items-center ">
-        |
-        <a href = "#" id="add_nav_anchor" class="nav-link"
-            onClick = "insertForm('{{ json_encode($nav) }}', 'nav_add', '{{ $divId }}')">
+<li class="nav-item adder d-flex justify-content-center adder-narrow" id = "{{ $divId }}">
+    <a style= "cursor: pointer;" id="add_nav_anchor" class="nav-link "
+        onClick = "insertForm('add_nav', '{{ $item }}' ,  '{{ $divId }}')">
+        <img src = "{{ asset('icons\add_nav.svg') }}" class="add-nav-icon">
+    </a>
 
-            <img src = "{{ asset('icons\add.svg') }}" class="add-nav-icon">
-
-        </a>
-        |
-    </div>
 </li>
 <style>
-    .add-nav-div {
-        padding-top: 9px;
-        margin-right: 6px;
+    .add-nav-icon {
+        margin-top: 12px;
+        margin-right: 0px !important;
+        height: 18px;
     }
 
-    .add-nav-icon {
-        margin-top:3px;
-        height: 18px;
+    .adder-narrow {
+        width: 60px !important;
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+
+       .adder-wide {
+        width: 200px !important;
+        padding-right: 10px !important;
+        margin-right:30px;
     }
 </style>

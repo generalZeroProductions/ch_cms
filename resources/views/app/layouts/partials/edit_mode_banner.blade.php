@@ -1,7 +1,7 @@
 @php
     $loc = Session::get('location');
     $returnLoc;
-    $editMode = getEditMode();
+    $editMode = Session::get('editMode'); 
     if (Session::has('returnPage')) {
         if (Session::get('returnPage') !== '') {
             $returnLoc = Session::get('returnPage');
@@ -12,7 +12,7 @@
 
 @endphp
 
-<div class ='edit-container'>
+<div class ='edit-container' id = "edit_mode_contain">
     <div class="row d-flex justify-content-end rounded-box">
         <div class=col-2>
             @include('app.auth_on_off')
@@ -20,19 +20,12 @@
         <div class=col-5>
             <div class="row ">
                 return = {{ Session::get('returnPage') }}
-
                 &nbsp;&nbsp;&nbsp; /tab = {{ Session::get('tabId') }}
-
                 &nbsp;&nbsp;&nbsp; / build = {{ Session::get('buildMode') }}
-
-
-
             </div>
 
             <div class=row>
-
                 &nbsp;&nbsp;&nbsp; /edit = {{ Session::get('editMode') }}
-
                 &nbsp;&nbsp;&nbsp; /location = {{ Session::get('location') }}
 
             </div>

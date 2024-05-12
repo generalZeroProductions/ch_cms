@@ -9,6 +9,31 @@ use Illuminate\Support\Facades\View;
 
 class Setters
 {
+
+    function setSubNavs($nav)
+    {
+        $subNavItems = [];
+        $navData = $nav->data['items'];
+        foreach ($navData as $itemId) {
+            $nextItem = Navigation::findOrFail($itemId);
+            if ($nextItem) {
+                $subNavItems[] = $nextItem;
+            }
+        }
+        usort($subNavItems, array($this, 'sortByIndex'));
+        return $subNavItems;
+    }
+    
+    function getRowIdFromData($data)
+    {
+        foreach ($data as $d) {
+            $column = ContentItem::findOrFail($d);
+            if ($column) {
+                return true;
+            }
+        }
+        return false;
+    }
     function setAllRoutes()
     {
         $getRoutes = ContentItem::where('type', 'page')->pluck('title')->toArray();
@@ -71,27 +96,29 @@ class Setters
     }
     function setTabContents($tabs, $rowId, $mobile, $allRoutes)
     {
+
         $maker = new PageMaker();
         $contents = [];
         foreach ($tabs as $tab) {
+
             $page = ContentItem::where('type', 'page')
                 ->where('title', $tab->route)
                 ->first();
-                if (isset($page)) {
+            if (isset($page)) {
                 $content = $maker->pageHTML($page, true);
                 $contents[] = $content;
-                }
-                else
-                {
-                    $content = View::make('tabs.no_tab_assigned', [
-                        'tabId' => $tab->id,
-                        'tabTitle' => $tab->title,
-                        'rowId' => $rowId,
-                        'mobile' => Session::get('mobile'),
-                        'allRoutes' => $allRoutes
-                    ])->render();
-                }
-           
+            } else {
+
+                $content = View::make('tabs.no_tab_assigned', [
+                    'tabId' => $tab->id,
+                    'tabTitle' => $tab->title,
+                    'tabIndex' => $tab->index,
+                    'rowId' => $rowId,
+                    'mobile' => Session::get('mobile'),
+                    'allRoutes' => $allRoutes,
+                ])->render();
+            }
+
         }
         return $contents;
 

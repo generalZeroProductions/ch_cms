@@ -11,8 +11,6 @@ Session::put('returnPage','');
     <br>
     @include('app//auth_on_off')
     <div class="container">
- 
-
         <div class = "row d-flex justify-content-between rounded-box">
             <div class="p-2">
                 <button class="btn btn-primary btn-top-console " onClick="viewSite('dashboard')">查看网站
@@ -62,10 +60,7 @@ Session::put('returnPage','');
         <div id="pagesDiv">
         </div>
     </div>
-<button onClick='testPost()'>test</button>
-    @if (Auth::check())
-        <h2 style = "color:red"> AUTH </h2>
-    @endif
+
 @endsection
 @include('forms.main_modal')
 <style>

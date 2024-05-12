@@ -2,30 +2,40 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\PageMaker;
+use App\Helpers\Setters;
 use App\Models\ContentItem;
 use App\Models\Navigation;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\View;
-use App\Helpers\PageMaker;
-use App\Helpers\Setters;
 
-// use App\Helpers\TabFuncs\sessionGetters; 
-use Illuminate\Support\Facades\Storage;
+// use App\Helpers\TabFuncs\sessionGetters;
+use Illuminate\Support\Facades\View;
 
 class TabController extends Controller
 {
-    public function quickAssign(Request $request)
-    {dd($request);
+
+    public static function insert($formName)   {
+        Log::info('in  make: '. $formName);
+        if ($formName === 'edit_tabs') {
+            Log::info('in Edit tabs now make: '. $formName);
+            $htmlString = View::make('tabs.edit_tabs_form')->render();
+            return new Response($htmlString, 200, ['Content-Type' => 'text/html']);
+        }
+
+    }
+    public function assignRoute(Request $request)
+    {
         $tab = Navigation::findOrFail($request->tab_id);
         $tab->route = $request->route;
-        $tab->save();}
-    public function sortWrite(Request $request)
+        $tab->save();
+    }
+    public function write(Request $request)
     {
-
-        if ($request->form_name === 'tab_quick') {
-            $this->quickAssign($request);
+        if ($request->form_name === 'assignRoute') {
+            $this->assignRoute($request);
         }
     }
 
@@ -140,29 +150,34 @@ class TabController extends Controller
         }
         return redirect()->route('root', ['newLocation' => Session::get('location')]);
     }
-    public static function sortRefresh($refresh) 
+    public static function render($render)
     {
-        $refreshData = explode('^', $refresh);
-        if ($refreshData[0] === 'tab_refresh') {
-            $tab = Navigation::findOrFail($refreshData[3]);
-           if ($tab->route === 'no_tab_assigned') {
-          
-           $row = ContentItem::find($refreshData[1]);
-        
-           $setter = new Setters();
-           $htmlString = View::make('tabs.no_tab_assigned', [
-                'tabId' => $tab->id,
-                'tabTitle' => $tab->title,
-                'rowId' => $row->id,
-                'mobile' => Session::get('mobile'),
-                'allRoutes' => $setter->setAllRoutes()
-            ])->render();
-            return new Response($htmlString, 200, ['Content-Type' => 'text/html']);
-        } else{
-           $page = ContentItem::where('title', $tab->route);
-           $pageMaker = new PageMaker();
-           $htmlString = $pageMaker->pageHTML($page, true);
-            return new Response($htmlString, 200, ['Content-Type' => 'text/html']);}
+        Log::info('index ' . $render);
+        $rData = explode('^', $render);
+        if ($rData[0] === 'tab_refresh') {
+            Log::info('index ' . $rData[2]);
+            $tab = Navigation::findOrFail($rData[3]);
+            Log::info('got tab ' . $tab->title . ' routes to ' . $tab->route);
+            $page = ContentItem::where('title', $tab->route)->first();
+            if (isset($page)) {
+                Log::info('trying ' . $page->title);
+                $pageMaker = new PageMaker();
+                $htmlString = $pageMaker->pageHTML($page, true);
+                return new Response($htmlString, 200, ['Content-Type' => 'text/html']);
+            } else {
+                $row = ContentItem::find($rData[1]);
+                $setter = new Setters();
+                $htmlString = View::make('tabs.no_tab_assigned', [
+                    'tabId' => $tab->id,
+                    'tabIndex' => $rData[2],
+                    'tabTitle' => $tab->title,
+                    'rowId' => $row->id,
+                    'mobile' => Session::get('mobile'),
+                    'allRoutes' => $setter->setAllRoutes(),
+                ])->render();
+                return new Response($htmlString, 200, ['Content-Type' => 'text/html']);
+            }
+
         } else {
             return response()->json(['error' => 'Invalid form name'], 400);
         }

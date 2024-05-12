@@ -1,16 +1,4 @@
-function changePageTitle(location, divId) {
-    const locItem = JSON.parse(location);
-    var titleDiv = document.getElementById(divId);
-    fetch("/title_change")
-        .then((response) => response.text())
-        .then((html) => {
-            titleDiv.innerHTML = html;
-            document.getElementById("page_title").value = locItem.page.title;
-            document.getElementById("page_id").value = locItem.page.id;
-            document.getElementById("scroll_to").value = window.scrollY;
-        })
-        .catch((error) => console.error("Error loading newNavSelect:", error));
-}
+
 
 function loadEditArticle(article, location) {
     scrollBackTo = window.scrollY;
@@ -22,7 +10,7 @@ function loadEditArticle(article, location) {
             document.getElementById(articleId).innerHTML = html;
             var title = document.getElementById("article_title");
             if (title) {
-                title.value = article.title;
+                title.value = removeHtmlTags(article.title);
             }
             var body = document.getElementById("article_body");
             if (body) {
@@ -50,33 +38,51 @@ function loadEditArticle(article, location) {
                         scrollBackTo;
                 };
             }
+            var sizeSelect = document.getElementById('size_select');
+   var selectedOptionNumber = parseInt(article.title.match(/<h(\d+)>/)[1]); 
+
+   sizeSelect.value = selectedOptionNumber.toString();
+
+            sizeSelect.addEventListener('change', function() {
+                setTitleHeight(sizeSelect.value);
+              
+            });
             tinymce.init({
-                selector: "#article_body",
-                plugins: "autolink lists link",
+                selector: '#article_body', // Replace 'textarea' with the selector for your textarea element
+                plugins: 'advlist autolink lists link image charmap  preview',
+                toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link',
                 menubar: false, 
-                toolbar:
-                    "undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link",
-                font_formats:
-                    "Hanyi Senty,STHeiti=STHeiti,华文黑体,serif;STFangSong=STFangSong,华文仿宋,serif;",
                 promotion: false,
                 license_key: "gpl",
-                content_style:
-                    "@import url(../storage/app/public/fonts'?family=/Hanyi Senty Vimalakirti Regular.ttf&display=swap');",
-            });
-
-            tinymce.init({
-                selector: "#article_title",
-                height:"160px",
-                plugins: "autolink lists link",
-                menubar: false, 
-                toolbar:
-                    "undo redo | styleselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link",
-                font_formats:
-                    "SimSun=SimSun;",
-                    promotion: false,
-                license_key: "gpl",
+            
             });
 
             window.scrollTo(0, scrollBackTo);
         });
+
+
+    }
+    function removeHtmlTags(input) {
+        return input.replace(/<\/?[^>]+(>|$)/g, "");
+    }
+    
+
+
+
+function setTitleHeight(selectedOption)
+{
+    var articleTitle = document.getElementById('article_title');
+    var selectedClass = 'form-control'; // Start with 'form-control'
+    if (selectedOption === '1') {
+        selectedClass += ' t1';
+    } else if (selectedOption === '2') {
+        selectedClass += ' t2';
+    } else if (selectedOption === '3') {
+        selectedClass += ' t3';
+    } else if (selectedOption === '4') {
+        selectedClass += ' t4';
+    } else if (selectedOption === '5') {
+        selectedClass += ' t5';
+    }
+    articleTitle.className = selectedClass;
 }

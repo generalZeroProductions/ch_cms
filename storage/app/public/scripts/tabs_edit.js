@@ -26,38 +26,24 @@ function updateTabId(tabId) {
         });
 }
 
-// $rowId = $location['row']['id'];
-// $tabCol = 'tab_col_' . $rowId;
-// $scrollTabs = 'scroll_' . $rowId;
-// $contentCol = 'content_col_' . $rowId;
-// $contentDiv = 'content_div_' . $rowId;
-
-function editTabsList(tabList, rowId, location) {
-    scrollBackTo = window.scrollY;
-    const contentCol = document.getElementById("content_col_" + rowId);
+function editTabsList(formName, jItem) {
+   
+    var item = JSON.parse(jItem);
+    
+    const contentCol = document.getElementById("content_col_" + item.rowId);
     contentCol.className = "col-8";
-    const tab_col = document.getElementById("tab_col_" + rowId);
+    const tab_col = document.getElementById("tab_col_" + item.rowId);
     tab_col.className = "col-4";
-    const locItem = JSON.parse(location);
-    subNavIndex = tabList.length;
+  
+    var form = document.getElementById(formName);
+    var lists = form.querySelectorAll("#tab_list");
+    subNavIndex = item.tabs.length;
     tabIndex = 1;
     newTabId = -1;
-    fetch("/edit_tabs")
-        .then((response) => response.text())
-        .then((html) => {
-            if (tab_col) {
-                tab_col.innerHTML = html;
-                var listDiv = document.getElementById("tab_list");
-                document.getElementById("row_id").value = locItem.row.id;
-                document.getElementById("page_id").value = locItem.page.id;
-                document.getElementById("scroll_to").value = window.scrollY;
-                tabList.forEach(function (tab) {
-                    newTabFromSource(tab, listDiv);
-                    window.scrollTo(0, scrollBackTo);
-                });
-            }
-        })
-        .catch((error) => console.error("Error loading newNavSelect:", error));
+    var listDiv = lists[0];
+    item.tabs.forEach(function (tab) {
+        newTabFromSource(tab, listDiv);
+    });
 }
 
 function createTabItem() {

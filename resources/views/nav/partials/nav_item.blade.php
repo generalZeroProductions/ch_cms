@@ -1,6 +1,5 @@
     <li class="nav-item {{ $key === 0 ? 'active' : '' }}"> 
-      {{-- <li class="nav-item"> --}}
-        <a href="#" class="nav-link" onClick="loadPageFromNav('{{ $nav->route }}')">
+        <a href="/{{$nav->route}}" class="nav-link" >
             <span class="menu-name">{{ $nav->title }}</span>
         </a>
     </li>

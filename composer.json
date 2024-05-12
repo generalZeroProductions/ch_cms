@@ -8,6 +8,7 @@
         "php": "^8.1",
         "badcow/lorem-ipsum": "^1.1",
         "guzzlehttp/guzzle": "^7.2",
+        "intervention/image": "^3.6",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8"
@@ -26,7 +27,8 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
-            "App\\Helpers\\": "app/Helpers/"
+            "App\\Helpers\\": "app/Helpers/",
+            "Intervention\\Image\\": "vendor/intervention/image/src"
         }
     },
     "autoload-dev": {

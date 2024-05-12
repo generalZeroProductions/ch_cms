@@ -68,28 +68,8 @@ function deletePageWarning(item) {
 }
 
 
-function testPost() {
-    fetch("/admin/test", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": csrfToken, // Add CSRF token to headers
-        },
-    })
-        .then((response) => {
-            if (response.ok) {
-                console.log("good job getting test");
-            } else {
-                console.error("Failed to turn on authentication");
-            }
-        })
-        .catch((error) => {
-            console.error(
-                "Error occurred while turning on authentication:",
-                error
-            );
-        });
-}
+
+
 
 function authOn() {
     fetch("/admin/on", {

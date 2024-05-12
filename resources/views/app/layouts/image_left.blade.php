@@ -1,10 +1,10 @@
 @php
-    $articleId = 'article_' . $column1->id;
-    $imageId = 'image_' . $column2->id;
+    $articleId = 'article_' . $row->id;
+    $imageId = 'image_' . $rowId;
 @endphp
 
 <div class="d-flex justify-content-start"> 
-    <div class="col-3 d-flex align-items-start image-column" id = "{{ $imageId }}">
+    <div class="col-3 d-flex align-items-start image-column">
         @include('app/layouts/partials/image_column', [
             'column' => $column2,
             'location' => $location

@@ -1,21 +1,18 @@
 <?php
 
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ConsoleController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\NavController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\SlideController;
 use App\Http\Controllers\TabController;
-use App\Http\Controllers\ImageController;
-use App\Http\Controllers\ArticleController;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use PhpMyAdmin\Controllers\NavigationController;
-
-Route::post('/write_nav', [NavController::class,'sortWrite'])->name('writeForm');
-Route::post('/write_tab', [TabController::class,'sortWrite'])->name('writeTab');
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 
 Route::post('admin/test', function () {
     [ConsoleController::class, 'testPost'];
@@ -30,13 +27,12 @@ Route::post('admin/off', function () {
 Route::post('admin/on', function () {
     $username = 'super';
     $password = '123';
-    
+
     if (Auth::attempt(['name' => $username, 'password' => $password])) {
         return redirect()->back();
-    } 
+    }
     return response()->json(['status' => 'login_failed'], 401);
 });
-
 
 // these might be better placed in there respective sections.  page, slide, etc.
 //  CREATE AND DELETE FOR PAGES
@@ -76,15 +72,12 @@ Route::post('console/register', [ConsoleController::class, 'createUser']);
 Route::post('/console/login', [ConsoleController::class, 'login']);
 Route::post('page_edit/create_new/{returnTo}', [PageController::class, 'createPage'])->name('createPage');
 
-
-//ARTICLES   
+//ARTICLES
 Route::get('/insert_update_article', function () {
     return View::make('articles.editColumn');
 })->name('insertUpdateArticle');
 
 Route::post('/submit_update_article', [ArticleController::class, 'updateArticle'])->name('submitUpdateArticle');
-
-
 
 //IMAGES
 Route::get('/select_image_upload', function () {
@@ -101,7 +94,9 @@ Route::post('/use_image', [ImageController::class, 'useImage'])->name('use_image
 Route::get('/insert_image_icons_3', function () {
     return View::make('images.partials.image_icons_3');
 })->name('insertImageIcons3');
-
+Route::get('/insert_image_icons_2', function () {
+    return View::make('images.partials.image_icons_2');
+})->name('insertImageIcons2');
 Route::get('/insert_upload_file', function () {
     return View::make('images.partials.upload_file_bar');
 })->name('insertUploadFile');
@@ -118,15 +113,14 @@ Route::get('/insert_add_image_card', function () {
     return View::make('images.partials.add_slide_card');
 })->name('insertAddImageCard');
 
-
 //TABS
 
 //which is it??/
-Route::get('/load_tab/no_tab_assigned',function () {
+Route::get('/load_tab/no_tab_assigned', function () {
     return View::make('tabs.no_tab_assigned');
 })->name('displayNoTabs');
 
-Route::get('/no_tab_assigned',function () {
+Route::get('/no_tab_assigned', function () {
     View::make('tabs.no_tab_assigned');
 })->name('noTabAssigned');
 // two routes returning the same thing??
@@ -143,9 +137,8 @@ Route::get('/load_tab/{routeName}', [TabController::class, 'loadTabContent']);
 //this should be renamed to tab/change_tracked
 Route::post('/tab/new/{tabId}', function ($tabId) {
     Session::put('tabId', $tabId);
-    return response()->json(['message' => $tabId .'Session variable changed successfully']);
+    return response()->json(['message' => $tabId . 'Session variable changed successfully']);
 })->name('newTabId');
-
 
 //SLIDES
 Route::get('/dispay_slide_data', function () {
@@ -156,10 +149,7 @@ Route::get('/slideshow_edit', function () {
 })->name('slideShowEdit');
 Route::post('/update_slideshow', [SlideController::class, 'updateSlideshow'])->name('updateSlideshow');
 
-
-
 // PAGES AND ROWS
-
 
 //not sure if change location is being used??
 Route::get('/changelocation/{location}', function ($location = null) {
@@ -169,7 +159,7 @@ Route::get('/changelocation/{location}', function ($location = null) {
 
 Route::get('/load_page/{routeName}', [PageController::class, 'loadPage']);
 
-Route::get('/title_change', function () { 
+Route::get('/title_change', function () {
     return View::make('app.layouts.partials.title_change');
 })->name('titleChange');
 
@@ -177,18 +167,11 @@ Route::get('/build', function () {
     return View::make('app.page_builder');
 })->name('builder');
 
-
 Route::get('/row_type', function () {
     return View::make('forms.row_select_form');
 })->name('rowType');
 
-
 Route::post('/update_page_title', [PageController::class, 'updatePageTitle'])->name('updatePageTitle');
-
-
-
-
-
 
 //  NAV ROUTES
 Route::get('/edit_nav_item', function () {
@@ -217,10 +200,9 @@ Route::get('/dropdown_adder', function () {
 
 Route::post('/update_nav_item', [NavController::class, 'updateNavItem'])->name('updateNavItem');
 Route::post('/new_nav_item', [NavController::class, 'newNavItem'])->name('newNavItem');
-Route::post('/delete_nav_item', [NavController::class,'deleteNavItem'])->name('deleteNavItem');
-Route::post('/update_dropdown', [NavController::class,'updateDropdown'])->name('updateDropdown');
-Route::post('/add_dropdown', [NavController::class,'addDropdown'])->name('addDropdown');
-
+Route::post('/delete_nav_item', [NavController::class, 'deleteNavItem'])->name('deleteNavItem');
+Route::post('/update_dropdown', [NavController::class, 'updateDropdown'])->name('updateDropdown');
+Route::post('/add_dropdown', [NavController::class, 'addDropdown'])->name('addDropdown');
 
 // APP LEVEL ROUTES
 
@@ -244,8 +226,6 @@ Route::get('test_fetch/{action?}', function ($action = null) {
     return view('app.test_fetch', ['action' => $action]);
 })->name('testFetch');
 
-
-
 Route::get('/site2/site', function () {
     return View::make('app.site2');
 })->name('site2');
@@ -258,7 +238,6 @@ Route::get('/site2/site', function () {
 //     return '<h1>This is HTML content</h1><p>You can return any valid HTML markup here.</p>';
 // });
 
-
 // Route::get('/page_builder/{newLocation?}', function ($newLocation = null) {
 //     return view('app.page_builder', ['newLocation' => $newLocation]);
 // })->name('pageBuilder');
@@ -267,37 +246,63 @@ Route::get('/site2/site', function () {
 //     return View::make('forms.base_modal');
 // })->name('openBaseModal');
 
-
 // Route::get('/load_anything', function () {
 //     return '<h1>This is HTML content</h1><p>You can return any valid HTML markup here.</p>';
 // });
 
-
-
-Route::get('/read_/{formName}', function ($formName) {
+Route::get('/insert_/insert_form/{formName}', function ($formName) {
+    Log::info('INSERT_: '. $formName);
     if (strpos($formName, 'nav') !== false) {
-        $htmlResponse = NavController::sortRead($formName);
+        log::info($formName . 'requested ');
+        $htmlResponse = NavController::insert($formName);
+        return $htmlResponse;
+    }if (strpos($formName, 'img') !== false) {
+        $htmlResponse = ImageController::insert($formName);
+        return $htmlResponse;
+    } if (strpos($formName, 'tab') !== false) {
+        $htmlResponse = TabController::insert($formName);
         return $htmlResponse;
     } else {
         // Handle other cases here if needed
         return response()->json(['error' => 'Invalid form request'], 400);
     }
-})->name('readForm');
+})->name('insertForm');
 
+Route::get('/render_/render_content/{render}', function ($render) {
+    Log::info('render request: ' . $render);
 
-
-Route::get('/refresh_/{refresh}',function ($refresh) {
-    if (strpos($refresh, 'page') !== false) {
-        $htmlResponse = PageController::sortRefresh($refresh);
+    if (strpos($render, 'page') !== false) {
+        $htmlResponse = PageController::render($render);
         return $htmlResponse;
-    }elseif (strpos($refresh, 'nav') !== false) {
-        $htmlResponse = NavController::sortRefresh($refresh);
+    } elseif (strpos($render, 'nav') !== false) {
+        $htmlResponse = NavController::render($render);
         return $htmlResponse;
-    } elseif (strpos($refresh, 'tab') !== false) {
-        $htmlResponse = TabController::sortRefresh($refresh);
+    } elseif (strpos($render, 'tab') !== false) {
+        Log::info('to tab draw');
+        $htmlResponse = TabController::render($render);
+        return $htmlResponse;
+    } elseif (strpos($render, 'img') !== false) {
+        Log::info('to image draw');
+        $htmlResponse = ImageController::render($render);
         return $htmlResponse;
     } else {
         // Handle other cases here if needed
         return response()->json(['error' => 'Invalid form request'], 400);
     }
-})->name('refresh');
+})->name('render');
+
+Route::post('/write_/write_form', function (Request $request) {
+    Log::info("write request: ". $request->form_name);
+    if (strpos($request->form_name, 'img') !== false) {
+        $imageController = new ImageController();
+        return $imageController->editImage($request);
+    }
+    if (strpos($request->form_name, 'nav') !== false) {
+        $navController = new NavController();
+        return $navController->write($request);
+    }
+    if (strpos($request->form_name, 'tab') !== false) {
+        $tabController = new TabController();
+        return $tabController->write($request);
+    }
+})->name('write');

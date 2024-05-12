@@ -49,6 +49,7 @@
         }
 
         Session::put('buildMode', true);
+        Session::put('editMode', true);
     }
     if ($parameterParts[0] === 'endbuild') {
         Session::put('buildMode', false);

@@ -26,6 +26,7 @@ class InitDbSeeder extends Seeder
                 'type' => 'nav',
                 'title'=>'Page_1',
                 'route' => 'Page_1',
+                'index'=>0,
             ]);
 
             $column = ContentItem::create([

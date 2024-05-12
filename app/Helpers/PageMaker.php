@@ -2,12 +2,20 @@
 namespace App\Helpers;
 
 use App\Models\ContentItem;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 
 class PageMaker
 {
     public function pageHTML($page, $tabContent)
     {
+        if(!isset($page)) {
+            Log::info('SHOULD be no page asigned');
+            $htmlString .= View::make('/app/no_page_for_route');
+            return $htmlString;
+        }
+        
         $getters = new Getters();
         $setters = new Setters();
         $location = [
@@ -17,7 +25,7 @@ class PageMaker
         $editMode = $getters->getEdit();
         $backColor = 'white';
         $allRows = $setters->setAllRows($page);
-
+     
         $htmlString = '<div class="d-flex flex-column bd-highlight mb-3" style="background-color:' . $backColor . ';">';
         if ($editMode && $tabContent) {
             $htmlString .= View::make('/editor/build_page_bar', ['location' => $location]);
@@ -30,7 +38,7 @@ class PageMaker
                 $htmlString .= View::make('app.layouts.partials.add_row_button', ['location' => $location, 'index' => 0]);
             }
         }
-
+       
         foreach ($allRows as $row) {
             $location['row'] = $row;
             $rowMarkId = 'row_mark' . $row->id;
@@ -39,7 +47,7 @@ class PageMaker
                 $rowMarkId = 'tab_mark' . $row->id;
                 $className = 'tab_mark';
             }
-
+          
             $htmlString .= '<div class=' . $className . 'id=' . $rowMarkId . '>';
 
             if ($editMode && !$tabContent) {
@@ -57,7 +65,6 @@ class PageMaker
                         $column2 = ContentItem::findOrFail($columnData[1]);
                     }
                     if ($row->heading === 'one_column') {
-
                         $htmlString .= View::make('app.layouts.one_column', [
                             'location' => $location,
                             'tabContent' => $tabContent,
@@ -75,18 +82,8 @@ class PageMaker
                             'column2' => $column2,
                             'rowId' => $row->id,
                         ])->render();
-                    } elseif ($row->heading === 'image_right') {
+                    } elseif ($row->heading === 'image_right' || $row->heading === 'image_right') {
                         $htmlString .= View::make('app.layouts.image_right', [
-                            'location' => $location,
-                            'tabContent' => $tabContent,
-                            'editMode' => $editMode,
-                            'column1' => $column1,
-                            'column2' => $column2,
-                            'rowId' => $row->id,
-                        ])->render();
-
-                    } elseif ($row->heading === 'image_left') {
-                        $htmlString .= View::make('app.layouts.image_left', [
                             'location' => $location,
                             'tabContent' => $tabContent,
                             'editMode' => $editMode,
@@ -97,18 +94,18 @@ class PageMaker
 
                     }
                 } else {
-                   
+
                     if ($tabContent) {
-                       
+
                         $htmlString .= View::make('app.cant_display_tabs');
                     } else {
-                        
+
                         $tabData = $row->data['tabs'];
-                       
+
                         $tabs = $setters->tabsList($tabData);
                         $tab0 = $setters->tabZero($location, $tabs);
                         $allRoutes = $setters->setAllRoutes();
-                        
+
                         if ($mobile) {
                             dd('moble');
                             $htmlString .= View::make('app/layouts/accordian', [
@@ -154,7 +151,7 @@ class PageMaker
             $htmlString .= '<div style="height:32px"></div>';
         }
         $htmlString .= '</div>'; // Close the wrapping div
-
+       
         return $htmlString;
 
     }

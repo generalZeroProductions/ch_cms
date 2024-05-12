@@ -11,29 +11,24 @@ var modTitleLabel;
 var refreshInline = false;
 
 function renderPageContent(pageId) {
-    const div = document.getElementById("page_content");
-    const sequence = "/refresh_/page^" + pageId;
-    refreshDiv(div, sequence)
-    .then(() => {
-        loadScripts();
-    })
-    .catch((error) => {
-        console.error('Error refreshing page:', error);
-    });
-}
-function decodeRoutes(encodedString) {
-    var decodedString = encodedString.replace(/&quot;/g, '"');
-    var array = JSON.parse(decodedString);
-    return array;
+    var div = document.getElementById("page_content");
+    var sequence = "page^" + pageId;
+    renderToDiv(div, sequence)
+        .then(() => {
+            setHeadSpace();
+            loadScripts();
+        })
+        .catch((error) => {
+            console.error("Error refreshing page:", error);
+        });
 }
 
 
-function insertForm(item, formName, divId, key) {
+function insertForm(formName, item, divId) {
+    console.log("INSERT FORM DIV ID: " + divId);
     preventScrolling();
-    const jItem = JSON.parse(item);
-
-    const div = document.getElementById(divId);
-    fetch("/read_/" + formName, {
+    var div = document.getElementById(divId);
+    fetch("/insert_/insert_form/" + formName, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -41,9 +36,9 @@ function insertForm(item, formName, divId, key) {
     })
         .then((response) => response.text()) // Parse response as text
         .then((html) => {
+            console.log("WHY HTEML LNO GOOD??" + div)
             div.innerHTML = html; // Set the HTML content to the div
-            fillForm(jItem, formName, div, key);
-            enableScrolling();
+            formRouter(formName, item);
         })
         .catch((error) => {
             console.error(
@@ -55,51 +50,22 @@ function insertForm(item, formName, divId, key) {
 }
 
 
-
-function fillForm(item, formName, div, key) {
-    var intercept = false;
-    if (formName.includes("nav")) {
-        intercept = filloutNavForms(item, formName, key);
-    }
-    if (intercept) {
-        setCusomSubmitNav(formName, item, div, key);
-    }
-}
-
-function addFieldAndValue(fieldName, fieldValue) {
-    var field = document.getElementById(fieldName);
-    field.value = fieldValue;
-}
-
-function setCusomSubmitNav(formName, item, div, key) {
-    const form = document.getElementById(formName);
-    if (formName === "nav_dropdown") {
-        item = item.nav;
-    }
-    form.addEventListener("submit", function (event) {
-        submitUpdateRequest(form, item, formName, div, event, key);
-    });
-}
-
-function refreshDiv(div, sequence) {
+function renderToDiv(div, sequence, ) {
+   
     return new Promise((resolve, reject) => {
-        fetch(sequence)
+        fetch("/render_/render_content/"+sequence)
             .then((response) => {
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    throw new Error("response from render failed");
                 }
-                return response.text(); // Parse response as text
+                return response.text();
             })
             .then((html) => {
-                // Set the HTML content of the div
                 div.innerHTML = html;
-                // Resolve the promise to indicate success
                 resolve();
             })
             .catch((error) => {
-                // Handle errors by logging or throwing
-                console.error('Error fetching updated data:', error);
-                // Reject the promise to propagate the error
+                console.error("Error fetching updated data:", error);
                 reject(error);
             });
     });
@@ -107,44 +73,26 @@ function refreshDiv(div, sequence) {
 
 
 
-function loadScripts() {
-
-    var runScripts = document.querySelectorAll(".run-scripts");
-    runScripts.forEach((script) => {
-        var innerHtml = script.innerHTML;
-        var loadTabCall = innerHtml.match(/changeTab\([^)]*\)/);
-       
-        if (loadTabCall !== null) {
-            eval(loadTabCall[0]);
-        }
+function writeAndRender( formName, sequence, div) {
+    console.log("WRITING: " + formName);
+    var form = document.getElementById(formName);
+    if(!form)
+    {
+        console.log("noForm");
+        return;
+    }
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
     });
-}
-function loadNoRoutes() {
-    var noRoutesScripts = document.querySelectorAll(".no-route-scripts");
-    noRoutesScripts.forEach((script) => {
-        console.log("OOKK");
-        var innerHtml = script.innerHTML;
-        var noRouteCall = innerHtml.match(/populateRoutesNoTab\([^)]*\)/);
-        if (noRouteCall !== null) {
-            eval(noRouteCall[0]);
-        }
-    });
-}
-
-function submitUpdateRequest(form, item, formName, div, event, key) {
     preventScrolling();
-    const formData = new FormData(form);
-    event.preventDefault();
-    fetch("/write_nav/", {
+    var formData = new FormData(form);
+    fetch("/write_/write_form/", {
         method: "POST",
         body: formData,
     })
         .then((response) => {
             if (response.ok) {
-                refreshDiv(
-                    div,
-                    "/refresh_/" + formName + "^" + item.id + "^" + key
-                );
+                renderToDiv(div, sequence);
             } else {
                 console.error("Form submission failed:", response.statusText);
                 enableScrolling();
@@ -157,46 +105,50 @@ function submitUpdateRequest(form, item, formName, div, event, key) {
 }
 
 
-function authOn() {
-    fetch("/admin/on", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-    })
-        .then((response) => {
-            if (response.ok) {
-                console.log("Authentication turned on successfully");
-            } else {
-                console.error("Failed to turn on authentication");
-            }
-        })
-        .catch((error) => {
-            console.error(
-                "Error occurred while turning on authentication:",
-                error
-            );
-        });
+
+function loadScripts() {
+    var runScripts = document.querySelectorAll(".run-scripts");
+    runScripts.forEach((script) => {
+        var innerHtml = script.innerHTML;
+        var loadTabCall = innerHtml.match(/changeTab\([^)]*\)/);
+
+        if (loadTabCall !== null) {
+            eval(loadTabCall[0]);
+        }
+    });
+}
+function loadNoRoutes() {
+    var noRoutesScripts = document.querySelectorAll(".no-route-scripts");
+    noRoutesScripts.forEach((script) => {
+        var innerHtml = script.innerHTML;
+        var noRouteCall = innerHtml.match(/populateRoutesNoTab\([^)]*\)/);
+        if (noRouteCall !== null) {
+            console.log('RAN NO ROUTE CALL')
+            eval(noRouteCall[0]);
+        }
+    });
+}
+function formRouter(formName, item) {
+   
+    if (formName.includes("nav")) {
+        filloutNavForms(formName, item);
+    }
+    if (formName.includes("img")) {
+        imageFormFillout(formName, item);
+    }
+    if(formName.includes("tab")){
+        editTabsList(formName, item);
+    }
 }
 
-function authOff() {
-    fetch("/admin/off", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-    })
-        .then((response) => {
-            if (response.ok) {
-                console.log("Authentication turned off successfully");
-            } else {
-                console.error("Failed to turn off authentication");
-            }
-        })
-        .catch((error) => {
-            console.error(
-                "Error occurred while turning off authentication:",
-                error
-            );
-        });
+function addFieldAndValue(fieldName, fieldValue) {
+    var field = document.getElementById(fieldName);
+    field.value = fieldValue;
+}
+
+
+function decodeRoutes(encodedString) {
+    var decodedString = encodedString.replace(/&quot;/g, '"');
+    var array = JSON.parse(decodedString);
+    return array;
 }

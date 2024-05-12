@@ -11,7 +11,7 @@
         </div>
         @if (!$mobile)
             <div class="p-2">
-                <form method= 'POST' action="/write_tab" id ="{{$formName}}">
+                <form method= 'POST' id ="{{$formName}}">
                     @csrf
                     <div class="row d-flex justify-content-end " style= "padding:24px">
                         <div class="p-2 " style= "font-size:24px; ">
@@ -19,11 +19,12 @@
                         </div>
                         <div class="p-2 flex-fill " style="margin-left:24px">
                             <select class= "form-control route-select" id="{{ $routeSelectId }}">
-                                <option value = "select a route..">select a route</option>
+                                <option value = "select a route..">选择选项卡页面</option> 
                             </select>
                         </div>
                         <input type="hidden" name="route" id="{{ $saveRoute }}">
                         <input type="hidden" name="tab_id" value="{{ $tabId }}">
+                        <input type='hidden' name="tab_index" value="{{$tabIndex}}">
                         <input type="hidden" name = "form_name" value = "tab_quick">
                       
                      </div>
@@ -55,7 +56,7 @@
 
 <div class="no-route-scripts">
 <script>
-  populateRoutesNoTab('{{ $rowId }}', '{{ $tabId }}');
+  populateRoutesNoTab('{{ $rowId }}','{{$tabIndex}}', '{{ $tabId }}');
 </script>
 
 </div>

@@ -1,15 +1,10 @@
-<div class="card-body">
-    <div class="image-control-bar" id="edit_icons">
-        {{-- edit icons fit here. --}}
-    </div>
-    <div class = "image-thumb" id = "thumb">
-        <img src = "{{ asset('images/lake.jpg') }}" class="image-crop">
-    </div>
-    <input class="form-control caption-input" type = "text" id="caption">
-</div>
 
 
 <style>
+    .edit_icons {
+        height: 140px;
+    }
+
     .caption-input {
         width: 100% !important;
     }
