@@ -3,7 +3,7 @@
     </div>
     <div class="col-2 d-flex justify-content-center align-items-center">
         <button class = "btn  btn-warning add_row_btn btn-44"
-            onClick = "openMainModal('createRow', '{{ $index }}','{{ json_encode($location) }}','modal-xl')">
+            onClick = "openMainModal('createRow', '{{ $row->index }}','{{ json_encode($row) }}','modal-xl')">
             创建行<img src={{ asset('icons/white_add.svg') }}></button>
 
     </div>

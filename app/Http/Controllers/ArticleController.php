@@ -6,10 +6,22 @@ use App\Models\ContentItem;
 use Badcow\LoremIpsum\Generator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use App\Models\Text;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\View;
+use Illuminate\Http\Response;
+
 
 class ArticleController extends Controller
 {
+    public static function insert($formName)   {
+        Log::info('in  make: '. $formName);
+        if ($formName === 'edit_title_text') {
+            Log::info('in Edit title text: '. $formName);
+            $htmlString = View::make('articles.forms.edit_title_text')->render();
+            return new Response($htmlString, 200, ['Content-Type' => 'text/html']);
+        }
+
+    }
     public function createTwoColumn(Request $request)
     {
         Session::put('scrollTo',$request->scroll_to);

@@ -3,7 +3,7 @@ function renderNavigation(navIndex) {
     var sequence = "navigation^" + navIndex;
     renderToDiv(div, sequence)
         .then(() => {
-            loadScripts(); //   MAY NOT NEED THIS BIZ  HERE,  MIGHT NEED TO STRUCTURE IT BETTER FOR renderPage()
+            setHeadSpace(); //   MAY NOT NEED THIS BIZ  HERE,  MIGHT NEED TO STRUCTURE IT BETTER FOR renderPage()
         })
         .catch((error) => {
             console.error("Error refreshing page:", error);
@@ -79,8 +79,6 @@ function filloutNavForms(formName, jItem) {
     if (formName === "dropdown_editor_nav") {
        
         var item = JSON.parse(jItem);
-  
- 
         var div = document.getElementById("main-navigation");
         var sequence = "navigation^" + item.key;
         setupFormSubmit(formName, sequence, div);

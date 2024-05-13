@@ -15,7 +15,7 @@
 <div class ='edit-container' id = "edit_mode_contain">
     <div class="row d-flex justify-content-end rounded-box">
         <div class=col-2>
-            @include('app.auth_on_off')
+            @include('app.edit_mode.auth_on_off')
         </div>
         <div class=col-5>
             <div class="row ">

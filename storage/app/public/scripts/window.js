@@ -1,23 +1,19 @@
 function setHeadSpace(){
-    var mainNav = document.getElementById("site_nav_bar");
     
+    var mainNav = document.getElementById("site_nav_bar");
     var headSpace = document.getElementById("headspace");
     mainNavBottom = 0;
     if(mainNav)
-    {
+    {console.log('found nav');
     var  mainNavBottom = mainNav.getBoundingClientRect().bottom + 24;
-    console.log("FOUND NAV "+ mainNavBottom)
     }
     else
     {
-        console.log("no nav??");
         var editor = document.getElementById("edit_mode_contain");
         if(editor)
         {
-           
             mainNavBottom = editor.getBoundingClientRect().bottom + 14;
         }
-       
     }
     headSpace.style.height = `${mainNavBottom}px`;
     

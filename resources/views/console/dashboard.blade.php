@@ -9,7 +9,7 @@ Session::put('returnPage','');
         Session::put('buildMode', false);
     @endphp
     <br>
-    @include('app//auth_on_off')
+    @include('app.edit_mode.auth_on_off')
     <div class="container">
         <div class = "row d-flex justify-content-between rounded-box">
             <div class="p-2">

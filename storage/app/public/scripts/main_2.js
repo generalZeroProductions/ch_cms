@@ -11,11 +11,12 @@ var modTitleLabel;
 var refreshInline = false;
 
 function renderPageContent(pageId) {
+   
     var div = document.getElementById("page_content");
     var sequence = "page^" + pageId;
     renderToDiv(div, sequence)
         .then(() => {
-            setHeadSpace();
+           
             loadScripts();
         })
         .catch((error) => {
@@ -48,7 +49,9 @@ function insertForm(formName, item, divId) {
             enableScrolling();
         });
 }
-
+function clickDiv(){
+    console.log("div clidked");
+}
 
 function renderToDiv(div, sequence, ) {
    
@@ -137,9 +140,37 @@ function formRouter(formName, item) {
         imageFormFillout(formName, item);
     }
     if(formName.includes("tab")){
-        editTabsList(formName, item);
+        editTabsSetup(formName, item);
+    }
+    if(formName.includes("article")){
+        articleFormRouter(formName, item);
+    }
+    if(formName.includes('page')){
+        pageFormRouter(formName, item);
     }
 }
+
+function pageFormRouter(formName, jItem){
+    var item = JSON.parse(jItem);
+   
+    var form = document.getElementById(formName);
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+    });
+    var title = document.getElementById(formName+"_title");
+
+    title.addEventListener("input", function (event) {
+        validatePageTitle(formName, title, event);
+    });
+    addFieldAndValue(formName+"_title", item.title);
+
+    addFieldAndValue("page_id", item.id);
+    var blueDiv = document.getElementById("page_title_click");
+    blueDiv.classList.remove("blue_row");
+    blueDiv.classList.add("blue-flat");
+
+}
+
 
 function addFieldAndValue(fieldName, fieldValue) {
     var field = document.getElementById(fieldName);

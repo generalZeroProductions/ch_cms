@@ -9,18 +9,26 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Response;
 use App\Helpers\PageMaker;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\View;
+
 class PageController extends Controller
 {
+    public static function insert($formName)   {
+        Log::info('in  page control insert: '. $formName);
+        if ($formName === 'edit_title_page') {
+            $htmlString = View::make('app.edit_mode.edit_title_page')->render();
+            return new Response($htmlString, 200, ['Content-Type' => 'text/html']);
+        }
+    }
     public static function render($render)
     {
+        Log::info('in page rander '.$render);
         $rData = explode('^', $render);
         if ($rData[0] === 'page') {
             $page = ContentItem::where('type', 'page')->where('id',$rData[1])->first();
-            if ($page){ Log::info("page found, title: ".$page->title);}else{Log::info('no page found by Page Render');}
-
             $pageMaker = new PageMaker();
             $htmlString = $pageMaker->pageHTML($page, false);
-           
+            Log::info($htmlString);
             return new Response($htmlString, 200, ['Content-Type' => 'text/html']);
         }
         else {

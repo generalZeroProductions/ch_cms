@@ -1,15 +1,15 @@
 @php
     $scrollTabs = 'scroll_' . $rowId;
-    $jTabs = json_encode(['tabs'=> $tabs, 'rowId'=>$rowId]);
-
+    $jTabs = json_encode(['tabs' => $tabs, 'rowId' => $rowId]);
+echo $jTabs;
 @endphp
 
 <div style= "height:0" id="{{ $scrollTabs }}"></div>
 @if ($editMode)
-<div style= "height:44"></div>
+    <div style= "height:44"></div>
     <div class="pen-icon">
-        <a  style= "cursor: pointer;" onClick = "insertForm('edit_tabs','{{ $jTabs }}',  '{{ $divId }}')">
-            <img src="{{ asset('icons/pen.svg') }}" >
+        <a style= "cursor: pointer;" onClick = "insertForm('edit_tabs','{{ $jTabs }}',  '{{ $divId }}')">
+            <img src="{{ asset('icons/pen.svg') }}"class="tab-edit-pen">
         </a>
     </div>
 @endif
@@ -31,13 +31,20 @@
 </div>
 
 <style>
-.pen-icon{
-padding-left:28px;
-}
+    .tab-edit-pen {
+        height: 20px;
+    }
+
+    .pen-icon {
+        margin-top: 8px;
+        margin-bottom: 8px;
+        padding-left: 28px;
+    }
+   
 </style>
 
 <div class = 'run-scripts'>
-<script>
-     setTabMenuScroll('{{ $scrollTabs }}');
-</script>
+    <script>
+        setTabMenuScroll('{{ $scrollTabs }}');
+    </script>
 </div>

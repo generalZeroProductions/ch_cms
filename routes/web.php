@@ -14,10 +14,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 
-Route::post('admin/test', function () {
-    [ConsoleController::class, 'testPost'];
-    return response()->json(['status' => 'hit test'], 200);
-});
 
 Route::post('admin/off', function () {
     Auth::logout();
@@ -173,42 +169,9 @@ Route::get('/row_type', function () {
 
 Route::post('/update_page_title', [PageController::class, 'updatePageTitle'])->name('updatePageTitle');
 
-//  NAV ROUTES
-Route::get('/edit_nav_item', function () {
-    return View::make('nav.edit_nav_form');
-})->name('editNavItem');
 
-Route::get('/add_nav_select', function () {
-    return View::make('nav.add_nav_select_form');
-})->name('addNavSelect');
 
-Route::get('/add_nav_standard', function () {
-    return View::make('nav.add_nav_form');
-})->name('addNavStandard');
 
-// Route::get('/delete_nav_item', function () {
-//     return View::make('nav.confirm_delete_nav');
-// })->name('deleteNavItem');
-
-Route::get('/dropdown_editor', function () {
-    return View::make('nav.edit_drop_down');
-})->name('dropdownEditor');
-
-Route::get('/dropdown_adder', function () {
-    return View::make('nav.add_dropdown_form');
-})->name('dropdownAdder');
-
-Route::post('/update_nav_item', [NavController::class, 'updateNavItem'])->name('updateNavItem');
-Route::post('/new_nav_item', [NavController::class, 'newNavItem'])->name('newNavItem');
-Route::post('/delete_nav_item', [NavController::class, 'deleteNavItem'])->name('deleteNavItem');
-Route::post('/update_dropdown', [NavController::class, 'updateDropdown'])->name('updateDropdown');
-Route::post('/add_dropdown', [NavController::class, 'addDropdown'])->name('addDropdown');
-
-// APP LEVEL ROUTES
-
-Route::get('/form/edit_nav_standard/{page?}', function ($page = null) {
-    return view('app.first_page', ['page' => $page]);
-})->name('newFetch');
 
 Route::get('/', function () {
     return View::make('app.opener');
@@ -218,8 +181,8 @@ Route::get('/session/{newLocation?}', function ($newLocation = null) {
     return view('app.session', ['newLocation' => $newLocation]);
 })->name('sessionSet');
 
-Route::get('/{newLocation?}', function ($newLocation = null) {
-    return view('app.site2', ['newLocation' => $newLocation]);
+Route::get('/{page?}', function ($page = null) {
+    return view('app.site', ['page' => $page]);
 })->name('root');
 
 Route::get('test_fetch/{action?}', function ($action = null) {
@@ -229,26 +192,6 @@ Route::get('test_fetch/{action?}', function ($action = null) {
 Route::get('/site2/site', function () {
     return View::make('app.site2');
 })->name('site2');
-
-// Route::get('/', function () {
-//     return View::make('index');
-// })->name('root');
-
-// Route::get('/load_anything', function () {
-//     return '<h1>This is HTML content</h1><p>You can return any valid HTML markup here.</p>';
-// });
-
-// Route::get('/page_builder/{newLocation?}', function ($newLocation = null) {
-//     return view('app.page_builder', ['newLocation' => $newLocation]);
-// })->name('pageBuilder');
-
-// Route::get('/open_base_modal', function () {
-//     return View::make('forms.base_modal');
-// })->name('openBaseModal');
-
-// Route::get('/load_anything', function () {
-//     return '<h1>This is HTML content</h1><p>You can return any valid HTML markup here.</p>';
-// });
 
 Route::get('/insert_/insert_form/{formName}', function ($formName) {
     Log::info('INSERT_: '. $formName);
@@ -261,6 +204,13 @@ Route::get('/insert_/insert_form/{formName}', function ($formName) {
         return $htmlResponse;
     } if (strpos($formName, 'tab') !== false) {
         $htmlResponse = TabController::insert($formName);
+        return $htmlResponse;
+    } if (strpos($formName, 'article') !== false) {
+        $htmlResponse = ArticleController::insert($formName);
+        return $htmlResponse;
+    }
+    if (strpos($formName, 'page') !== false) {
+        $htmlResponse = PageController::insert($formName);
         return $htmlResponse;
     } else {
         // Handle other cases here if needed
@@ -285,7 +235,11 @@ Route::get('/render_/render_content/{render}', function ($render) {
         Log::info('to image draw');
         $htmlResponse = ImageController::render($render);
         return $htmlResponse;
-    } else {
+    }elseif (strpos($render, 'article') !== false) {
+        Log::info('to article render');
+        $htmlResponse = ImageController::render($render);
+        return $htmlResponse;
+    }  else {
         // Handle other cases here if needed
         return response()->json(['error' => 'Invalid form request'], 400);
     }
@@ -302,6 +256,7 @@ Route::post('/write_/write_form', function (Request $request) {
         return $navController->write($request);
     }
     if (strpos($request->form_name, 'tab') !== false) {
+        Log::info('try to write tabs');
         $tabController = new TabController();
         return $tabController->write($request);
     }

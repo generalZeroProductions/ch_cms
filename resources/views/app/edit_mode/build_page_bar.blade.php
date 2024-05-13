@@ -1,8 +1,3 @@
-@php
-
-    $id = $location['page']['id'];
-    $loc = $location['page']['title'];
-@endphp
 
 <style>
     .gray-row {
@@ -29,7 +24,7 @@
     </div>
     <div class="col-3 d-flex justify-content-end align-items-center">
         <button class = "btn btn-secondary btn-44-build"
-            onClick="enterPageBuild('{{$loc}}','build')">
+            onClick="enterPageBuild('{{$page->title}}','build')">
             建立页面 <img src={{ asset('icons/build.svg') }} class="build-icon"></button>
     </div>
 </div>

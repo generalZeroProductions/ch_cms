@@ -1,7 +1,6 @@
 @php
-
     $localImage = 'image-crop ' . $column->styles['corners'] .' image-thumb';
-    $divId = 'image_' . $rowId;
+    $divId = 'image_' . $row->id;
 @endphp
 
 <div id={{ $divId }}>

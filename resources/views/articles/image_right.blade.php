@@ -1,21 +1,21 @@
 @php
 
-    $articleId = 'article_' . $column1->id;
-    $imageId = 'image_' . $column2->id;
+    $articleId = 'article_' . $row->id;
+    $imageId = 'image_' . $row->id;
    
 @endphp
 
 <div class="d-flex justify-content-start"> 
     <div class="col-9 d-flex align-items-start article-column" id = "{{ $articleId }}">
-        @include('app/layouts/partials/title_text', [
+        @include('articles.partials.title_text', [
             'column' => $column1,
-            'location' => $location,
+            'row' => $row,
         ])
     </div>
     <div class="col-3 d-flex align-items-start image-column" id = "{{ $imageId }}">
-        @include('app/layouts/partials/image_column', [
+        @include('articles.partials.image_column', [
             'column' => $column2,
-            'location' => $location,
+            'row' => $row,
         ])
 
     </div>

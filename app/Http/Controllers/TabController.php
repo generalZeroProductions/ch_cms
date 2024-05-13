@@ -10,8 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
-
-// use App\Helpers\TabFuncs\sessionGetters;
 use Illuminate\Support\Facades\View;
 
 class TabController extends Controller
@@ -36,6 +34,9 @@ class TabController extends Controller
     {
         if ($request->form_name === 'assignRoute') {
             $this->assignRoute($request);
+        }
+        if ($request->form_name === 'edit_tabs') {
+            $this->updateTabs($request);
         }
     }
 
@@ -104,7 +105,7 @@ class TabController extends Controller
     }
     public function updateTabs(Request $request)
     {
-        Session::put('scrollTo', $request->scroll_to);
+        Log::info('eneted tab editor');
         Session::put('returnPage', '');
         $removedItems = [];
         $allSubItems = [];
@@ -148,11 +149,10 @@ class TabController extends Controller
         foreach ($removedItems as $record) {
             $record->delete();
         }
-        return redirect()->route('root', ['newLocation' => Session::get('location')]);
     }
     public static function render($render)
     {
-        Log::info('index ' . $render);
+        Log::info('tab render sequence ' . $render);
         $rData = explode('^', $render);
         if ($rData[0] === 'tab_refresh') {
             Log::info('index ' . $rData[2]);
@@ -178,7 +178,19 @@ class TabController extends Controller
                 return new Response($htmlString, 200, ['Content-Type' => 'text/html']);
             }
 
-        } else {
+        } 
+        elseif($rData[0] === 'tab_menu'){
+            $row = ContentItem::findOrFail($rData[1]);
+            $tabData = $row->data['tabs'];
+            $setter = new Setters();
+            $tabs = $setter->tabsList($tabData);
+            $htmlString = View::make('tabs.tab_menu',[
+                'rowId'=>$rData[1],
+                'tabs'=>$tabs,
+                'divId'=>$rData[2],
+            'editMode'=>true]);
+            return new Response($htmlString, 200, ['Content-Type' => 'text/html']);
+        }else {
             return response()->json(['error' => 'Invalid form name'], 400);
         }
     }

@@ -1,5 +1,5 @@
 @if (Auth::check())
-    @include('app/layouts/partials/edit_mode_banner')
+    @include('app.edit_mode.edit_mode_banner')
     @if (!$buildMode)
         @include('nav.nav', ['canDelete' => $canDelete])
     @endif

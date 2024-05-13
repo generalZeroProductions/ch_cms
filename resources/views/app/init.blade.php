@@ -86,6 +86,7 @@
           }
           return $allRoutes;
       }
+    
       function sortByIndex($a, $b)
       {
           return $a['index'] - $b['index'];

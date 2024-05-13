@@ -1,4 +1,6 @@
 @php
+use Illuminate\Support\Facades\Log;
+Log::info('hello from tabs');
     $tabCol = 'tab_col_' . $rowId;
     $contentCol = 'content_col_'.$rowId;
     $contentBoxId = 'content_'.$rowId;
@@ -6,14 +8,13 @@
     $tab0Index = $tab0->index;
     $tab0Id = $tab0->id;
     $tagAnchor = "tab_".$tab0->index;
-    $pageId = $location['page']['id'];
 @endphp
 
 <div class="d-flex justify-content-start" id="{{ $rowId }}">
-    <div class="col-3" id = "{{ $tabCol }}">
+    <div class="col-6" id = "{{ $tabCol }}">
       @include('/tabs/tab_menu',['tabs'=>$tabs,'tab0'=>$tab0,'rowId'=>$rowId, 'divId'=>$tabCol])
     </div>
-    <div class="col-9 " id="{{$contentCol}}">
+    <div class="col-6 " id="{{$contentCol}}">
             <div id="{{ $contentBoxId }}" class="tabContent_{{ $rowId }}">
             </div>
     </div>

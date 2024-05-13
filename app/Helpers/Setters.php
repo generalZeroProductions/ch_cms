@@ -80,19 +80,20 @@ class Setters
         }
         return [$slideList, $slideJson];
     }
-    function tabZero($location, $tabs)
+    function tabZero($rowIndex, $tabs)
     {
-        $tabData = null;
-        if (Session::has('trackTab')) {
-            $tabData = explode('?', Session::get('trackTab'));
-        }
-        if (isset($tabData[0])) {
-            $checkTab = $location['page']['id'] . $location['row']['index'];
-            if ($tabData[0] === $checkTab) {
-                return Navigation::findOrFail($tabData[1]);
-            }
-        }
         return $tabs[0];
+        // $tabData = null;
+        // if (Session::has('trackTab')) {
+        //     $tabData = explode('?', Session::get('trackTab'));
+        // }
+        // if (isset($tabData[0])) {
+          
+        //     if ($tabData[0] === $rowIndex) {
+        //         return Navigation::findOrFail($tabData[1]);
+        //     }
+        // }
+      
     }
     function setTabContents($tabs, $rowId, $mobile, $allRoutes)
     {
@@ -125,6 +126,7 @@ class Setters
     }
     function tabsList($tabData)
     {
+
         $tabs = [];
         foreach ($tabData as $tabId) {
             $nextTab = Navigation::findOrFail($tabId);
