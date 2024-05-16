@@ -3,21 +3,41 @@ var previewList;
 var scrollAt = 0;
 var slideDiv;
 
-function editSlidesForm(slideList) {
+function slideHeightListen(rowId, height) {
+    var row = document.getElementById("rowInsert" + rowId);
+    var forms = row.querySelectorAll("#change_slide_height");
+    forms[0].addEventListener("submit", function (event) {
+        preventDefault();
+    });
+    var slideHeight = document.getElementById("slide_height" + rowId);
+    slideHeight.value = height;
+    slideHeight.addEventListener("focus", function (event) {
+        function handleKeyDown(event) {
+            if (event.key === "Enter") {
+                updateSlideHeight(slideHeight, rowId)
+            }
+        }
+        document.addEventListener("keydown", handleKeyDown);
+    });
+    slideHeight.addEventListener("blur", function (event) {
+        document.removeEventListener("keydown", handleKeyDown);
+    });
+}
+
+function editSlidesForm(jItem) {
     slideShowItems = [];
     slideDiv = modBody;
-    const parseSlides = JSON.parse(slideList);
-    parseSlides.forEach((slide) => {
+    var item = JSON.parse(jItem);
+    item.slides.forEach((slide) => {
         createNewSlide(slide);
     });
-
+    console.log("ITEM ROW ID " + item.rowId);
     fetch("/slideshow_edit")
         .then((response) => response.text())
         .then((html) => {
             modBody.innerHTML = html;
-            if (slideDiv)
-                document.getElementById("row_id").value = locItem.row.id;
-            document.getElementById("page_id").value = locItem.page.id;
+            document.getElementById("row_id").value = item.rowId;
+            document.getElementById("page_id").value = item.pageId;
             document.getElementById("scroll_to").value = window.scrollY;
 
             var runScriptsDiv = document.getElementById("run_scripts");
@@ -28,11 +48,28 @@ function editSlidesForm(slideList) {
                     eval(toolTipCall[0]);
                 }
             }
+            updateSlideData();
             showAllSlides();
         })
         .catch((error) => {
             console.error("Error loading slideshowEdit:", error);
         });
+}
+
+function updateSlideHeight(slideHeight, rowId) {
+    console.log("change input");
+    var rowDiv = document.getElementById("rowInsert" + rowId);
+    var banners = rowDiv.querySelectorAll(".banner_container");
+    var height = slideHeight.value;
+    if (height < 50) {
+        height = 50;
+    }
+    if (height > 500) {
+        height = 500;
+    }
+    banners.forEach((banner) => {
+        banner.style.height = height + "px";
+    });
 }
 
 function showAllSlides() {
@@ -180,7 +217,7 @@ function createNewSlide(slide) {
         var newSlide = {
             id: slideShowItems.length,
             source: "server",
-            image: "defaultBanner.jpg",
+            image: "defaultSlide.jpg",
             file: null,
             caption: "Enter Caption Here",
             record: null,

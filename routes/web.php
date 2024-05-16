@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 
-
 Route::post('admin/off', function () {
     Auth::logout();
     return redirect()->back();
@@ -39,11 +38,13 @@ Route::post('/create_tabbed', [TabController::class, 'createTabbed'])->name('cre
 Route::post('/create_image_article', [ArticleController::class, 'createImageArticle'])->name('create_image_article');
 
 Route::post('/delete_row', [PageController::class, 'deleteRow'])->name('deleteRow');
+
 Route::get('/delete_row_form', function () {
-    return View::make('app.layouts.partials.delete_row_form');
+    return View::make('app.edit_mode.delete_row_form');
 })->name('deleteRowForm');
 
 Route::post('/delete_page', [PageController::class, 'deletePage'])->name('deletePage');
+
 Route::get('/delete_page_form', function () {
     return View::make('app.layouts.partials.delete_page_form');
 })->name('deletePageForm');
@@ -69,9 +70,9 @@ Route::post('/console/login', [ConsoleController::class, 'login']);
 Route::post('page_edit/create_new/{returnTo}', [PageController::class, 'createPage'])->name('createPage');
 
 //ARTICLES
-Route::get('/insert_update_article', function () {
-    return View::make('articles.editColumn');
-})->name('insertUpdateArticle');
+// Route::get('/insert_update_article', function () {
+//     return View::make('articles.editColumn');
+// })->name('insertUpdateArticle');
 
 Route::post('/submit_update_article', [ArticleController::class, 'updateArticle'])->name('submitUpdateArticle');
 
@@ -94,19 +95,19 @@ Route::get('/insert_image_icons_2', function () {
     return View::make('images.partials.image_icons_2');
 })->name('insertImageIcons2');
 Route::get('/insert_upload_file', function () {
-    return View::make('images.partials.upload_file_bar');
+    return View::make('slides.upload_file_bar');
 })->name('insertUploadFile');
 
 Route::get('/insert_file_select', function () {
-    return View::make('images.partials.select_file_bar');
+    return View::make('slides.select_file_bar');
 })->name('insertFileSelect');
 
 Route::get('/insert_slide_card', function () {
-    return View::make('images.partials.image_preview_card');
+    return View::make('slides.image_preview_card');
 })->name('insertSlideCard');
 
 Route::get('/insert_add_image_card', function () {
-    return View::make('images.partials.add_slide_card');
+    return View::make('slides.add_slide_card');
 })->name('insertAddImageCard');
 
 //TABS
@@ -169,10 +170,6 @@ Route::get('/row_type', function () {
 
 Route::post('/update_page_title', [PageController::class, 'updatePageTitle'])->name('updatePageTitle');
 
-
-
-
-
 Route::get('/', function () {
     return View::make('app.opener');
 })->name('opener');
@@ -194,7 +191,7 @@ Route::get('/site2/site', function () {
 })->name('site2');
 
 Route::get('/insert_/insert_form/{formName}', function ($formName) {
-    Log::info('INSERT_: '. $formName);
+    Log::info('INSERT_: ' . $formName);
     if (strpos($formName, 'nav') !== false) {
         log::info($formName . 'requested ');
         $htmlResponse = NavController::insert($formName);
@@ -202,10 +199,10 @@ Route::get('/insert_/insert_form/{formName}', function ($formName) {
     }if (strpos($formName, 'img') !== false) {
         $htmlResponse = ImageController::insert($formName);
         return $htmlResponse;
-    } if (strpos($formName, 'tab') !== false) {
+    }if (strpos($formName, 'tab') !== false) {
         $htmlResponse = TabController::insert($formName);
         return $htmlResponse;
-    } if (strpos($formName, 'article') !== false) {
+    }if (strpos($formName, 'article') !== false) {
         $htmlResponse = ArticleController::insert($formName);
         return $htmlResponse;
     }
@@ -235,29 +232,47 @@ Route::get('/render_/render_content/{render}', function ($render) {
         Log::info('to image draw');
         $htmlResponse = ImageController::render($render);
         return $htmlResponse;
-    }elseif (strpos($render, 'article') !== false) {
+    } elseif (strpos($render, 'article') !== false) {
         Log::info('to article render');
-        $htmlResponse = ImageController::render($render);
+        $htmlResponse = ArticleController::render($render);
         return $htmlResponse;
-    }  else {
+    } else {
         // Handle other cases here if needed
         return response()->json(['error' => 'Invalid form request'], 400);
     }
 })->name('render');
 
+Route::post('session_var/{value}', function (Request $request) {
+    Log::info('sesstion scroll request'. $request);
+    $data = explode('^',  $request);
+    if (strpos( $request, 'scroll') !== false) {
+        Session::put('ScrollTo', $data[1]);
+    }
+});
+
 Route::post('/write_/write_form', function (Request $request) {
-    Log::info("write request: ". $request->form_name);
+    Log::info("write request: " . $request->form_name);
     if (strpos($request->form_name, 'img') !== false) {
         $imageController = new ImageController();
         return $imageController->editImage($request);
-    }
-    if (strpos($request->form_name, 'nav') !== false) {
+    } elseif (strpos($request->form_name, 'nav') !== false) {
         $navController = new NavController();
         return $navController->write($request);
-    }
-    if (strpos($request->form_name, 'tab') !== false) {
+    } elseif (strpos($request->form_name, 'tab') !== false) {
         Log::info('try to write tabs');
         $tabController = new TabController();
         return $tabController->write($request);
-    }
+    } elseif (strpos($request->form_name, 'page') !== false) {
+        Log::info('try to write pages');
+        $pageController = new PageController();
+        return $pageController->write($request);
+    } elseif (strpos($request->form_name, 'article') !== false) {
+        Log::info('try to write article');
+        $articleCtl = new ArticleController();
+        return $articleCtl->write($request);
+    } elseif (strpos($request->form_name, 'slides') !== false) {
+        Log::info('try to write article');
+        $slideCtl = new SlideController();
+        return $slideCtl->write($request);
+    }else {}
 })->name('write');

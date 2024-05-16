@@ -7,11 +7,20 @@ use App\Models\ContentItem;
 use App\Models\Navigation;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class SlideController extends Controller
-{
+{  public function write(Request $request)
+    {
+        Log::info('iside of write');
+        Log::info($request);
+        if ($request->form_name === 'change_slide_height') {
+            $this->updateArticle($request);
+        }
+    }
     public function createSlideshow(Request $request)
     {
+        Log::info($request);
         Session::put('scrollTo',$request->scroll_to);
         $firstSlide = ContentItem::create([
             'type' => 'column',
@@ -24,6 +33,7 @@ class SlideController extends Controller
         $rowData = [
             'slides' => $slideIds,
         ];
+        
         $newRow = ContentItem::create([
             'title' => $request->page_name . '_' . $request->rowIndex,
             'index' => $request->row_index_slide+1,
@@ -47,11 +57,12 @@ class SlideController extends Controller
         $pData[] = $newRow->id;
         $page->data = ["rows" => $pData];
         $page->save();
-
-        return redirect()->route('root', ['newLocation' => $page->title]);
+        Session::put('scrollTo', 'row_mark' . $newRow->index);
+        return redirect()->route('root', ['page' => $page->title]);
     }
     public function updateSlideshow(Request $request)
     {
+        
         $slideData = json_decode($request->data);
         $slides = [];
         foreach ($slideData as $slide) {
@@ -85,6 +96,8 @@ class SlideController extends Controller
             }
 
         }
+        Log::info($request);
+        Log::info('no update for slides row id '. $request->row_id);
         $row = ContentItem::findOrFail($request->row_id);
         $removeUnused = [];
         foreach ($row->data['slides'] as $id) {
@@ -92,28 +105,29 @@ class SlideController extends Controller
                 $removeUnused[] = $id;
             }
         }
-
+       
         if (count($removeUnused) > 0) {
             foreach ($removeUnused as $id) {
                 $item = ContentItem::findOrFail($id);
                 $item->delete();
             }
         }
-
+        
         $writeSlides = [
             'slides' => $slideIds,
         ];
         $row = ContentItem::findOrFail($request->row_id);
         $row->data = $writeSlides;
         $row->save();
-
+        
         if ($request->files->count() > 0) {
             foreach ($request->files as $file) {
                 $filename = $file->getClientOriginalName();
                 Storage::putFileAs('public/images', $file, $filename);
             }
         }
+       
         Session::put('scrollTo', $request->scroll_to);
-        return redirect()->route('root', ['pageName' => $request->page_name]);
+        return redirect()->route('root', ['page' => $request->page_name]);
     }
 }

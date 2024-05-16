@@ -8,9 +8,7 @@
        <button type="submit" class = "btn btn-primary page-title-save-btn" id="edit_title_page_btn">
            <img src="{{ asset('icons/save.svg') }}" class = "page-title-save-icon">
        </button>
-       <div>
-       <p id="no_duplicates" style="color:white; margin-left:12px; display:none">页面标题与现有页面重复 </p>
-       </div>
+      
    </div>
 
    <style>

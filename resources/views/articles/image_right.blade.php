@@ -1,39 +1,38 @@
 @php
+    use Illuminate\Support\Facades\Log;
+    Log::info('goot abe here no? ' . $column1->id);
+    $articleId = 'article_' . $rowId;
+    $imageId = 'image_' . $rowId;
 
-    $articleId = 'article_' . $row->id;
-    $imageId = 'image_' . $row->id;
-   
 @endphp
 
-<div class="d-flex justify-content-start"> 
-    <div class="col-9 d-flex align-items-start article-column" id = "{{ $articleId }}">
+<div class="container">
+    <div class = "row">
+    <div class="col-9 d-flex align-items-start " id = "{{ $articleId }}">
         @include('articles.partials.title_text', [
+            'pageId' => $pageId,
+            'rowId' => $rowId,
             'column' => $column1,
-            'row' => $row,
+            'info' => $info,
         ])
     </div>
     <div class="col-3 d-flex align-items-start image-column" id = "{{ $imageId }}">
         @include('articles.partials.image_column', [
+            'pageId' => $pageId,
+            'rowId' => $rowId,
             'column' => $column2,
-            'row' => $row,
         ])
 
     </div>
 </div>
+</div>
 
 <style>
-    .space-top-40 {
-        background-color: orange;
-        height: 40px;
-    }
+
 
     .image-column {
 
         width: 100%;
     }
 
-    .article-column {
-        padding-left: 5%;
-        padding-right: 5%;
-    }
 </style>

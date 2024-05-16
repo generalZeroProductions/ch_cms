@@ -590,3 +590,11 @@ PAGE PAGINATION ?????
 @if (!$slides)
     {{-- @include('images.partials.corners_select') --}}
 @endif
+
+
+Donec diam ac tempus taciti ipsum porta praesent diam quis id, dictumst facilisis 
+        semper metus id integer magna ac tristique mollis quam, laoreet conubia torquent fringilla leo 
+        scelerisque molestie a viverra. Vel molestie morbi phasellus facilisis curae velit mauris commodo,
+         mi at vulputate libero porta nibh ante, elementum etiam donec volutpat dolor amet aenean. Varius 
+         ullamcorper cras taciti vulputate fermentum enim interdum faucibus cubilia fringilla libero nulla 
+         aliquam, aenean lobortis commodo nisi augue felis aenean conubia ac fusce magna cras.

@@ -1,14 +1,28 @@
 @php
+$jDrop = json_encode(['page'=>$page, 'row'=>$row])
 @endphp
 
 <br><br>
-<div class="container-fluid red_row" style='height:46px'>
-    <div class="d-flex bd-highlight ">
-        <div class="p-2 w-100 "></div>
-        <div class="p-2 flex-shrink-1 btn-right-space no-top-space ">
-            <button class = "btn btn-danger general-btn" onClick="openMainModal('removeRow','null', '{{ json_encode($row) }}','model-sm')">
-                删除行 <img src={{ asset('icons/trash_white.svg') }} class='space_icon_right'></button>
-        </div>
+
+
+<div class="container-fluid red_row d-flex justify-content-center" id = "page_title_click" style="padding-top:8px"
+ onclick="openMainModal('removeRow', '{{ $jDrop }}','modal-sm')">
+    <div class = "row d-flex align-items-center" >
+        <p class="title-indicator">删除行</p>
+        <img src={{ asset('icons/trash_white.svg') }} class='delete-row-trash'>
     </div>
+
 </div>
 
+<style>
+.delete-row-trash{
+    height:20px;
+    margin-left:8px;
+    margin-bottom:14px
+}
+.red_row:hover{
+    cursor:pointer;
+    background-color:rgb(253, 137, 137);
+}
+
+</style>

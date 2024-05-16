@@ -1,13 +1,15 @@
 @php
-if (Session::has('screenwidth')) {
-    echo "<style>
+    use Illuminate\Support\Facades\Log;
+    Log::info('@slideshow');
+    if (Session::has('screenwidth')) {
+        echo "<style>
         .banner_container {
             width: " .
-        Session::get('screenwidth') .
-        "px;
+            Session::get('screenwidth') .
+            "px;
             height: " .
-        Session::get('screenwidth') / 3 .
-        "px;
+            $slideHeight .
+            "px;
             overflow: hidden; /* Ensure that the image is cropped to fit within the container */
         }
         .banner_container img {
@@ -16,13 +18,11 @@ if (Session::has('screenwidth')) {
             object-fit: cover; /* Crop the image to cover the container */
         }
     </style>";
-}
+    }
 
-
-
-$index = 0;
-$slideBox = 'slide_box_' . $rowId;
-$slideshowId = 'slide_show_' . $rowId;
+    $index = 0;
+    $slideBox = 'slide_box_' . $rowId;
+    $slideshowId = 'slide_show_' . $rowId;
 
 @endphp
 
@@ -81,6 +81,14 @@ $slideshowId = 'slide_show_' . $rowId;
         <img src ="{{ asset('images/' . $slideList[0]['image']) }} " class = "image-fluid">
     </div>
 @endif
+@endif
+@if ($editMode)
+    @include('slides.edit_slides_bar', [
+        'slideBox' => $slideBox, 
+        'pageId' => $pageId,
+        'rowId'=>$rowId,
+        'slideJson' => $slideJson,
+    ])
 @endif
 </div>
 </div>

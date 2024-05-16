@@ -23,8 +23,8 @@
         use App\Models\Navigation;
         use App\Models\ContentItem;
         $currentUrl = $_SERVER['REQUEST_URI'];
+
         $urlParts = explode('/', $currentUrl);
-        $location;
         $page = ContentItem::where('type', 'page')
             ->where('title', $urlParts[1])
             ->first();
@@ -32,16 +32,9 @@
         if (isset($currentKey)) {
             $navIndex = $currentKey;
         }
-        if (isset($page)) {
-            Session::put('location', $page->title);
-            $location = [
-                'page' => $page,
-                'row' => null,
-                'item' => null,
-                'scroll' => null,
-            ];
-        }
         $scrollTo = Session::get('scrollTo');
+        Log::info('scroll to : ' . Session::get('scrollTo'));
+        Session::forget('scrollTo');
         $allRoutes = setAllRoutes();
     @endphp
 
@@ -56,15 +49,18 @@
 </body>
 <script>
     window.onload = function() {
-       
+
         iconsAsset = "{{ asset('icons/') }}/";
         imagesAsset = "{{ asset('images/') }}/";
         fontsAsset = "{{ asset('fonts/') }}/";
         allRoutes = decodeRoutes('{{ $allRoutes }}');
         renderNavigation('{{ $page->title }}', '{{ $navIndex }}')
-       
-        renderPageContent('{{ $page->id }}');
-        // window.scrollTo('{{ $scrollTo }}');
+        renderPageContent('{{ $page->id }}', '{{ $scrollTo }}');
+        currentScreen = window.innerWidth;
+        window.addEventListener('resize', function() {
+            handleResize("{{ $page->title }}");
+        });
+
     }
 </script>
 

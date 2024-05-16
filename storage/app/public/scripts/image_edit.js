@@ -1,32 +1,22 @@
-function insertImageEditor(item) {
-    jItem = JSON.parse(item);
-    const div = document.getElementById("image_" + jItem.rowId);
-    var sequence = "refresh_/image_refresh";
-    refreshDiv(div, sequence)
-        .then(() => {
-            setIconsBar(div, jItem);
-        })
-        .catch((error) => {
-            console.error("Error refreshing page:", error);
-        });
-}
+function imageFormFillout(formName_sent, jItem) {
+    item = JSON.parse(jItem);
+    var string = formName_sent;
+    var formName = string.split('^')[0];
+    var form = document.getElementById(formName);
+    var div = form.parentElement;
+    addFieldAndValue("row_id", item.rowId);
+    addFieldAndValue("column_id", item.column.id);
 
-function imageFormFillout(formName, item) {
-    jItem = JSON.parse(item);
-    const form = document.getElementById(formName);
-    const div = form.parentElement;
-    const colId = document.getElementById("image_column_id");
-    colId.value = jItem.id;
     form.addEventListener("submit", function (event) {
-        submitUpdateRequest(form, jItem, formName, div, event);
+        preventDefault();
     });
+    console.log("PAST FORM");
+    setImageAndCorners(div, item);
+    var uploadBars = div.querySelectorAll("#upload_file_bar");
+    var serverBars = div.querySelectorAll("#server_file_bar");
 
-    setImageAndCorners(div, jItem);
-    const uploadBars = div.querySelectorAll("#upload_file_bar");
-    const serverBars = div.querySelectorAll("#server_file_bar");
-
-    const serverLinks = div.querySelectorAll("#server_anchor");
-    const uploadLinks = div.querySelectorAll("#upload_anchor");
+    var serverLinks = div.querySelectorAll("#server_anchor");
+    var uploadLinks = div.querySelectorAll("#upload_anchor");
 
     uploadInputs = uploadBars[0].querySelectorAll("#upload");
     uploadInputs[0].addEventListener("change", (event) => {
@@ -53,40 +43,38 @@ function imageFormFillout(formName, item) {
     );
 
     captions = div.querySelectorAll("#caption");
-    captions[0].value = jItem.body;
-
+    captions[0].value = item.column.body;
+    var rowDiv = document.getElementById("rowInsert" + item.rowId);
+    var sequence =
+        "img_edit^" + item.pageId + "^" + item.rowId + "^" + item.column.id;
+    var btn = document.getElementById("img_edit_btn");
+    btn.onclick = function () {
+        writeAndRender(formName, sequence, rowDiv);
+    };
 }
-// function setCusomSubmitImg(formName, item, div, key) {
-//     const form = document.getElementById(formName);
-//     if (formName === "nav_dropdown") {
-//         item = item.nav;
-//     }
-//     form.addEventListener("submit", function (event) {
-//         submitUpdateRequest(form, item, formName, div, event, key);
-//     });
-// }
 
 function setImageAndCorners(div, item) {
     const thumbs = div.querySelectorAll("#thumb");
-    thumbs[0].setAttribute("src", imagesAsset + item.image);
+    thumbs[0].setAttribute("src", imagesAsset + item.column.image);
     var imgField = document.getElementById("image_name");
-    imgField.value = item.image;
+    imgField.value = item.column.image;
     const icons = div.querySelectorAll(".corner");
-    const style = item.styles["corners"];
+    const style = item.column.styles["corners"];
+
+    icons.forEach((icon) => {
+        if (icon.id === style) {
+            icon.classList.add("selected");
+        }
+        if (icon.id === "image_square") {
+            if (!style) {
+                icon.classList.add("selected");
+            }
+        }
+    });
     if (style == "image-thumb-rounded") {
         thumbs[0].classList.add(style);
-        icons.forEach((icon) => {
-            if (icon.id === style) {
-                icon.classList.add("selected");
-            }
-        });
     } else if (style == "rounded-circle") {
         thumbs[0].classList.add(style);
-        icons.forEach((icon) => {
-            if (icon.id === style) {
-                icon.classList.add("selected");
-            }
-        });
     }
     const radioInputs = div.querySelectorAll(".corner");
     radioInputs.forEach((icon) => {
@@ -94,7 +82,7 @@ function setImageAndCorners(div, item) {
             setCornersStyle(this.id, div);
         });
     });
-    console.log("STLY WAS: " + style);
+
     var cornerField = document.getElementById("corners_field");
     cornerField.value = style;
 }
@@ -116,6 +104,7 @@ function setCornersStyle(id, div) {
             thumb[0].classList.add(id);
         }
     });
+    console.log("id type " + id);
     var cornerField = document.getElementById("corners_field");
     cornerField.value = id;
 }
@@ -138,40 +127,78 @@ function displayServerFile(id, div, imageName) {
         }
     }
 }
-function displaySelectedFile22(id, imageName) {
-    if (imageName != "选择一个文件...") {
-        const imgElement = getImageElementFromCard(id);
-        if (imgElement) {
-            imgElement.src = imagesAsset + imageName;
-        }
-        var slide = slideShowItems[id];
-        slide.source = "server";
-        slide.image = imageName;
-        slide.file = null;
-        // const fileElement = document.getElementById("file_capture_" + slideId);
-        // fileElement.value = "";
-        updateSlideData();
-    }
-}
+
 function displayUploadedImages(id, input, div) {
+    const fileContainer = document.getElementById("fileContainer");
+    const spinnerContainer = document.getElementById("spinnerContainer");
+
+    // Show spinner
+    spinnerContainer.style.display = "block";
+
     const imgElement = div.querySelector("#thumb");
     const file = input.files[0];
     const reader = new FileReader();
+
     reader.onload = function (event) {
+        // Hide spinner
+        spinnerContainer.style.display = "none";
+        // Set the image source
         imgElement.src = event.target.result;
+        // If an ID is provided, update slide data
+        if (id) {
+            const slide = slideShowItems[id];
+            slide.image = file.name;
+            slide.file = file;
+            slide.source = "upload";
+            updateSlideData();
+        } else {
+            const imgField = document.getElementById("image_name");
+            imgField.value = file.name;
+        }
     };
+
+    // Read the file as a data URL (this triggers the onload function)
     reader.readAsDataURL(file);
-    if (id) {
-        var slide = slideShowItems[id];
-        slide.image = file.name;
-        slide.file = file;
-        slide.source = "upload";
-        updateSlideData();
-    } else {
-        var imgField = document.getElementById("image_name");
-        imgField.value = file.name;
-    }
 }
+
+
+
+// function loadSpinner() {
+//     spinnerContainer.style.display = "block";
+//     setTimeout(function () {
+//         spinnerContainer.style.display = "none";
+//         fileContainer.innerHTML = "<p>File content goes here...</p>";
+//     }, 100); // Adjust the timeout value as needed
+// }
+
+
+// function displayUploadedImages(id, input, div) {
+//     var fileContainer = document.getElementById("fileContainer");
+//     var spinnerContainer = document.getElementById("spinnerContainer");
+//     spinnerContainer.style.display = "block";
+//     setTimeout(function () {
+//         spinnerContainer.style.display = "none";
+//         fileContainer.innerHTML = "<p>File content goes here...</p>";
+//     }, 2000);
+//     loadSpinner();
+//     const imgElement = div.querySelector("#thumb");
+//     const file = input.files[0];
+//     const reader = new FileReader();
+//     reader.onload = function (event) {
+//         imgElement.src = event.target.result;
+//     };
+//     reader.readAsDataURL(file);
+//     if (id) {
+//         var slide = slideShowItems[id];
+//         slide.image = file.name;
+//         slide.file = file;
+//         slide.source = "upload";
+//         updateSlideData();
+//     } else {
+//         var imgField = document.getElementById("image_name");
+//         imgField.value = file.name;
+//     }
+// }
 function disableClick(event) {
     event.preventDefault();
 }

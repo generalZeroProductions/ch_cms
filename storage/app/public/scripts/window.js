@@ -1,7 +1,7 @@
 function setHeadSpace(){
     
     var mainNav = document.getElementById("site_nav_bar");
-    var headSpace = document.getElementById("headspace");
+    var headSpaceDiv = document.getElementById("headspace");
     mainNavBottom = 0;
     if(mainNav)
     {console.log('found nav');
@@ -15,9 +15,10 @@ function setHeadSpace(){
             mainNavBottom = editor.getBoundingClientRect().bottom + 14;
         }
     }
-    headSpace.style.height = `${mainNavBottom}px`;
-    
+    headSpace = mainNavBottom;
+    headSpaceDiv.style.height = `${mainNavBottom}px`;
 }
+
 function preventScrolling() {
     var scrollTop = window.scrollY || document.documentElement.scrollTop;
     document.body.style.position = "fixed";
@@ -32,13 +33,35 @@ function enableScrolling() {
     window.scrollTo(0, -scrollTop);
 }
 
-function set_rescroll() {
-    var closeButton = document.getElementById("close_main_modal");
-    closeButton.addEventListener("click", function () {
-        enableScrolling();
+function findClosestDiv() {
+    var rowMarks = document.querySelectorAll('.row_mark');
+    let closestDiv = null;
+    let closestDistance = Infinity;
+    rowMarks.forEach((div) => {
+        const distance = Math.abs(div.getBoundingClientRect().top - headSpace);
+        if (distance < closestDistance) {
+            closestDiv = div;
+            closestDistance = distance;
+        }
     });
+    return closestDiv.id;
 }
-
+var currentScreen;
+function handleResize(route) {
+console.log("calling resize: " +currentScreen);
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(function () {
+        if (Math.abs(window.innerWidth - currentScreen) > 15) {
+            window.location.href =
+                "/session/screen?" +
+                window.innerWidth +
+                "?" +
+                route +
+                "?" +
+                window.scrollY;
+        }
+    }, 50);
+}
 
 function insertCreateRowForm() {
     document.getElementById("main_modal_label").innerHTML =
@@ -75,34 +98,3 @@ function insertCreateRowForm() {
 }
 
 
-
-function openMainModal(action, item, location, modalSize) {
-    scrollBackTo = window.scrollY;
-    locItem = JSON.parse(location);
-    preventScrolling();
-    set_rescroll();
-    var dialogElement = document.getElementById("main_modal_dialog");
-    dialogElement.className = "modal-dialog " + modalSize;
-    $("#main_modal").modal("show");
-    modBody = document.getElementById("main_modal_body");
-    modTitleLabel = document.getElementById("main_modal_label");
-
-    if (action.includes("nav")) {
-        var parts = action.split("?");
-        modalContentNav(parts[1], item);
-    } else if (action === "removeItem") {
-        removeNavWarning(item);
-    } else if (action === "removeRow") {
-        removeRowWarning();
-    } else if (action === "uploadImage") {
-        showUploadImageStandard(item);
-    } else if (action === "createRow") {
-        insertCreateRowForm(item);
-    } else if (action === "editSlideshow") {
-        editSlidesForm(item);
-    } else if (action === "editTabs") {
-        editTabsForm(item);
-    } else if (action === "deletePage") {
-        deletePageWarning(item);
-    }
-}

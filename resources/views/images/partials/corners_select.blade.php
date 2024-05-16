@@ -1,26 +1,43 @@
-   <div id="imageRadios" class = "corners-bar">
-       <div class="d-flex justify-content-around">
-           <div class = "p-2 corner" id="">
-               <img src="{{ asset('icons/square2.svg') }}"class="select-corners">
-           </div>
-           <div class = "p-2 corner" id="image-thumb-rounded">
-               <img src="{{ asset('icons/rounded.svg') }}"class="select-corners">
-           </div>
-           <div class = "p-2 corner" id="rounded-circle">
-               <img src="{{ asset('icons/circle.svg') }}" class = "select-corners">
+@php
+ $width = Session::get('screenwidth') / 6;
+ $margin = $width/8.5;
+echo '<style> .stack_2 {
+        position:absolute;
+           z-index: 2;
+           bottom: 120px;
+           left:'.$margin.'px;
+           width:'.$width . 'px;
+       }</style>  '
+@endphp
+   
+   
+   <div class = "stack_2">
+       <div id="imageRadios" class = "corners-bar">
+           <div class="d-flex justify-content-around">
+               <div class = "p-2 corner" id="image_square">
+                   <img src="{{ asset('icons/square2.svg') }}"class="select-corners">
+               </div>
+               <div class = "p-2 corner" id="image-thumb-rounded">
+                   <img src="{{ asset('icons/rounded.svg') }}"class="select-corners">
+               </div>
+               <div class = "p-2 corner" id="rounded-circle">
+                   <img src="{{ asset('icons/circle.svg') }}" class = "select-corners">
+               </div>
            </div>
        </div>
+
    </div>
-
-
    <style>
        .corner {
            text-align: center;
            width: 100%;
+           background-color: rgb(191, 195, 198);
        }
 
+      
+
        .corner:hover {
-           background-color: rgb(245, 230, 169);
+           background-color: rgb(184, 211, 231);
        }
 
        .corner.selected {

@@ -6,7 +6,7 @@ use App\Models\Navigation;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
-
+use Illuminate\Support\Facades\Log;
 class Setters
 {
 
@@ -54,18 +54,21 @@ class Setters
     }
     function setAllRows($page)
     {
+       
         $pData = $page->data['rows'];
         $allRows = [];
         foreach ($pData as $rowId) {
             $row = ContentItem::findOrFail($rowId);
             $allRows[] = $row;
         }
-        usort($allRows, array($this, 'sortByIndex'));
+        usort($allRows, function($a, $b) {
+            return $a->index - $b->index;
+        });
         return ($allRows);
     }
-    function setSlideshow($location)
+    function setSlideshow($page, $row)
     {
-        $slideData = $location['row']['data']['slides'];
+        $slideData = $row->data['slides'];
         $slideList = [];
         $slideJson = [];
         foreach ($slideData as $slideId) {

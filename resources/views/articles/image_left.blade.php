@@ -1,26 +1,33 @@
 @php
-    $articleId = 'article_' . $row->id;
-    $imageId = 'image_' . $row->id;
+use Illuminate\Support\Facades\Log;
+    Log::info('@ imageLeft');
+    $articleId = 'article_' . $rowId;
+    $imageId = 'image_' . $rowId;
+    
 @endphp
 
-<div class="d-flex justify-content-start">
-    <div class="col-3 d-flex align-items-start image-column">
-        @include('articles.partials.image_column', [
-            'column' => $column2,
-            'row' => $row,
-        ])
+<div class="container">
+    <div class = "row d-flex">
+        <div class="col-3  align-items-start justify-content-end " id="{{$imageId}}">
+            @include('articles.partials.image_column', [
+                'pageId' => $pageId,
+                'rowId' => $rowId,
+                'column' => $column2,
+            ])
 
-    </div>
-    <div class="col-9 d-flex align-items-start article-column" id = "{{ $articleId }}">
-        @include('articles.partials.title_text', [
-            'column' => $column1,
-            'row' => $row,
-        ])
+        </div>
+        <div class="col-9  align-items-start" id = "{{ $articleId }}">
+            @include('articles.partials.title_text', [
+                'pageId' => $pageId,
+                'rowId' => $rowId,
+                'column' => $column1,
+                'info' => $info,
+            ])
+        </div>
+
     </div>
 
 </div>
-
-
 <style>
     .space-top-40 {
         background-color: orange;
@@ -30,10 +37,5 @@
     .image-column {
 
         width: 100%;
-    }
-
-    .article-column {
-        padding-left: 5%;
-        padding-right: 5%;
     }
 </style>

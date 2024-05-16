@@ -1,0 +1,58 @@
+.article-info-link {
+    font-size: 24px;
+    font-weight: 400;
+}
+
+.article-info-link:hover {
+    font-size: 25px;
+}
+
+.article-pen-icon {
+    margin-left: 10px;
+    height: 18px
+}
+
+.article-icon-space {
+    height: 48px;
+}
+.info-name {
+    width: 200px !important;
+}
+
+.article-link-icon {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+  .long-text {
+        height: 500px
+    }
+
+    .t1 {
+        /* X_L */
+        font-size: 40px;
+        font-weight: bold;
+    }
+
+    .t2 {
+        /* L */
+        font-size: 36px;
+        font-weight: bold;
+    }
+
+    .t3 {
+        /* M */
+        font-size: 32px;
+        font-weight: bold;
+    }
+
+    .t4 {
+        /* S */
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .t5 {
+        /* X_S */
+        font-size: 24px;
+        font-weight: bold;
+    }

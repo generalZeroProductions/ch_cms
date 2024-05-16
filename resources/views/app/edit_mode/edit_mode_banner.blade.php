@@ -11,24 +11,20 @@
     }
 
 @endphp
+@include('app.edit_mode.auth_on_off')
+<?php
+ 
+echo 'return = ' . Session::get('returnPage') . '/    tab = ' . Session::get('tabId').'       / build ='
+.Session::get('buildMode'). '      /edit = '.Session::get('editMode') .'/screen ='.Session::get('screenwidth');
+?>
 
 <div class ='edit-container' id = "edit_mode_contain">
     <div class="row d-flex justify-content-end rounded-box">
         <div class=col-2>
-            @include('app.edit_mode.auth_on_off')
+           LOGO SHIT HERE 
         </div>
         <div class=col-5>
-            <div class="row ">
-                return = {{ Session::get('returnPage') }}
-                &nbsp;&nbsp;&nbsp; /tab = {{ Session::get('tabId') }}
-                &nbsp;&nbsp;&nbsp; / build = {{ Session::get('buildMode') }}
-            </div>
-
-            <div class=row>
-                &nbsp;&nbsp;&nbsp; /edit = {{ Session::get('editMode') }}
-                &nbsp;&nbsp;&nbsp; /location = {{ Session::get('location') }}
-
-            </div>
+           
         </div>
         <div class=col-5>
             <div class= "row flex-d justify-content-end" style = "padding-right:12px">

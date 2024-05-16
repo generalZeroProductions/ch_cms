@@ -9,7 +9,7 @@ use Illuminate\Database\Seeder;
 
 class InitDbSeeder extends Seeder
 {
-    /** 
+    /**
      * Run the database seeds.
      *
      * @return void
@@ -18,29 +18,40 @@ class InitDbSeeder extends Seeder
     {
         try {
             User::create([
-                'name'=>'super',
-                'password'=>bcrypt('123'),
-                'super'=>true
+                'name' => 'super',
+                'password' => bcrypt('123'),
+                'super' => true,
             ]);
             Navigation::create([
                 'type' => 'nav',
-                'title'=>'Page_1',
+                'title' => 'Page_1',
                 'route' => 'Page_1',
-                'index'=>0,
+                'index' => 0,
             ]);
+            $infoStyle = ['type'=>'button'];
+            $info = Navigation::create([
+                'type' => 'info',
+                'title' => 'login',
+                'route' => '/login',
+                'styles'=> $infoStyle,
 
+            ]);
+            $cData = ['info' => [$info->id]];
+            $cStyle = ['info'=>'on', 'title'=>'t3'];
             $column = ContentItem::create([
-                'type'=> 'column',
+                'type' => 'column',
                 'heading' => 'title_text',
                 'title' => 'Page 1 Title',
-                'body' => 'This is some sample content.',
-                
+                'body' => 'This is some sample content. login to get started editing.  your login in username super password 123',
+                'data'=> $cData,
+                'styles'=> $cStyle,
+
             ]);
 
             $rData = ['columns' => [$column->id]];
 
             $row = ContentItem::create([
-                'type'=> 'row',
+                'type' => 'row',
                 'heading' => 'one_column',
                 'data' => $rData,
                 'index' => 1,
@@ -49,7 +60,7 @@ class InitDbSeeder extends Seeder
             $pData = ['rows' => [$row->id]];
 
             ContentItem::create([
-                'type'=> 'page',
+                'type' => 'page',
                 'title' => 'Page_1',
                 'data' => $pData,
             ]);

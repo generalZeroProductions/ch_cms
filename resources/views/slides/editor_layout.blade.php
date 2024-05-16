@@ -1,4 +1,4 @@
-<form method="POST" action="update_slideshow" enctype="multipart/form-data" id="slideEditForm">
+<form method="POST" action="/update_slideshow" enctype="multipart/form-data" id="slideEditForm">
 @csrf
 <div class="d-flex justify-content-between">
     @for ($i = 0; $i < 3; $i++)
