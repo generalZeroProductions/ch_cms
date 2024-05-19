@@ -1,36 +1,51 @@
 @php
-use Illuminate\Support\Facades\Log;
-Log::info('hello from tabs');
+    use Illuminate\Support\Facades\Log;
+    Log::info('hello from tabs');
     $tabCol = 'tab_col_' . $rowId;
-    $contentCol = 'content_col_'.$rowId;
-    $contentBoxId = 'content_'.$rowId;
+    $contentCol = 'content_col_' . $rowId;
+    $contentBoxId = 'content_' . $rowId;
     $tab0Route = $tab0->route;
     $tab0Index = $tab0->index;
     $tab0Id = $tab0->id;
-    $tagAnchor = "tab_".$tab0->index;
+    $tagAnchor = 'tab_' .$rowId. $tab0->index;
 @endphp
 
-<div class="d-flex justify-content-start" id="{{ $rowId }}">
-    <div class="col-6" id = "{{ $tabCol }}">
-      @include('/tabs/tab_menu',['tabs'=>$tabs,'tab0'=>$tab0,'rowId'=>$rowId, 'divId'=>$tabCol])
+<div class="row-contain d-flex justify-content-start" id="{{ $rowId }}">
+    <div class="col-3" id = "{{ $tabCol }}">
+        @include('/tabs/tab_menu', [
+            'tabs' => $tabs,
+            'tab0' => $tab0,
+            'rowId' => $rowId,
+            'pageId'=>$pageId,
+            'divId' => $tabCol,
+        ])
     </div>
-    <div class="col-6 " id="{{$contentCol}}">
-            <div id="{{ $contentBoxId }}" class="tabContent_{{ $rowId }}">
+    <div class="col-9 " id="{{ $contentCol }}">
+        @php
+            $i = 0;
+        @endphp
+        @foreach ($contents as $content)
+            <div id="contents{{$i}}" class="tabContent_{{ $rowId }}">
+            {!!$content!!}
             </div>
+            @php
+                $i++;
+            @endphp
+        @endforeach
     </div>
 </div>
 
 
 <div class = 'run-scripts'>
-<script>
-    changeTab('{{ $rowId }}', '{{$tagAnchor }}', '{{ $tab0Index }}','{{$tab0Id}}');
-</script>
+    <script>
+        changeTab('{{ $rowId }}', '{{ $tagAnchor }}', '{{ $tab0Index }}',  false);
+    </script>
 </div>
 <style>
-.no_dots{
-     list-style: none;
-}
-   
+    .no_dots {
+        list-style: none;
+    }
+
 
     .tab-item-on {
         font-size: 30px;

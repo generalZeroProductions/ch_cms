@@ -95,19 +95,19 @@ Route::get('/insert_image_icons_2', function () {
     return View::make('images.partials.image_icons_2');
 })->name('insertImageIcons2');
 Route::get('/insert_upload_file', function () {
-    return View::make('slides.upload_file_bar');
+    return View::make('slides.partials.upload_file_bar');
 })->name('insertUploadFile');
 
 Route::get('/insert_file_select', function () {
-    return View::make('slides.select_file_bar');
+    return View::make('slides.partials.select_file_bar');
 })->name('insertFileSelect');
 
 Route::get('/insert_slide_card', function () {
-    return View::make('slides.image_preview_card');
+    return View::make('slides.partials.image_preview_card');
 })->name('insertSlideCard');
 
 Route::get('/insert_add_image_card', function () {
-    return View::make('slides.add_slide_card');
+    return View::make('slides.partials.add_slide_card');
 })->name('insertAddImageCard');
 
 //TABS
@@ -139,7 +139,7 @@ Route::post('/tab/new/{tabId}', function ($tabId) {
 
 //SLIDES
 Route::get('/dispay_slide_data', function () {
-    return View::make('slides.slide_data_form');
+    return View::make('slides.forms.slide_data_form');
 })->name('dispaySlideData');
 Route::get('/slideshow_edit', function () {
     return View::make('slides.editor_layout');
@@ -216,15 +216,16 @@ Route::get('/insert_/insert_form/{formName}', function ($formName) {
 })->name('insertForm');
 
 Route::get('/render_/render_content/{render}', function ($render) {
-    Log::info('render request: ' . $render);
+    Log::info('#render request: ' . $render);
 
-    if (strpos($render, 'page') !== false) {
-        $htmlResponse = PageController::render($render);
-        return $htmlResponse;
-    } elseif (strpos($render, 'nav') !== false) {
+    if (strpos($render, 'nav') !== false) {
         $htmlResponse = NavController::render($render);
         return $htmlResponse;
-    } elseif (strpos($render, 'tab') !== false) {
+    }
+    elseif (strpos($render, 'page') !== false) {
+        $htmlResponse = PageController::render($render);
+        return $htmlResponse;
+    }  elseif (strpos($render, 'tab') !== false) {
         Log::info('to tab draw');
         $htmlResponse = TabController::render($render);
         return $htmlResponse;
@@ -237,8 +238,8 @@ Route::get('/render_/render_content/{render}', function ($render) {
         $htmlResponse = ArticleController::render($render);
         return $htmlResponse;
     } else {
-        // Handle other cases here if needed
-        return response()->json(['error' => 'Invalid form request'], 400);
+      
+       return response()->json(['error' => 'Invalid form request'], 400);
     }
 })->name('render');
 
@@ -270,9 +271,14 @@ Route::post('/write_/write_form', function (Request $request) {
         Log::info('try to write article');
         $articleCtl = new ArticleController();
         return $articleCtl->write($request);
-    } elseif (strpos($request->form_name, 'slides') !== false) {
+    } elseif (strpos($request->form_name, 'slide') !== false) {
         Log::info('try to write article');
         $slideCtl = new SlideController();
         return $slideCtl->write($request);
+    }
+    elseif (strpos($request->form_name, 'logo') !== false) {
+        Log::info('try to write article');
+        $pageCtl = new PageController();
+        return $pageCtl->write($request);
     }else {}
 })->name('write');

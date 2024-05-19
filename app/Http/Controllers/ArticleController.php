@@ -45,126 +45,101 @@ class ArticleController extends Controller
     }
     public function createTwoColumn(Request $request)
     {
-        $articleMaker = new ArticleMaker();
-        $titleText = $articleMaker->newTitleText();
-
-        $columnIds[] = $titleText->id;
-        $titleText = $articleMaker->newTitleText();
-
-        $columnIds[] = $titleText->id;
-        $rowData = [
-            'columns' => $columnIds,
-        ];
+        $rows = ContentItem::where('parent', $request->page_id)->get();
+        foreach ($rows as $row) {
+            if ($row->index > $request->row_index) {
+                $row->index = $row->index + 1;
+                $row->save();
+            }
+        }
         $newRow = ContentItem::create([
-            'index' => $request->row_index_2col + 1,
+            'index' => $request->row_index + 1,
             'type' => 'row',
             'heading' => 'two_column',
-            'data' => $rowData,
+            'body'=>'两栏文章',
+            'parent' => $request->page_id,
         ]);
+        $articleMaker = new ArticleMaker();
+        $articleMaker->newTitleText($newRow->id,0);
+        $articleMaker->newTitleText($newRow->id,1);
+
        
         $page = ContentItem::findOrFail($request->page_id);
-        $pData = $page->data['rows'];
-        foreach ($pData as $data) {
-            $row = ContentItem::findOrFail($data);
-            if ($row->index > $request->row_index_2col) {
-                $row->index = $row->index + 1;
-                $row->save();
-            }
-        }
-        $pData[] = $newRow->id;
-        $page->data = ["rows" => $pData];
-        $page->save();
-        Session::put('scrollTo', 'row_mark' . $newRow->index);
+        Session::put('scrollTo', 'rowInsert' . $newRow->id);
         return redirect()->route('root', ['page' => $page->title]);
     }
+
     public function createOneColumn(Request $request)
     {
-        $articleMaker = new ArticleMaker();
-        $titleText = $articleMaker->newTitleText();
-        $columnIds = [$titleText->id];
-        $rowData = [
-            'columns' => $columnIds,
-        ];
-        $newRow = ContentItem::create([
-            'index' => $request->row_index_1col + 1,
-            'type' => 'row',
-            'heading' => 'one_column',
-            'data' => $rowData,
-        ]);
-        $page = ContentItem::findOrFail($request->page_id);
-        $pData = $page->data['rows'];
-        foreach ($pData as $data) {
-            $row = ContentItem::findOrFail($data);
-            if ($row->index > $request->row_index_1col) {
+        $rows = ContentItem::where('parent', $request->page_id)->get();
+        foreach ($rows as $row) {
+            if ($row->index > $request->row_index) {
                 $row->index = $row->index + 1;
                 $row->save();
             }
         }
-        $pData[] = $newRow->id;
-        $page->data = ["rows" => $pData];
-        $page->save();
+        $newRow = ContentItem::create([
+            'index' => $request->row_index + 1,
+            'type' => 'row',
+            'heading' => 'one_column',
+            'body'=>'单栏文章',
+            'parent' => $request->page_id,
+        ]);
+        $articleMaker = new ArticleMaker();
+        $articleMaker->newTitleText($newRow->id,0);
+       
 
-
-        Session::put('scrollTo', 'row_mark' . $newRow->index);
+        $page = ContentItem::findOrFail($request->page_id);
+        Session::put('scrollTo', 'rowInsert' . $newRow->id);
         return redirect()->route('root', ['page' => $page->title]);
     }
 
     public function createImageArticle(Request $request)
     {
+        $rows = ContentItem::where('parent', $request->page_id)->get();
+        foreach ($rows as $row) {
+            if ($row->index > $request->row_index) {
+                $row->index = $row->index + 1;
+                $row->save();
+            }
+        }
+        $rowHeading = "image_left";
+        $rowBodey = ' 文章 - 图片左';
+        if ($request->image_at === "right") {
+            $rowHeading = "image_right";
+            $rowBodey='文章 - 图片右';
+        }
+        $newRow = ContentItem::create([
+            'index' => $request->row_index + 1,
+            'type' => 'row',
+            'heading' =>  $rowHeading,
+            'body'=> $rowBodey,
+            'parent' => $request->page_id,
+        ]);
         $styles = ["corners" => ''];
-        $image = ContentItem::create([
+        ContentItem::create([
             'type' => 'column',
             'heading' => 'image',
+            'index'=>'1',
             'body' => 'new image caption',
             'title' => 'new image title',
             'image' => 'defaultImage.jpg',
             'styles' => $styles,
+            'parent'=>$newRow->id
         ]);
-        $columnIds = [];
         $articleMaker = new ArticleMaker();
-        $titleText = $articleMaker->newTitleText();
-
-        $row_heading = "image_left";
-        if ($request->image_at === "right") {
-            $row_heading = "image_right";
-
-        }
-        $columnIds[] = $titleText->id;
-        $columnIds[] = $image->id;
-        $rowData = [
-            'columns' => $columnIds,
-        ];
-        $newRow = ContentItem::create([
-            'index' => $request->row_index + 1,
-            'type' => 'row',
-            'heading' => $row_heading,
-            'data' => $rowData,
-        ]);
-       
+        $articleMaker->newTitleText($newRow->id,0);
         $page = ContentItem::findOrFail($request->page_id);
-        $pData = $page->data['rows'];
-        foreach ($pData as $data) {
-            $row = ContentItem::findOrFail($data);
-            if ($row->index > $request->row_index) {
-                $row->index = $row->index + 1;
-            }
-            $row->save();
-        }
-
-
-        $pData[] = $newRow->id;
-        $page->data = ["rows" => $pData];
-        $page->save();
-
-        Session::put('scrollTo', 'row_mark' . $newRow->index);
+        Session::put('scrollTo', 'rowInsert' . $newRow->id);
         return redirect()->route('root', ['page' => $page->title]);
     }
+
     public function updateArticle(Request $request)
     {
-       Log::info(' # artice updateer');
+        Log::info(' # artice updateer' . $request);
         $article = ContentItem::findOrFail($request->article_id);
         $article->title = $request->title;
-        $article->body = $request->body;
+        $article->body = htmlspecialchars($request->body);
 
         $useInfo = 'off';
         if (isset($request->use_info_checkbox)) {
@@ -173,12 +148,12 @@ class ArticleController extends Controller
         $titleSize = 't' . $request->title_size;
         $article->styles = ['info' => $useInfo, 'title' => $titleSize];
         $article->save();
-        $info = Navigation::findOrFail($article->data['info'][0]);
+        $info = Navigation::where('parent',$article->id)->first();
         $linkType = $request->inlineRadioOptions;
         $info->styles = ['type' => $linkType];
         $info->route = $request->route;
         $info->title = $request->info_title;
         $info->save();
-        Session::put('scrollTo', $request->scroll_to);
+        Session::put('scrollTo', 'rowInsert' . $request->row_id);
     }
 }

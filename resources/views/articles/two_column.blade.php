@@ -3,7 +3,7 @@
     $articleId2 = 'article_2' . $rowId;
 @endphp
 
-<div class = 'container'>
+<div class = 'row-contain'>
     <div class = 'row'>
         <div class="col-md-6" id = "{{ $articleId1 }}">
             @include('articles.partials.title_text', [

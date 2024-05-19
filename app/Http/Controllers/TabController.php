@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\PageMaker;
 use App\Helpers\Setters;
+use App\Helpers\TabMaker;
 use App\Models\ContentItem;
 use App\Models\Navigation;
 use Illuminate\Http\Request;
@@ -15,10 +16,11 @@ use Illuminate\Support\Facades\View;
 class TabController extends Controller
 {
 
-    public static function insert($formName)   {
-        Log::info('in  make: '. $formName);
+    public static function insert($formName)
+    {
+        Log::info('in  make: ' . $formName);
         if ($formName === 'edit_tabs') {
-            Log::info('in Edit tabs now make: '. $formName);
+            Log::info('in Edit tabs now make: ' . $formName);
             $htmlString = View::make('tabs.edit_tabs_form')->render();
             return new Response($htmlString, 200, ['Content-Type' => 'text/html']);
         }
@@ -29,12 +31,17 @@ class TabController extends Controller
         $tab = Navigation::findOrFail($request->tab_id);
         $tab->route = $request->route;
         $tab->save();
+        Session::put('tabKey', $request->tab_id);
     }
     public function write(Request $request)
     {
         if ($request->form_name === 'assignRoute') {
             $this->assignRoute($request);
         }
+        if ($request->form_name === 'tab_quick') {
+            $this->assignRoute($request);
+        }
+
         if ($request->form_name === 'edit_tabs') {
             $this->updateTabs($request);
         }
@@ -42,50 +49,45 @@ class TabController extends Controller
 
     public function createTabbed(Request $request)
     {
-        Session::put('scrollTo', $request->scroll_to);
-        $tab1 = Navigation::create([
+        $rows = ContentItem::where('parent', $request->page_id)->get();
+        foreach ($rows as $row) {
+            if ($row->index > $request->row_index) {
+                $row->index = $row->index + 1;
+                $row->save();
+            }
+        }
+
+        $newRow = ContentItem::create([
+            'index' => $request->row_index + 1,
+            'type' => 'row',
+            'heading' => 'tabs',
+            'parent' => $request->page_id,
+        ]);
+
+        Navigation::create([
             'type' => 'tab',
             'title' => "tab_1",
             'index' => 0,
             'route' => 'no_tab_assigned',
+            'parent' => $newRow->id,
         ]);
-        $tab2 = Navigation::create([
+        Navigation::create([
             'type' => 'tab',
             'title' => "tab_2",
             'route' => 'no_tab_assigned',
             'index' => 1,
+            'parent' => $newRow->id,
         ]);
-        $tab3 = Navigation::create([
+        Navigation::create([
             'type' => 'tab',
             'title' => "tab_3",
             'route' => 'no_tab_assigned',
             'index' => 2,
-        ]);
-        $tabIds = [$tab1->id, $tab2->id, $tab3->id];
-        $rowData = [
-            'tabs' => $tabIds,
-        ];
-        $newRow = ContentItem::create([
-            'index' => $request->row_index_tab + 1,
-            'type' => 'row',
-            'heading' => 'tabs',
-            'data' => $rowData,
+            'parent' => $newRow->id,
         ]);
         $page = ContentItem::findOrFail($request->page_id);
-        $pData = $page->data['rows'];
-        foreach ($pData as $data) {
-            $row = ContentItem::findOrFail($data);
-            if ($row->index > $request->row_index_1col) {
-                $row->index = $row->index + 1;
-                $row->save();
-            }
-
-        }
-        $pData[] = $newRow->id;
-        $page->data = ["rows" => $pData];
-        $page->save();
-        return redirect()->route('root', ['newLocation' => $page->title]);
-
+        Session::put('scrollTo', 'rowInsert' . $request->row_id);
+        return redirect()->route('root', ['page' => $page->title]);
     }
     public function loadTabContent($tabRoute)
     {
@@ -105,54 +107,45 @@ class TabController extends Controller
     }
     public function updateTabs(Request $request)
     {
-        Log::info('eneted tab editor');
-        Session::put('returnPage', '');
-        $removedItems = [];
-        $allSubItems = [];
+        Log::info($request);
         $subData = json_decode($request->data);
-        foreach ($subData as $subItem) {
-            $subThis = Navigation::find($subItem->id);
-            if ($subThis) {
-                if ($subItem->title != '') {
-                    $subThis->title = $subItem->title;
-                    $subThis->route = $subItem->route;
-                    $subThis->save();
-                    $allSubItems[] = $subThis;
-                } else {
-                    $removedItems[] = $subThis;
-                }
+        foreach ($subData as $tab) {
+            if (isset($tab->id)) {
+                $record = Navigation::findOrFail($tab->id);
+                $record->index = $tab->index;
+                $record->route = $tab->route;
+                $record->save();
             } else {
-                if ($subItem->title != '') {
-                    $newItem = Navigation::create([
-                        'type' => 'sub',
-                        'index' => $subItem->index,
-                        'title' => $subItem->title,
-                        'route' => $subItem->route,
-                    ]);
-                    $allSubItems[] = $newItem;
+                Navigation::create([
+                    'type' => 'tab',
+                    'title' => $tab->title,
+                    'route' => 'no_tab_assigned',
+                    'parent' => $request->row_id,
+                    'index' => $tab->index,
+                ]);
+            }
+        }
+
+        if (isset($request->deleted)) {
+            $deleteData = json_decode($request->deleted);
+            foreach ($deleteData as $delete) {
+
+                if (isset($delete->id)) {
+                    $remove = Navigation::findOrFail($delete->id);
+                    $remove->delete();
                 }
             }
         }
-        usort($allSubItems, function ($a, $b) {
-            return $a['index'] - $b['index'];
-        });
-        $ids = [];
-        $tabRow = ContentItem::find($request->row_id);
+        Session::forget('scrollTo');
+        // $page = ContentItem::findOrFail($request->page_id);
+        // Session::put('scrollTo', 'rowInsert' . $request->row_id);
+        // return redirect()->route('root', ['page' => $page->title]);
 
-        foreach ($allSubItems as $record) {
-            $ids[] = $record->id;
-        }
-        $dData = $tabRow->data;
-        $dData['tabs'] = $ids;
-        $tabRow->data = $dData;
-        $tabRow->save();
-        foreach ($removedItems as $record) {
-            $record->delete();
-        }
     }
     public static function render($render)
     {
         Log::info('tab render sequence ' . $render);
+        // tab_menu_direct
         $rData = explode('^', $render);
         if ($rData[0] === 'tab_refresh') {
             Log::info('index ' . $rData[2]);
@@ -178,19 +171,13 @@ class TabController extends Controller
                 return new Response($htmlString, 200, ['Content-Type' => 'text/html']);
             }
 
-        } 
-        elseif($rData[0] === 'tab_menu'){
+        } elseif ($rData[0] === 'tab_menu') {
             $row = ContentItem::findOrFail($rData[1]);
-            $tabData = $row->data['tabs'];
-            $setter = new Setters();
-            $tabs = $setter->tabsList($tabData);
-            $htmlString = View::make('tabs.tab_menu',[
-                'rowId'=>$rData[1],
-                'tabs'=>$tabs,
-                'divId'=>$rData[2],
-            'editMode'=>true]);
+            $page = ContentItem::findOrFail($rData[2]);
+            $tabMaker = new TabMaker();
+            $htmlString = $tabMaker->renderTabRow($page, $row, false);
             return new Response($htmlString, 200, ['Content-Type' => 'text/html']);
-        }else {
+        } else {
             return response()->json(['error' => 'Invalid form name'], 400);
         }
     }

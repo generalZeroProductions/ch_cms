@@ -2,7 +2,7 @@
   <div id="two_icons"  class="icon-bar">
 
       <a id="upload_anchor" ><img src="{{ asset('icons/upload_green.svg') }}" class= "file-icon"id ="upload_icon"></a>
-       <a href="#" id="server_anchor" ><img src="{{ asset('icons/server.svg') }}" class= "file-icon" id="server_icon"></a>
+       <a style="cursor:pointer" id="server_anchor" ><img src="{{ asset('icons/server.svg') }}" class= "file-icon" id="server_icon"></a>
 
   </div>
 

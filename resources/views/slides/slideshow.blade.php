@@ -83,7 +83,7 @@
 @endif
 @endif
 @if ($editMode)
-    @include('slides.edit_slides_bar', [
+    @include('slides.forms.edit_slides_bar', [
         'slideBox' => $slideBox, 
         'pageId' => $pageId,
         'rowId'=>$rowId,

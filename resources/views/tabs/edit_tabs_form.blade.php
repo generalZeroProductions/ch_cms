@@ -1,3 +1,5 @@
+<h5>编辑选项卡和关联链接</h5>
+
 <form id="edit_tabs">
     @csrf
     <div class="form-group" style = "margin:20px">
@@ -11,9 +13,11 @@
         </div>
         <input type="hidden" id="tabData" name="data">
         <input type="hidden" id="row_id" name="row_id">
+                <input type="hidden" id="page_id" name="page_id">
         <input type="hidden" id="edit_tabs" name = "edit_tabs">
         <input type="hidden" id="route_list">
          <input type="hidden" name="form_name" value="edit_tabs">
+         <input type="hidden"name = "deleted" id = "deleted_tabs">
     </div>
 </form>
 <div class="row justify-content-end align-items-end" style = "margin-top:10px; padding-right:20px;">

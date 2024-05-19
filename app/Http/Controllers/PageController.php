@@ -23,10 +23,42 @@ class PageController extends Controller
     }
     public function write(Request $request)
     {
-        Log::info($request->page_id . 'iside of page write');
+        Log::info($request->page_id . 'iside of logo write');
         if ($request->form_name === 'edit_title_page') {
             $this->updatePageTitle($request);
         }
+        if ($request->form_name === 'logo_edit') {
+            $this->updateLogo($request);
+        }
+    }
+    public function updateLogo(Request $request)
+    {
+        Log::info($request);
+        $logo = Navigation::where('type', 'logo')->first();
+        $useTitle = '0';
+        $useLogo = '0';
+        if(isset($request->use_logo) )
+        {
+            $useLogo = '1';
+        }
+        if(isset($request->use_title) )
+        {
+            $useTitle = '1';
+        }
+        Log::info($logo->title);
+        if ($request->hasFile('upload_file')) {
+            Log::info('HAD FILE UPLOAD');
+            $uploadedFile = $request->file('upload_file');
+            $path = $uploadedFile->storeAs('images', $request->image_name, 'public');
+            if (!isset($path)) {
+                return response()->json(['message' => 'Failed to upload file'], 500);
+            }
+        }
+        $logo->route = $request->image_name;
+        $logo->title = $request ->title;
+        $logo->data =['title'=>$useTitle,'image'=> $useLogo];
+        $logo->save();
+        
     }
     public static function render($render)
     {
@@ -55,29 +87,11 @@ class PageController extends Controller
         Session::put('edit', true);
         Session::put('buildMode', true);
         if ($returnTo === 'dashboard') {
-
-            Session::put('location', $page->title);
-            return redirect()->route('root', ['newLocation' => $page->title]);
+            return redirect()->route('root', ['page' => $page->title]);
         }
-        return redirect()->route('root', ['newLocation' => Session::get('location')]);
+        return redirect()->route('root', ['page' => $returnTo]);
     }
 
-    // public function loadPage($routeName)
-    // {
-    //     $page = ContentItem::where('title', $routeName)
-    //         ->where('type', 'page')
-    //         ->first();
-    //     if ($page) {
-    //         $location = [
-    //             'page' => $page,
-    //             'row' => null,
-    //             'item' => null,
-    //         ];
-    //         return view('app.page_layout', ['page' => $page, 'location' => $location, 'tabContent' => false]);
-    //     } else {
-    //         return response()->json(['error' => 'Page not found'], 404);
-    //     }
-    // }
 
     public function updatePageTitle(Request $request)
     {
@@ -125,12 +139,19 @@ class PageController extends Controller
         }
 
         foreach ($columnIds as $id) {
-            $item;
+            $item = ContentItem::findOrFail($id);
             if (!$tabs) {
-                $item = ContentItem::findOrFail($id);
+
+                if($item->heading==='title_text'){
+                    $info = Navigation::findOrFail($item->data['info'][0]);
+                    $info->delete();
+                }
 
             } else {
-                $item = Navigation::findOrFail($id);
+                foreach($item->data['tabs'] as $tabId){
+                $tab = Navigation::findOrFail($tabId);
+                $tab->delete();
+                }
             }
             $item->delete();
         }

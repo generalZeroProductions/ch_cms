@@ -1,20 +1,22 @@
 var slideShowItems = [];
-var previewList;
-var scrollAt = 0;
-var slideDiv;
+var deletedSlides = [];
 
 function slideHeightListen(rowId, height) {
     var row = document.getElementById("rowInsert" + rowId);
     var forms = row.querySelectorAll("#change_slide_height");
+    addFieldAndValue("slide_row_tag" + rowId, rowId);
     forms[0].addEventListener("submit", function (event) {
         preventDefault();
     });
     var slideHeight = document.getElementById("slide_height" + rowId);
     slideHeight.value = height;
+    slideHeight.addEventListener("input", function (event) {
+        warnUnusable(slideHeight, rowId);
+    });
     slideHeight.addEventListener("focus", function (event) {
         function handleKeyDown(event) {
             if (event.key === "Enter") {
-                updateSlideHeight(slideHeight, rowId)
+                updateSlideHeight(slideHeight, rowId);
             }
         }
         document.addEventListener("keydown", handleKeyDown);
@@ -26,20 +28,33 @@ function slideHeightListen(rowId, height) {
 
 function editSlidesForm(jItem) {
     slideShowItems = [];
-    slideDiv = modBody;
+    deletedSlides = [];
+    console.log(jItem);
     var item = JSON.parse(jItem);
     item.slides.forEach((slide) => {
         createNewSlide(slide);
     });
-    console.log("ITEM ROW ID " + item.rowId);
     fetch("/slideshow_edit")
         .then((response) => response.text())
         .then((html) => {
             modBody.innerHTML = html;
+            modTitleLabel.innerHTML = "幻灯片编辑器";
+            document.getElementById("row_id");
+
             document.getElementById("row_id").value = item.rowId;
             document.getElementById("page_id").value = item.pageId;
             document.getElementById("scroll_to").value = window.scrollY;
-
+            var closeBtn = document.getElementById("close_main_modal");
+            closeBtn.addEventListener("click", function (event) {
+                console.log("clicked close");
+                enableScrolling();
+            });
+            var submitButton = document.getElementById("submit_slideshow_btn");
+            submitButton.addEventListener("click", function (event) {
+                if (submitButton.disabled) {
+                    event.preventDefault();
+                }
+            });
             var runScriptsDiv = document.getElementById("run_scripts");
             if (runScriptsDiv) {
                 var innerHtml = runScriptsDiv.innerHTML;
@@ -48,7 +63,9 @@ function editSlidesForm(jItem) {
                     eval(toolTipCall[0]);
                 }
             }
+
             updateSlideData();
+
             showAllSlides();
         })
         .catch((error) => {
@@ -56,25 +73,57 @@ function editSlidesForm(jItem) {
         });
 }
 
+function warnUnusable(input, rowId) {
+    input.style.backgroundColor = "";
+    var height = input.value;
+    var cantUse = document.getElementById("cant_use" + rowId);
+
+    if (height < 50) {
+        cantUse.innerHTML = "该值必须大于 50 像素。";
+        input.style.backgroundColor = "yellow";
+        return;
+    }
+    if (height > 500) {
+        cantUse.innerHTML = "该值必须小于 500 像素。";
+        input.style.backgroundColor = "yellow";
+        return;
+    }
+    cantUse.innerHTML = "";
+    input.style.backgroundColor = "";
+}
+
 function updateSlideHeight(slideHeight, rowId) {
-    console.log("change input");
     var rowDiv = document.getElementById("rowInsert" + rowId);
     var banners = rowDiv.querySelectorAll(".banner_container");
     var height = slideHeight.value;
+    slideHeight.style.backgroundColor = "";
+    var cantUse = document.getElementById("cant_use" + rowId);
+    var usable = true;
     if (height < 50) {
-        height = 50;
+        var cantUse = document.getElementById("cant_use" + rowId);
+        cantUse.innerHTML = "该值必须大于 50 像素。";
+        slideHeight.style.backgroundColor = "yellow";
+        usable = false;
     }
     if (height > 500) {
-        height = 500;
+        cantUse.innerHTML = "该值必须小于 500 像素。";
+        slideHeight.style.backgroundColor = "yellow";
+        usable = false;
     }
-    banners.forEach((banner) => {
-        banner.style.height = height + "px";
-    });
+
+    if (usable) {
+        banners.forEach((banner) => {
+            banner.style.height = height + "px";
+            addFieldAndValue("send_height" + rowId, height);
+            writeNoReturn("change_slide_height");
+        });
+    }
 }
 
 function showAllSlides() {
     var listFinished = false;
-    var cards = slideDiv.querySelectorAll(".card");
+    var cards = modBody.querySelectorAll(".card");
+
     for (let i = 0; i < 6; i++) {
         (function (index) {
             var slide = slideShowItems[index];
@@ -110,7 +159,6 @@ function insertSlidePreview(id) {
         .catch((error) => {
             console.error("Error loading slideshowEdit:", error);
         });
-    console.log(" Preview set " + id);
 }
 function setImageFromSlide(id) {
     const slide = slideShowItems[id];
@@ -138,7 +186,7 @@ function getThumbDiv(id) {
 }
 
 function setCaptionFromSlide(id) {
-    const slide = slideShowItems[id];
+    var slide = slideShowItems[id];
     var caption = getCaptionInput(id);
     if (caption) {
         caption.value = slide.caption;
@@ -175,7 +223,6 @@ function insertAddSlideCard(id) {
             var anchors = card.querySelectorAll("a");
             anchors.forEach((anchor) => {
                 if (anchor.id === "add_slide") {
-                    console.log("FOUND ADD ANCHOR");
                     anchor.onclick = function () {
                         createNewSlide(null);
                     };
@@ -188,7 +235,6 @@ function insertAddSlideCard(id) {
 }
 
 function updateSlideCaption(id, caption) {
-    console.log("caption change");
     var slide = slideShowItems[id];
     slide.caption = caption;
     updateSlideData();
@@ -196,44 +242,68 @@ function updateSlideCaption(id, caption) {
 
 function updateSlideData() {
     var slideData = document.getElementById("slide_show_data");
-    console.log(slideShowItems);
     updateData = JSON.stringify(slideShowItems); // Assuming 'data' is the ID of the hidden field
     slideData.value = updateData; // Convert the object to a JSON string and set it as the value of the hidden field
+    var btn = document.getElementById("submit_slideshow_btn");
+    var warn = document.getElementById("cant_sumbit_slides");
+    console.log("total slides " + slideShowItems.length);
+    if (slideShowItems.length === 0) {
+        btn.classList.add("disabled");
+        btn.setAttribute("style", "cursor:default");
+        btn.removeAttribute("onclick");
+        btn.disabled = true;
+
+        warn.innerHTML = "无法提交空幻灯片";
+    } else {
+        btn.classList.remove("disabled");
+        btn.disabled = false;
+        btn.setAttribute("style", "cursor:pointer");
+        warn.innerHTML = "";
+    }
 }
 
 function deleteSlide(slide) {
+    var delete_slide = slideShowItems[slide];
+    deletedSlides.push(delete_slide);
+    updateData = JSON.stringify(deletedSlides);
+    var deletedSlidesField = document.getElementById("deleted_slides");
+    deletedSlidesField.value = updateData;
     slideShowItems.splice(slide, 1);
     for (let i = slide; i < slideShowItems.length; i++) {
-        slideShowItems[i].index--;
+        if (slideShowItems[i].index > slide) {
+            slideShowItems[i].index--;
+        }
     }
+
     updateSlideData();
+
     showAllSlides();
-    setTimeout(resetScroll, 1);
 }
 
 function createNewSlide(slide) {
     if (slide === null) {
         console.log("TRING to create");
         var newSlide = {
-            id: slideShowItems.length,
             source: "server",
             image: "defaultSlide.jpg",
             file: null,
             caption: "Enter Caption Here",
             record: null,
+            index: slideShowItems.length,
         };
         slideShowItems.push(newSlide);
         updateSlideData();
         showAllSlides();
     } else {
         var newSlide = {
-            id: slideShowItems.length,
             source: "server",
             image: slide.image,
             file: null,
             caption: slide.caption,
             record: slide.record,
+            index: slide.index,
         };
         slideShowItems.push(newSlide);
     }
+    console.log(slideShowItems);
 }

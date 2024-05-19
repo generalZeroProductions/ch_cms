@@ -17,7 +17,10 @@
     /* Remove bullet points */
     font-size: x-large;
 }
-
+.row-contain{
+    margin-left:8vw;
+    margin-right:8vw;
+}
 .menu-item {
     display: flex;
     /* Use flexbox */

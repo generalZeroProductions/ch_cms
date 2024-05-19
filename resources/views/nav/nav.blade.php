@@ -9,7 +9,7 @@
 <div id = "site_nav_bar">
 <nav class="navbar navbar-expand-lg navbar-light bg-light" >
     @if (!$editMode)
-        <a class="navbar-brand" href="#">Navbar</a>
+        <a class="navbar-brand" href="/"><h3>{{$logo->title}}</h3></a>
     @endif
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,10 +25,11 @@
                         @include('nav.partials.nav_item_edit_mode', [
                             'nav' => $nav,
                             'canDelete' => $canDelete,
+                            'key'=>$key
                         ])
                         @include('nav.partials.new_nav_item')
                     @else
-                        @include('nav.partials.nav_item', ['nav' => $nav])
+                        @include('nav.partials.nav_item', ['nav' => $nav, 'key'=>$key])
                     @endif
                 @endif
                 @if ($nav->type === 'drop')

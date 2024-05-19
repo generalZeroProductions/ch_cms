@@ -1,13 +1,21 @@
 @php
 
-    $item = json_encode(['pageId' => $pageId, 'rowId' => $rowId, 'slides' => $slideJson, 'slideHeight'=>$slideHeight]);
-    $changeHeightId = 'slide_height'.$rowId;
+    $item = json_encode([
+        'pageId' => $pageId,
+        'rowId' => $rowId,
+        'slides' => $slideJson,
+        'slideHeight' => $slideHeight,
+    ]);
+    $changeHeightId = 'slide_height' . $rowId;
+    $cantUseTag = 'cant_use'.$rowId;
+    $sendHeight = 'send_height'.$rowId;
+    $rowTag = 'slide_row_tag'.$rowId;
 @endphp
 
 
 <div class="container-fluid">
     <div class="row d-flex">
-   
+
         <div class="col-4 green-bar d-flex justify-content-center" id = "page_title_click" style="padding-top:8px"
             onClick = "openMainModal('editSlideshow', '{{ $item }}','modal-xl')">
             <div class = "row d-flex align-items-center">
@@ -19,26 +27,27 @@
             <div class = "row d-flex align-items-center justify-content-center">
                 <label class = "slide-height-label">片高度</label>
                 <form id = 'change_slide_height'>
-                <input type="hidden" name = "form_name" value = "change_slide_height">
-                <input type="hidden" name = "row_id" id="slide_height_row_id">
-                <input type="hidden" name = 'height' id="height">
+                @csrf
+                    <input type="hidden" name = "form_name" value = "change_slide_height">
+                    <input type="hidden" name = "row_id" id="{{$rowTag }}">
+                    <input type="hidden" name = 'height' id="{{$sendHeight}}">
                 </form>
-                 <input type = "text" class = "form-control slide-height-input " 
-                    id="{{$changeHeightId}}" autocomplete="off" value="{{$slideHeight}}" name ="height">
+                <input type = "text" class = "form-control slide-height-input " id="{{ $changeHeightId }}"
+                    autocomplete="off" value="{{ $slideHeight }}" name ="height">
                 <label class = "slide-height-label">像素</label>
             </div>
         </div>
-         <div class="col-4 green-back">
-         <p id = "not_usable" class = "slide-height-label">this number too small</p>
-         </div>
+        <div class="col-4 green-back">
+            <p style= "color:yellow" id = "{{$cantUseTag}}" class = "slide-height-label"></p>
+        </div>
     </div>
 </div>
 
 <div class="slide_scripts">
 
-<script>
-slideHeightListen('{{$rowId}}','{{$slideHeight}}');
-</script>
+    <script>
+        slideHeightListen('{{ $rowId }}', '{{ $slideHeight }}');
+    </script>
 
 </div>
 <style>
@@ -59,14 +68,15 @@ slideHeightListen('{{$rowId}}','{{$slideHeight}}');
         font-size: 16px;
         font-weight: 650;
         color: white;
-         margin-left: 18px;
+        margin-left: 18px;
         margin-right: 10px;
         margin-top: 8px;
     }
+
     .slide-height-input {
         width: 90px !important;
         height: 34px !important;
-       
+
         margin-top: 4px;
     }
 
@@ -74,4 +84,4 @@ slideHeightListen('{{$rowId}}','{{$slideHeight}}');
         margin-top: 8px;
     }
 </style>
-{"height":["300"]}
+

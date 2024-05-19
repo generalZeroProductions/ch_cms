@@ -1,9 +1,16 @@
-function renderNavigation(navIndex) {
+function renderNavigation(pageName) {
     var div = document.getElementById("main-navigation");
-    var sequence = "navigation^" + navIndex;
+    var sequence = "navigation^" + pageName;
     renderToDiv(div, sequence)
         .then(() => {
-            setHeadSpace(); //   MAY NOT NEED THIS BIZ  HERE,  MIGHT NEED TO STRUCTURE IT BETTER FOR renderPage()
+            setHeadSpace(); 
+            var editLogo = document.getElementById("logo_thumb");
+            console.log("RENDRED NAV");
+            if(editLogo)
+            {
+                console.log("GOT LOGO");
+                logoFormFillout(null);
+            }
         })
         .catch((error) => {
             console.error("Error refreshing page:", error);
@@ -22,13 +29,12 @@ function filloutNavForms(formName, jItem) {
         addFieldAndValue("item_id", item.nav.id);
         addFieldAndValue(formName + "_title", item.nav.title);
         addFieldAndValue("key", item.key);
-
         var route_select = document.getElementById("route_select");
         allRoutes.forEach(function (page) {
             var option = document.createElement("option");
             option.value = page;
             option.text = page;
-            if (page === item.route) {
+            if (page === item.nav.route) {
                 option.selected = true;
             }
             route_select.appendChild(option);
@@ -83,6 +89,7 @@ function filloutNavForms(formName, jItem) {
         var sequence = "navigation^" + item.key;
         setupFormSubmit(formName, sequence, div);
         dropdownData = [];
+        deletedSubs = [];
 
         var navItem = item.nav;
         var subItems = item.sub;

@@ -54,11 +54,9 @@ class Setters
     }
     function setAllRows($page)
     {
-       
-        $pData = $page->data['rows'];
+        $rows = ContentItem::where('parent', $page->id)->get();
         $allRows = [];
-        foreach ($pData as $rowId) {
-            $row = ContentItem::findOrFail($rowId);
+        foreach ($rows as $row) {
             $allRows[] = $row;
         }
         usort($allRows, function($a, $b) {
@@ -68,15 +66,15 @@ class Setters
     }
     function setSlideshow($page, $row)
     {
-        $slideData = $row->data['slides'];
+        $slides = ContentItem::where('parent', $row->id)->get();
         $slideList = [];
         $slideJson = [];
-        foreach ($slideData as $slideId) {
-            $slide = ContentItem::findOrFail($slideId);
+        foreach ($slides as $slide) {
             $jSlide = [
                 'image' => $slide->image,
                 'caption' => $slide->body,
                 'record' => $slide->id,
+                'index'=>$slide->index
             ];
             $slideList[] = $slide;
             $slideJson[] = $jSlide;
@@ -85,22 +83,16 @@ class Setters
     }
     function tabZero($rowIndex, $tabs)
     {
+        if(Session::has('tabKey')){
+            $tabId = Session::get('tabKey');
+            Session::forget('tabKey');
+            return Navigation::findOrFail($tabId);
+        }
         return $tabs[0];
-        // $tabData = null;
-        // if (Session::has('trackTab')) {
-        //     $tabData = explode('?', Session::get('trackTab'));
-        // }
-        // if (isset($tabData[0])) {
-          
-        //     if ($tabData[0] === $rowIndex) {
-        //         return Navigation::findOrFail($tabData[1]);
-        //     }
-        // }
-      
     }
-    function setTabContents($tabs, $rowId, $mobile, $allRoutes)
+    function setTabContents($tabs, $row, $mobile, $allRoutes)
     {
-
+Log::info('@ tab content'.count($tabs));
         $maker = new PageMaker();
         $contents = [];
         foreach ($tabs as $tab) {
@@ -109,38 +101,28 @@ class Setters
                 ->where('title', $tab->route)
                 ->first();
             if (isset($page)) {
+                Log::info('## Got PAGE');
                 $content = $maker->pageHTML($page, true);
                 $contents[] = $content;
             } else {
-
+                Log::info('## make no nab');
                 $content = View::make('tabs.no_tab_assigned', [
                     'tabId' => $tab->id,
                     'tabTitle' => $tab->title,
                     'tabIndex' => $tab->index,
-                    'rowId' => $rowId,
+                    'rowId' => $row->id, 
+                    'pageId'=> $row->parent,
                     'mobile' => Session::get('mobile'),
                     'allRoutes' => $allRoutes,
                 ])->render();
+                $contents[] = $content;
             }
 
         }
         return $contents;
 
     }
-    function tabsList($tabData)
-    {
 
-        $tabs = [];
-        foreach ($tabData as $tabId) {
-            $nextTab = Navigation::findOrFail($tabId);
-            if ($nextTab) {
-                $tabs[] = $nextTab;
-            }
-        }
-        usort($tabs, array($this, 'sortByIndex'));
-
-        return $tabs;
-    }
     function sortByIndex($a, $b)
     {
         return $a['index'] - $b['index'];

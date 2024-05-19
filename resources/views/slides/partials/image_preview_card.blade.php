@@ -1,4 +1,4 @@
-<div class="card-body">
+<div class="card-body" style="height:220px !important">
     <div class="image-control-bar" id="edit_icons">
         {{-- edit icons fit here. --}}
     </div>
@@ -21,14 +21,14 @@
     }
 
     .image-thumb {
-        height: 160px;
+        height: 110px;
         margin-top: 4px;
         margin-bottom: 4px;
     }
 
     .image-crop {
         width: 100%;
-        height: 160px;
+        height: 110px;
         object-fit: cover;
     }
 </style>

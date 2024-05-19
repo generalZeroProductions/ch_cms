@@ -10,7 +10,7 @@ class Navigation extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title', 'type', 'route', 'index', 'data', 'styles'
+        'title', 'type', 'route', 'index', 'data', 'styles','parent'
     ];
 
 

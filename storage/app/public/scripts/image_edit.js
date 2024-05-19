@@ -1,7 +1,7 @@
 function imageFormFillout(formName_sent, jItem) {
     item = JSON.parse(jItem);
     var string = formName_sent;
-    var formName = string.split('^')[0];
+    var formName = string.split("^")[0];
     var form = document.getElementById(formName);
     var div = form.parentElement;
     addFieldAndValue("row_id", item.rowId);
@@ -29,9 +29,8 @@ function imageFormFillout(formName_sent, jItem) {
     });
 
     serverBars[0].style.display = "none";
-
-    uploadLinks[0].removeAttribute("href");
     uploadLinks[0].addEventListener("click", disableClick);
+    serverLinks[0].setAttribute('style','cursor:pointer');
     serverLinks[0].addEventListener("click", () =>
         toggleOff(
             div,
@@ -118,33 +117,41 @@ function displayServerFile(id, div, imageName) {
             slide.source = "server";
             slide.image = imageName;
             slide.file = null;
-            // const fileElement = document.getElementById("file_capture_" + slideId);
-            // fileElement.value = "";
+            var uploadElement = document.getElementById("upload_file");
+            if(!uploadElement){
+                uploadElement = document.getElementById("upload_file_bar_logo");
+            }
+            uploadElement.value = "";
             updateSlideData();
         } else {
             var imgField = document.getElementById("image_name");
-            imgField.value = imageName;
+            if (imgField) {
+                imgField.value = imageName;
+            }
+            else{
+                imgField = document.getElementById("logo_image_name");
+                imgField.value = imageName;
+                var btn = document.getElementById("save_logo_btn");
+                btn.setAttribute("style", "cursor:pointer");
+                btn.classList.remove("disabled");
+                console.log("SET IMG NAME " + imageName);
+            }
         }
     }
 }
 
 function displayUploadedImages(id, input, div) {
     const fileContainer = document.getElementById("fileContainer");
-    const spinnerContainer = document.getElementById("spinnerContainer");
+    const spinnerContainer = div.querySelectorAll("#spinnerContainer");
+    spinnerContainer[0].style.display = "block";
 
-    // Show spinner
-    spinnerContainer.style.display = "block";
-
-    const imgElement = div.querySelector("#thumb");
+    const imgElements = div.querySelectorAll("#thumb");
     const file = input.files[0];
     const reader = new FileReader();
 
     reader.onload = function (event) {
-        // Hide spinner
-        spinnerContainer.style.display = "none";
-        // Set the image source
-        imgElement.src = event.target.result;
-        // If an ID is provided, update slide data
+        spinnerContainer[0].style.display = "none";
+        imgElements[0].src = event.target.result;
         if (id) {
             const slide = slideShowItems[id];
             slide.image = file.name;
@@ -152,53 +159,24 @@ function displayUploadedImages(id, input, div) {
             slide.source = "upload";
             updateSlideData();
         } else {
-            const imgField = document.getElementById("image_name");
-            imgField.value = file.name;
+            var imgField = document.getElementById("image_name");
+            if (imgField) {
+                imgField.value =  file.name;
+            }
+            else{
+                imgField = document.getElementById("logo_image_name");
+                imgField.value =  file.name;
+                var btn = document.getElementById("save_logo_btn");
+                btn.setAttribute("style", "cursor:pointer");
+                btn.classList.remove("disabled");
+                console.log("SET IMG NAME " + file.name);
+            }
         }
     };
-
-    // Read the file as a data URL (this triggers the onload function)
     reader.readAsDataURL(file);
 }
 
 
-
-// function loadSpinner() {
-//     spinnerContainer.style.display = "block";
-//     setTimeout(function () {
-//         spinnerContainer.style.display = "none";
-//         fileContainer.innerHTML = "<p>File content goes here...</p>";
-//     }, 100); // Adjust the timeout value as needed
-// }
-
-
-// function displayUploadedImages(id, input, div) {
-//     var fileContainer = document.getElementById("fileContainer");
-//     var spinnerContainer = document.getElementById("spinnerContainer");
-//     spinnerContainer.style.display = "block";
-//     setTimeout(function () {
-//         spinnerContainer.style.display = "none";
-//         fileContainer.innerHTML = "<p>File content goes here...</p>";
-//     }, 2000);
-//     loadSpinner();
-//     const imgElement = div.querySelector("#thumb");
-//     const file = input.files[0];
-//     const reader = new FileReader();
-//     reader.onload = function (event) {
-//         imgElement.src = event.target.result;
-//     };
-//     reader.readAsDataURL(file);
-//     if (id) {
-//         var slide = slideShowItems[id];
-//         slide.image = file.name;
-//         slide.file = file;
-//         slide.source = "upload";
-//         updateSlideData();
-//     } else {
-//         var imgField = document.getElementById("image_name");
-//         imgField.value = file.name;
-//     }
-// }
 function disableClick(event) {
     event.preventDefault();
 }
@@ -208,7 +186,8 @@ function toggleOn(div, serverLink, serverBar, uploadLink, uploadBar) {
     const uploadIcons = div.querySelectorAll("#upload_icon");
 
     // Toggle off the uploadLink
-    uploadLink.removeAttribute("href");
+    
+    uploadLink.setAttribute("style", "cursor:default");
     uploadLink.removeEventListener("click", toggleOff);
     uploadLink.addEventListener("click", disableClick);
 
@@ -216,7 +195,8 @@ function toggleOn(div, serverLink, serverBar, uploadLink, uploadBar) {
     serverLink.addEventListener("click", () =>
         toggleOff(div, serverLink, serverBar, uploadLink, uploadBar)
     );
-    serverLink.setAttribute("href", "#");
+ 
+    serverLink.setAttribute("style", "cursor:pointer");
 
     // Update icons and bars
     serverIcons[0].setAttribute("src", iconsAsset + "/server.svg");
@@ -230,7 +210,8 @@ function toggleOff(div, serverLink, serverBar, uploadLink, uploadBar) {
     const uploadIcons = div.querySelectorAll("#upload_icon");
 
     // Toggle off the serverLink
-    serverLink.removeAttribute("href");
+  
+    serverLink.setAttribute('style', 'cursor:pointer')
     serverLink.removeEventListener("click", toggleOn);
     serverLink.addEventListener("click", disableClick);
 
@@ -238,8 +219,8 @@ function toggleOff(div, serverLink, serverBar, uploadLink, uploadBar) {
     uploadLink.addEventListener("click", () =>
         toggleOn(div, serverLink, serverBar, uploadLink, uploadBar)
     );
-    uploadLink.setAttribute("href", "#");
-
+    
+    uploadLink.setAttribute("style", "cursor:pointer");
     // Update icons and bars
     uploadIcons[0].setAttribute("src", iconsAsset + "/upload.svg");
     serverIcons[0].setAttribute("src", iconsAsset + "/server_green.svg");

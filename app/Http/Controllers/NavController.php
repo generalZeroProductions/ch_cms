@@ -52,6 +52,7 @@ class NavController extends Controller
     }
     public static function render($render)
     {
+        Log::info('@render nav request');
         $data = explode('^', $render);
         if ($data[0] === 'navigation') {
             $navMake = new NavMaker();
@@ -71,55 +72,35 @@ class NavController extends Controller
     }
     public function addStandardNav(Request $request)
     {
-        Log::info("inside adder request key ". $request->key);
-       
-        $prevNav = Navigation::where('type', 'nav')
-                     ->orWhere('type', 'drop')
-                     ->where('index', $request->key)
-                     ->first();
-       if($prevNav)
-       {
-        Log::info('got a nav for index '. $request->key);
-       }
         $otherNav = Navigation::whereIn('type', ['nav', 'drop'])->get();
         $navCount = 0;
-       
         if (!$otherNav->isEmpty()) {
             foreach ($otherNav as $nav) {
-                if ($nav->index > $prevNav->index) {
+                if ($nav->index > $request->key) {
                     $nav->index = $nav->index + 1;
                     $nav->save();
                 }
-                $navCount++;
+                if ($nav->type === "nav") {
+                    $navCount++;
+                }
             }
         }
-
         Navigation::create([
             'type' => 'nav',
             'index' => $request->key + 1,
-            'title' => 'NewNav' . $navCount + 1,
-            'route' => null,
+            'title' => '新的导航项' . $navCount + 1,
+            'route' => '/',
         ]);
 
     }
 
     public function deleteNavItem(Request $request)
     {
-
-        $request->validate([
-            'item_id' => 'required|numeric', // Validation rules for the id parameter
-        ]);
-        $prevNav = Navigation::where('type', 'nav')
-                     ->orWhere('type', 'drop')
-                     ->where('index', $request->key)
-                     ->first();
-        Log::info("inside delete request key ". $request->key);
         $otherNav = Navigation::whereIn('type', ['nav', 'drop'])->get();
 
-        
         if (!$otherNav->isEmpty()) {
             foreach ($otherNav as $nav) {
-                if ($nav->index > $prevNav->index) {
+                if ($nav->index > $request->key) {
                     $nav->index = $nav->index - 1;
                     $nav->save();
                 }
@@ -127,8 +108,8 @@ class NavController extends Controller
         }
         $item = Navigation::find($request->item_id);
         if ($item->type === 'drop') {
-            foreach ($item->data['items'] as $id) {
-                $sub = Navigation::find($id);
+            $subNavs = Navigation::where('parent', $item->id);
+            foreach ($subNavs as $sub) {
                 $sub->delete();
             }
         }
@@ -139,117 +120,75 @@ class NavController extends Controller
 
     public function updateDropdown(Request $request)
     {
-
+        Log::info('update nav request');
+        Log::info($request);
         $reqData = json_decode($request->data);
         $dropNav = Navigation::findOrFail($request->item_id);
-        $subData = ["dropdown" => $dropNav->index];
-        $unusedItems = [];
-        $allSubItems = [];
-
-        foreach ($reqData as $subItem) {
-            $subThis = Navigation::find($subItem->id);
-            if ($subThis) {
-                if ($subItem->title != '') {
-                    $subThis->title = $subItem->title;
-                    $subThis->route = $subItem->route;
-                    $subThis->index = $subItem->index;
-                    $subThis->save();
-                    $allSubItems[] = $subThis;
-
-                } else {
-                    $unusedItems[] = $subThis->id;
-                }
-            } else {
-                if ($subItem->title != '') {
-                    $newItem = Navigation::create([
-                        'type' => 'sub',
-                        'index' => $subItem->index,
-                        'title' => $subItem->title,
-                        'route' => $subItem->route,
-                        'data' => $subData,
-                    ]);
-                    $allSubItems[] = $newItem;
-                }
-            }
-        }
-        usort($allSubItems, function ($a, $b) {
-            return $a['index'] - $b['index'];
-        });
-        $subNavIds = [];
-        $dropNav = Navigation::find($request->item_id);
         $dropNav->title = $request->title;
-        foreach ($allSubItems as $record) {
-            $subNavIds[] = $record->id;
+        $dropNav->save();
+        foreach ($reqData as $sub) {
+            if (isset($sub->id)) {
+                $record = Navigation::findOrFail($sub->id);
+                $record->index = $sub->index;
+                $record->route = $sub->route;
+                $record->title = $sub->title;
+                $record->save();
+            } else {
+                Navigation::create([
+                    'type' => 'sub',
+                    'route' => $sub->route,
+                    'title' => $sub->title,
+                    'parent' => $dropNav->id,
+                ]);
+            }
         }
-
-        foreach ($dropNav->data['items'] as $id) {
-            if (!in_array($id, $subNavIds)) {
-                if (!in_array($id, $unusedItems)) {
-                    $unusedItems[] = $id;
+        if (isset($request->deleted)) {
+            $deleteData = json_decode($request->deleted);
+            foreach ($deleteData as $delete) {
+                if (isset($delete->id)) {
+                    $remove = Navigation::findOrFail($delete->id);
+                    $remove->delete();
                 }
             }
         }
-
-        if (count($unusedItems) > 0) {
-            foreach ($unusedItems as $id) {
-                $item = Navigation::findOrFail($id);
-                $item->delete();
-            }
-        }
-
-        $dData = $dropNav->data;
-        $dData['items'] = $subNavIds;
-        $dropNav->data = $dData;
-        $dropNav->save();
     }
 
     public function addDropdown(Request $request)
     {
-        $prevNav = Navigation::where('type', 'nav')
-        ->orWhere('type', 'drop')
-        ->where('index', $request->key)
-        ->first();
+        Log::info('add drop request');
+        Log::info($request);
+
         $otherNav = Navigation::whereIn('type', ['nav', 'drop'])->get();
-        $navCount = 0;
+        $dropCount = 1;
 
         if (!$otherNav->isEmpty()) {
             foreach ($otherNav as $nav) {
-                if ($nav->index > $prevNav->index) {
+                if ($nav->index > $request->key) {
                     $nav->index = $nav->index + 1;
                     $nav->save();
                 }
-                $navCount++;
+                if ($nav->type === 'drop') {
+                    $dropCount++;
+                }
             }
         }
 
-        $subData = ["dropdown" => $prevNav->index + 1];
-        foreach ($otherNav as $nav) {
-            if ($nav->index > $prevNav->index) {
-                $nav->index = $nav->index + 1;
-                $nav->save();
-            }
-        }
+        $dropDown = Navigation::create([
+            'type' => 'drop',
+            'index' => $request->key + 1,
+            'title' => '新的下拉菜单' . $dropCount,
+            'route' => null,
+        ]);
 
-        $subItemIds = [];
-        for ($i = 1; $i < 4; $i++) {
-            $newItem = Navigation::create([
+        for ($i = 0; $i < 3; $i++) {
+            Navigation::create([
                 'type' => 'sub',
                 'index' => $i,
                 'title' => '子菜单' . $i,
-                'route' => null,
-                'data' => $subData,
+                'route' => '/',
+                'parent' => $dropDown->id,
             ]);
-            $subItemIds[] = $newItem->id;
-
         }
-        $dataArray = ["items" => $subItemIds];
-        Navigation::create([
-            'type' => 'drop',
-            'index' => $request->key + 1,
-            'title' => 'NewDrop' . $navCount + 1,
-            'route' => null,
-            'data' => $dataArray,
-        ]);
 
     }
 }

@@ -67,6 +67,10 @@
     if ($sequence[0] === 'scroll') {
         Session::put('scrollTo', $sequence[1]);
     }
+    if ($sequence[0] === 'key') {
+        $returnLocation = '/' . $sequence[1];
+        Session::put('navKey', $sequence[2]);
+    }
 
 @endphp
 <script>

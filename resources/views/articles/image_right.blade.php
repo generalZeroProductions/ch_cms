@@ -6,7 +6,7 @@
 
 @endphp
 
-<div class="container">
+<div class="row-contain">
     <div class = "row">
     <div class="col-9 d-flex align-items-start " id = "{{ $articleId }}">
         @include('articles.partials.title_text', [

@@ -3,8 +3,16 @@
         $tStyle = $column->styles['title'];
         $title = $column->title;
         $body = $column->body;
+        $decodedBody = htmlspecialchars_decode($body);
+        $escapedBody = addslashes($decodedBody);
         $divId = 'article_' . $column->id;
-        $item = json_encode(['pageId' => $pageId, 'rowId' => $rowId, 'article' => $column, 'info' => $info]);
+        $item = json_encode([
+            'pageId' => $pageId,
+            'rowId' => $rowId,
+            'article' => $column,
+            'body' => $escapedBody,
+            'info' => $info,
+        ]);
 
     @endphp
 
@@ -19,9 +27,10 @@
             </div>
         @endif
         <div class={{ $tStyle }}> {{ $title }}</div>
-        <div> {!! $body !!}</div>
-
-
+        @php
+            echo htmlspecialchars_decode($body);
+        @endphp
+ <br>
         @if ($column->styles['info'] === 'on')
             <br>
             <div style = "height:45px">

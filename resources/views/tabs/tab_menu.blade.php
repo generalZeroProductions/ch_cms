@@ -1,7 +1,6 @@
 @php
     $scrollTabs = 'scroll_' . $rowId;
-    $jTabs = json_encode(['tabs' => $tabs, 'rowId' => $rowId]);
-echo $jTabs;
+    $jTabs = json_encode(['pageId'=>$pageId, 'tabs' => $tabs, 'rowId' => $rowId]);
 @endphp
 
 <div style= "height:0" id="{{ $scrollTabs }}"></div>
@@ -18,11 +17,11 @@ echo $jTabs;
     <ul id="tabs">
         @foreach ($tabs as $tab)
             @php
-                $anchorId = 'tab_' . $tab->index;
+                $anchorId = 'tab_' .$rowId. $tab->index;
             @endphp
             <li class =  "{{ $loop->first ? 'active' : '' }} no_dots">
-                <a href="#" id = "{{ $anchorId }}" class = "tab-body-on"
-                    onClick= "changeTab('{{ $rowId }}','{{ $anchorId }}', '{{ $loop->index }}','{{ $tab->id }}')">
+                <a style="cursor:pointer" id = "{{ $anchorId }}" class = "tab-body-on"
+                    onClick= "changeTab('{{ $rowId }}','{{ $anchorId }}', '{{ $loop->index }}', true)">
                     {{ $tab->title }}
                 </a>
             </li>
@@ -40,7 +39,6 @@ echo $jTabs;
         margin-bottom: 8px;
         padding-left: 28px;
     }
-   
 </style>
 
 <div class = 'run-scripts'>

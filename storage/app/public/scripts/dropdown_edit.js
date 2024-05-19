@@ -1,6 +1,6 @@
 var dropdownData = [];
+var deletedSubs = [];
 var subNavIndex = 0;
-var newNavId = -1;
 
 function newSubnavFromSource(subItem, list) {
     var newItem = {
@@ -15,31 +15,53 @@ function newSubnavFromSource(subItem, list) {
 function createSubNavItem() {
     var list = document.getElementById("dropdown_list");
     var newItem = {
-        id: newNavId,
         title: "新子菜单"+dropdownData.length,
-        route: allRoutes[0],
-        index: dropdownData.length,
+        route: '/',
+        index: dropdownData.length-1,
         trash:"newItem"+dropdownData.length,
     };
-    newNavId -= 1;
+
     addSubItem(newItem, list);
 }
 function deleteSubNav(index) {
-    var itemIndex = dropdownData.findIndex((item) => item.id === index);
-    var removeItem = dropdownData.find((item) => item.id === index);
+    console.log(index);
+    var deleted_sub = dropdownData[index];
+    console.log(deleted_sub);
+    deletedSubs.push(deleted_sub);
+    updateData = JSON.stringify(deletedSubs);
+    var deletedSubssField = document.getElementById("deleted_subs");
+    deletedSubssField.value = updateData;
 
-    if (itemIndex !== -1) {
-        dropdownData.splice(itemIndex, 1);
+    if (index !== -1) {
+        dropdownData.splice(index, 1);
         dropdownData.forEach((item) => {
             if (item.index > index) {
                 item.index--;
             }
         });
     }
-    var divToRemove = document.getElementById("sub_nav" + removeItem.trash);
+    var divToRemove = document.getElementById("sub_nav" + deleted_sub.trash);
     divToRemove.remove();
     updateDropdownData();
 }
+
+// function deleteSlide(slide) {
+//     var delete_slide = slideShowItems[slide];
+//     deletedSlides.push(delete_slide);
+//     updateData = JSON.stringify(deletedSlides);
+//     var deletedSlidesField = document.getElementById("deleted_slides");
+//     deletedSlidesField.value = updateData;
+//     slideShowItems.splice(slide, 1);
+//     for (let i = slide; i < slideShowItems.length; i++) {
+//         if (slideShowItems[i].index > slide) {
+//             slideShowItems[i].index--;
+//         }
+//     }
+
+//     updateSlideData();
+
+//     showAllSlides();
+// }
 
 function addSubItem(newItem, list) {
     dropdownData.push(newItem);
@@ -51,7 +73,7 @@ function addSubItem(newItem, list) {
     var deleteLink = document.createElement("a");
 
     deleteLink.onclick = function () {
-        deleteSubNav(newItem.id);
+        deleteSubNav(newItem.index);
     };
     deleteLink.classList.add("trashcan");
     var img1 = document.createElement("img");

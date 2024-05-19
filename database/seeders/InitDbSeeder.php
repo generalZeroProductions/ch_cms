@@ -24,47 +24,48 @@ class InitDbSeeder extends Seeder
             ]);
             Navigation::create([
                 'type' => 'nav',
-                'title' => 'Page_1',
-                'route' => 'Page_1',
+                'title' => '主页',
+                'route' => '主页',
                 'index' => 0,
             ]);
-            $infoStyle = ['type'=>'button'];
-            $info = Navigation::create([
-                'type' => 'info',
-                'title' => 'login',
-                'route' => '/login',
-                'styles'=> $infoStyle,
-
+            
+            Navigation::create([
+                'type'=>'logo',
+                'data'=>['title'=>'1','image'=>1 ],
+                'title'=>'标志文字',
+                'route'=>'defaultImage.jpg'
+            ] );
+            $page = ContentItem::create([
+                'type' => 'page',
+                'title' => '主页',
             ]);
-            $cData = ['info' => [$info->id]];
-            $cStyle = ['info'=>'on', 'title'=>'t3'];
-            $column = ContentItem::create([
-                'type' => 'column',
-                'heading' => 'title_text',
-                'title' => 'Page 1 Title',
-                'body' => 'This is some sample content. login to get started editing.  your login in username super password 123',
-                'data'=> $cData,
-                'styles'=> $cStyle,
-
-            ]);
-
-            $rData = ['columns' => [$column->id]];
-
+           
             $row = ContentItem::create([
                 'type' => 'row',
                 'heading' => 'one_column',
-                'data' => $rData,
+                'parent' => $page->id,
                 'index' => 1,
+                'body'=> '单栏文章'
             ]);
+         
+            $column = ContentItem::create([
+                'type' => 'column',
+                'heading' => 'title_text',
+                'title' => '迎您来到新网站',
+                'body' => '登录开始编辑。您的登录用户名“super”密码123',
+                'styles'=> ['info'=>'on', 'title'=>'t3'],
+                'parent'=>$row->id
 
-            $pData = ['rows' => [$row->id]];
-
-            ContentItem::create([
-                'type' => 'page',
-                'title' => 'Page_1',
-                'data' => $pData,
             ]);
+          
+            Navigation::create([
+                'type' => 'info',
+                'title' => '登录',
+                'route' => '/login',
+                'styles'=>  ['type'=>'button'],
+                'parent'=>$column->id
 
+            ]);
             $this->command->info('Seeder executed successfully.');
 
         } catch (\Exception $e) {

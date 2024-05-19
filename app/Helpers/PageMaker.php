@@ -1,6 +1,6 @@
 <?php
 namespace App\Helpers;
-
+use App\Models\ContentItem;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
@@ -16,20 +16,20 @@ class PageMaker
             return $htmlString;
         }
         $articleMaker = new ArticleMaker();
-        $setters = new Setters();
         $editMode = Session::get('editMode');
-       
         $backColor = 'white';
         if($tabContent)
         {
             $backColor = 'rgb(205, 207, 216)';
         }
        
-        $allRows = $setters->setAllRows($page);
-       
-        $htmlString = '<div class="d-flex flex-column" style="background-color:' . $backColor . ';">';
+        $allRows = ContentItem::where('parent', $page->id)
+        ->orderBy('index')
+        ->get();
+
+        $htmlString = '<div class="  d-flex flex-column" style="background-color:' . $backColor . ';">';
         if ($editMode && $tabContent) {
-            $htmlString .= View::make('/editor/build_page_bar', ['page' => $page]);
+            $htmlString .= View::make('app.edit_mode.build_page_bar', ['page' => $page]);
             $htmlString .= '<br>';
         }
         if ($editMode && !$tabContent) {
@@ -46,12 +46,10 @@ class PageMaker
                 $rowMarkId = 'tab_mark' . $row->index;
                 $className = 'tab_mark';
             }
-            $htmlString .= '<div class="'.$className.'" id="' . $rowMarkId . '">';
+            // $htmlString .= '<div class= "'.$className.'" id="' . $rowMarkId . '" >';
             $htmlString .= '<div id = "rowInsert' . $row->id . '">';
             if ($row->heading != 'slideshow') {
                 if ($row->heading != 'tabs') {
-              
-                   
                   $htmlString.=  $articleMaker->makeArticle($page, $row, $tabContent);
     
                 } else {
@@ -60,17 +58,18 @@ class PageMaker
                         $htmlString .= View::make('app.cant_display_tabs');
                     } else {
                         $tabMaker = new TabMaker();
-                        $htmlString .= $tabMaker->renderTabRow($row);
+                        $htmlString .= $tabMaker->renderTabRow($page,$row,$tabContent);
                     }
                 }
             } elseif ($row->heading === 'slideshow') {
                 $htmlString .= $articleMaker->makeSlides($page,$row,$tabContent);
             }
           
-            $htmlString .= '</div>';
+         
             $htmlString .= '<div style="height:32px"></div>';
         }
-        $htmlString .= '</div>'; // Close the wrapping div
+        $htmlString .= '</div>';
+        // $htmlString .= '</div>'; // Close the wrapping div
       
         return $htmlString;
 

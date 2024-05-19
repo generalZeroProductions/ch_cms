@@ -1,10 +1,10 @@
 @if (Auth::check())
-    @include('app.edit_mode.edit_mode_banner')
+    @include('app.edit_mode.edit_mode_banner',['logo'=>$logo])
     @if (!$buildMode)
-        @include('nav.nav', ['canDelete' => $canDelete])
+        @include('nav.nav', ['canDelete' => $canDelete,'logo'=>$logo])
     @endif
 @else
-    @include('nav.nav', ['canDelete' => $canDelete])
+    @include('nav.nav', ['canDelete' => $canDelete,'logo'=>$logo])
 @endif
 
 

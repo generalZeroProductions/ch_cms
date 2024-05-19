@@ -8,18 +8,20 @@
        <button type="submit" class = "btn btn-primary page-title-save-btn" id="edit_title_page_btn">
            <img src="{{ asset('icons/save.svg') }}" class = "page-title-save-icon">
        </button>
-      
+
    </div>
 
    <style>
        .page-title-save-icon {
            height: 22px;
        }
-.title-input::placeholder{
-color:white;
-}
+
+       .title-input::placeholder {
+           color: white;
+       }
+
        .page-title-save-btn {
-        margin-left:8px;
+           margin-left: 8px;
            display: flex;
            justify-content: center;
            align-items: center;

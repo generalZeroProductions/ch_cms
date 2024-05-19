@@ -2,6 +2,7 @@
     $routeSelectId = 'select_' . $rowId . $tabId;
     $saveRoute = 'save_' . $rowId . $tabId;
     $formName = 'form_asign_tab'.$rowId.$tabId;
+    echo 'rowId here'.$rowId;
 @endphp
 
 <div class="center-page site-blue">
@@ -11,7 +12,7 @@
         </div>
         @if (!$mobile)
             <div class="p-2">
-                <form method= 'POST' id ="{{$formName}}">
+                <form id ="{{$formName}}">
                     @csrf
                     <div class="row d-flex justify-content-end " style= "padding:24px">
                         <div class="p-2 " style= "font-size:24px; ">
@@ -56,7 +57,7 @@
 
 <div class="no-route-scripts">
 <script>
-  populateRoutesNoTab('{{ $rowId }}','{{$tabIndex}}', '{{ $tabId }}');
+  populateRoutesNoTab('{{ $pageId }}','{{ $rowId }}','{{$tabIndex}}', '{{ $tabId }}');
 </script>
 
 </div>

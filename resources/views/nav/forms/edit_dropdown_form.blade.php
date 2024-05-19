@@ -17,6 +17,7 @@
         </div>
     </div>
     <input type="hidden" id="dropDownData" name="data">
+    <input type="hidden" id="deleted_subs" name="deleted">
     <input type = "hidden" id = "item_id" name = "item_id">
     <input type = "hidden" id = "key" name = "key">
     <input type="hidden" name="form_name" value = "dropdown_editor_nav">

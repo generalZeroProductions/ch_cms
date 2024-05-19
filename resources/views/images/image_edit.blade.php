@@ -1,13 +1,10 @@
 @php
-
     $imageNames = [];
     foreach ($files as $file) {
         if ($file !== '.' && $file !== '..') {
             $imageNames[] = pathinfo($file, PATHINFO_BASENAME);
         }
     }
-   
-
 @endphp
 
 <div style="padding-top:24px">

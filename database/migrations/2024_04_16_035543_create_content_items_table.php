@@ -17,9 +17,10 @@ return new class extends Migration
             $table->string('type');
             $table->string('heading')->nullable();
             $table->string('title')->nullable();
-            $table->string('body', 3000)->nullable();
+            $table->string('body', 8000)->nullable();
             $table->string('image')->nullable();
             $table->integer('index')->nullable();
+            $table->integer('parent')->nullable();
             $table->json('data')->nullable();
             $table->json('styles')->nullable();
         });

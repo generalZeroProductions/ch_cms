@@ -26,8 +26,8 @@ function enableSubmit(formName) {
         btn.classList.remove("disabled");
     }
 }
-function enableTabSubmit(){
-    var btn = document.getElementById("edit_tabs_btn"); 
+function enableTabSubmit() {
+    var btn = document.getElementById("edit_tabs_btn");
     btn.classList.remove("disabled");
 }
 
@@ -90,21 +90,9 @@ function validateForm(newInput, event) {
     var text = event.target.value;
     var text = event.target.value.trim();
     if (text === "") {
-        if (dropdownData.length > 1) {
-            if (hasMenuItems()) {
-                newInput.style.backgroundColor = "rgb(210, 210, 223)";
-                newInput.placeholder = "没有标题的项目将被删除";
-                enableSubmit("dropdown_editor_nav");
-            } else {
-                newInput.style.backgroundColor = "rgb(241, 78, 78)";
-                newInput.placeholder = "该项目必须有标题";
-                disableSubmit("dropdown_editor_nav");
-            }
-        } else {
-            newInput.style.backgroundColor = "rgb(241, 78, 78)";
-            newInput.placeholder = "该项目必须有标题";
-            disableSubmit("dropdown_editor_nav");
-        }
+        newInput.style.backgroundColor = "rgb(241, 78, 78)";
+        newInput.placeholder = "该项目必须有标题";
+        disableSubmit("dropdown_editor_nav");
     } else {
         newInput.style.backgroundColor = "";
         newInput.placeholder = "";

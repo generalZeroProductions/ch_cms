@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Log;
     
 @endphp
 
-<div class="container">
+<div class="row-contain">
     <div class = "row d-flex">
         <div class="col-3  align-items-start justify-content-end " id="{{$imageId}}">
             @include('articles.partials.image_column', [

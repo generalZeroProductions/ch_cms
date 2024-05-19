@@ -7,14 +7,8 @@
 @foreach ($records as $record)
     @php
           $heading = 'movie';
-          $rowIds = $record->data['rows'];
-          foreach ($rowIds as $id) {
-              $row = ContentItem::findOrFail($id);
-              if ($row->index === 1) {
-                  $heading = $row->heading;
-                  $break;
-              }
-         }
+          $topRow = ContentItem::where('parent',$record->id)->orderBy('index')->first();
+         $heading = $topRow->heading;
     @endphp
     @if ($index % 2 === 0)
         <div class = "row">

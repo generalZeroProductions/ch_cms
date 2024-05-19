@@ -14,7 +14,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ asset('scripts/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('scripts/site.css') }}">
-    <script src="{{ asset('scripts/main.js') }}"></script>
+    <script src="{{ asset('scripts/app.js') }}"></script>
     <script src="{{ asset('scripts/articles.js') }}"></script>
     <script src="{{ asset('scripts/dashboard.js') }}"></script>
     <script src="{{ asset('scripts/tooltips.js') }}"></script>

@@ -1,4 +1,5 @@
 var tabData = [];
+var deletedTabs = [];
 var tabIndex;
 var newTabId;
 var subNavIndex;
@@ -27,25 +28,30 @@ function updateTabId(tabId) {
 }
 
 function editTabsSetup(formName, jItem) {
-   
     var item = JSON.parse(jItem);
-    
+    tabData = [];
+    deletedTabs = [];
     var contentCol = document.getElementById("content_col_" + item.rowId);
     contentCol.className = "col-6";
-    var tabCol = "tab_col_" + item.rowId
+    var tabCol = "tab_col_" + item.rowId;
     var div = document.getElementById(tabCol);
     div.className = "col-6";
-    addFieldAndValue("row_id", item.rowId)
+    addFieldAndValue("row_id", item.rowId);
     var form = document.getElementById(formName);
     var lists = form.querySelectorAll("#tab_list");
     var btn = document.getElementById("edit_tabs_btn");
-
-    if(!div){console.log("div NOT FOUND");}
-    var sequence = "tab_menu^"+item.rowId+"^"+tabCol;
+    var rowId = document.getElementById("row_id");
+    rowId.value = item.rowId;
+    var pageId = document.getElementById("page_id");
+    pageId.value = item.pageId;
+    if (!div) {
+        console.log("div NOT FOUND");
+    }
+    var renderDiv = document.getElementById('rowInsert'+item.rowId);
+    var sequence = "tab_menu^" + item.rowId + "^"+item.pageId;
     btn.onclick = function () {
         if (verifySubmit(btn)) {
-            writeAndRender(formName, sequence, div);
-            enableScrolling();
+            writeAndRender(formName, sequence, renderDiv);
         }
     };
     subNavIndex = item.tabs.length;
@@ -55,59 +61,60 @@ function editTabsSetup(formName, jItem) {
     item.tabs.forEach(function (tab) {
         newTabFromSource(tab, listDiv);
     });
-   
 }
 
 function createTabItem() {
     var list = document.getElementById("tab_list");
     var newItem = {
-        id: newNavId,
-        title: "新选项卡"+tabData.length,
-        route: allRoutes[0],
-        index: subNavIndex,
-        trash:"newTab"+tabData.length
+        id: null,
+        title: "新选项卡" + tabData.length,
+        route: "no_tab_assigned",
+        index: tabData.length,
+        trash: "newTab" + tabData.length,
     };
-    subNavIndex += 1;
-    newNavId -= 1;
     addTab(newItem, list);
 }
 function newTabFromSource(tab, listDiv) {
-    console.log('making_tab '+ tab.title);
+    console.log("making_tab " + tab.title);
     var newTab = {
         id: tab.id,
         title: tab.title,
         route: tab.route,
         index: tab.index,
-        trash: tab.title
+        trash: tab.title,
     };
     addTab(newTab, listDiv);
 }
 function deleteTab(index) {
-    var itemIndex = tabData.findIndex((item) => item.id === index);
-    var removeItem = tabData.find((item) => item.id === index);
+    console.log("sent index " + index);
+    var deleteTab = tabData[index];
+    deletedTabs.push(deleteTab);
+    updateData = JSON.stringify(deletedSlides);
+    var deletedTabsField = document.getElementById("deleted_tabs");
 
-    if (itemIndex !== -1) {
-        tabData.splice(itemIndex, 1);
+    if (index !== -1) {
+        tabData.splice(index, 1);
         tabData.forEach((item) => {
             if (item.index > index) {
                 item.index--;
             }
         });
     }
-    var divToRemove = document.getElementById("tab_div" + removeItem.trash);
+    var divToRemove = document.getElementById("tab_div" + deleteTab.trash);
     divToRemove.remove();
     updateTabData();
 }
+
 function addTab(newTab, listDiv) {
     tabData.push(newTab);
     var newDiv = document.createElement("div");
-    newDiv.id = "tab_div"+ newTab.title;
+    newDiv.id = "tab_div" + newTab.trash;
     newDiv.classList.add("row");
     newDiv.classList.add("tab_li_spacer");
     var deleteLink = document.createElement("a");
 
     deleteLink.onclick = function () {
-        deleteTab(newTab.id);
+        deleteTab(newTab.index);
     };
     deleteLink.classList.add("trashcan");
     var img1 = document.createElement("img");
@@ -119,7 +126,7 @@ function addTab(newTab, listDiv) {
     newInput.setAttribute("type", "text");
     newInput.id = "text_" + newTab.id;
     newInput.value = newTab.title;
-    newInput.classList.add('tab-title');
+    newInput.classList.add("tab-title");
     newDiv.appendChild(newInput);
     listDiv.appendChild(newDiv);
     var img = document.createElement("img");
@@ -172,7 +179,7 @@ function updateTab(tabId, newData) {
 function updateTabData() {
     var hiddenField = document.getElementById("tabData");
     var display = document.getElementById("dataUpdate");
-    display.innerHTML =  JSON.stringify(tabData);
+    display.innerHTML = JSON.stringify(tabData);
     hiddenField.value = JSON.stringify(tabData);
 
     var trash = document.querySelectorAll(".trashcan");
