@@ -28,17 +28,17 @@
                   </button>
               </div>
               <div class=p-2>
-                  <button type="button" onclick="removeLink()" class = "btn btn-outline-secondary insert-html-btn">
+                  <button type="button" onclick="removeLink('article')" class = "btn btn-outline-secondary insert-html-btn">
                       <img src ="{{ asset('icons/link_single.svg') }}" class = "insert-html-bold">
                   </button>
               </div>
               <div class=p-2>
-                  <button type="button" onclick="boldSelected()" class = "btn btn-outline-secondary  insert-html-btn">
+                  <button type="button" onclick="boldSelected('article')" class = "btn btn-outline-secondary  insert-html-btn">
                       <img src ="{{ asset('icons/zi.svg') }}" class = "insert-html-bold">
                   </button>
               </div>
               <div class=p-2>
-                  <button type="button" onclick="unboldSelected()" class = "btn btn-outline-secondary insert-html-btn">
+                  <button type="button" onclick="unboldSelected('article')" class = "btn btn-outline-secondary insert-html-btn">
                       <img src ="{{ asset('icons/zi_light.svg') }}" class = "insert-html-bold">
                   </button>
               </div>

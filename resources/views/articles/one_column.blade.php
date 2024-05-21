@@ -1,6 +1,5 @@
 @php
     use Illuminate\Support\Facades\Log;
-
     $articleId = 'article_' . $column->id;
 @endphp
 
@@ -15,5 +14,4 @@
             ])
         </div>
     </div>
-
 </div>

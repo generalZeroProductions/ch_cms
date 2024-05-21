@@ -29,7 +29,7 @@ class NavMaker
             ->first();
         if($indexItem)
         {
-            Log::info('got an index item');
+          
             if($indexItem->type==='sub')
             {
                 $dNav = Navigation::findOrFail($indexItem->parent);
@@ -43,7 +43,7 @@ class NavMaker
         if (count($navItems) === 1) {
             $canDelete = false;
         }
-        Log::info('throgh nav collection');
+    
         $logo = Navigation::where('type','logo')->get()->first();
         $htmlString = View::make('nav.navigation', [
             'navItems'=> $navItems,

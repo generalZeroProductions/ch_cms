@@ -9,7 +9,10 @@
 <div id = "site_nav_bar">
 <nav class="navbar navbar-expand-lg navbar-light bg-light" >
     @if (!$editMode)
-        <a class="navbar-brand" href="/"><h3>{{$logo->title}}</h3></a>
+        <a class="navbar-brand" href="/" style="display: flex; align-items: center;">
+         <img src="{{ asset("images/$logo->route") }}" class="main-logo-crop">
+         <h3>{{$logo->title}}</h3>
+         </a>
     @endif
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,3 +60,15 @@
     </div>
 </nav>
 </div>
+
+
+<style>
+    .main-logo-crop {
+        width: auto;
+        height: 54px;
+        object-fit: cover;
+        margin-right:12px;
+         margin-left:18px;
+    }
+
+</style>

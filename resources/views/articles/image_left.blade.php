@@ -24,18 +24,6 @@ use Illuminate\Support\Facades\Log;
                 'info' => $info,
             ])
         </div>
-
     </div>
-
 </div>
-<style>
-    .space-top-40 {
-        background-color: orange;
-        height: 40px;
-    }
 
-    .image-column {
-
-        width: 100%;
-    }
-</style>

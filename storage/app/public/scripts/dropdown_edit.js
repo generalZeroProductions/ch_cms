@@ -4,6 +4,7 @@ var subNavIndex = 0;
 
 function newSubnavFromSource(subItem, list) {
     var newItem = {
+        record:true,
         id: subItem.id,
         title: subItem.title,
         route: subItem.route,
@@ -15,6 +16,7 @@ function newSubnavFromSource(subItem, list) {
 function createSubNavItem() {
     var list = document.getElementById("dropdown_list");
     var newItem = {
+        record:false,
         title: "新子菜单"+dropdownData.length,
         route: '/',
         index: dropdownData.length-1,

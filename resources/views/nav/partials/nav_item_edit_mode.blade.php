@@ -9,26 +9,25 @@
         @if ($navKey === $nav->index)
             <div class="p-2 nav-item active">
             @else
-                <div class="p-2 nav-item">
-        @endif
+        <div class="p-2 nav-item">
+            @endif
             <a href="{{ $nav->route }}" class="nav-link">
-                    {{ $nav->title }}
-                    </a>
-                </div>
-                <div class="p-2 ">
-                    <a style= "cursor: pointer;"
-                        onClick = "insertForm('edit_nav','{{ $jNav }}',  '{{ $divId }}')">
-                        <img src={{ asset('icons/pen.svg') }} class="edit-nav-pen"></a>
-                </div>
-                @if ($canDelete)
-                    <div class="p-2 ">
-                        <a style= "cursor: pointer;"
-                            onClick = "insertForm('nav_delete','{{ $jNav }}', '{{ $divId }}')">
-                            <img src={{ asset('icons/trash.svg') }} class = "edit-nav-trash"></a>
-                    </div>
-                @endif
-                <div class="flex-grow-1 p-2"></div>
+                {{ $nav->title }}
+            </a>
+        </div>
+        <div class="p-2 ">
+            <a style= "cursor: pointer;" onClick = "insertForm('edit_nav','{{ $jNav }}',  '{{ $divId }}')" class = "hide-editor">
+                <img src={{ asset('icons/pen.svg') }} class="edit-nav-pen"></a>
+        </div>
+        @if ($canDelete)
+            <div class="p-2 ">
+                <a style= "cursor: pointer;" class="hide-editor"
+                    onClick = "insertForm('nav_delete','{{ $jNav }}', '{{ $divId }}')">
+                    <img src={{ asset('icons/trash.svg') }} class = "edit-nav-trash"></a>
             </div>
+        @endif
+        <div class="flex-grow-1 p-2"></div>
+    </div>
 </li>
 
 

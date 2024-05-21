@@ -24,7 +24,7 @@
     </div>
     <div class="col-3 d-flex justify-content-end align-items-center">
         <button class = "btn btn-secondary btn-44-build"
-            onClick="enterPageBuild('{{$page->title}}','build')">
+            onClick="enterPageBuild('{{$page->title}}','build','{{$row->id}}')">
             建立页面 <img src={{ asset('icons/build.svg') }} class="build-icon"></button>
     </div>
 </div>

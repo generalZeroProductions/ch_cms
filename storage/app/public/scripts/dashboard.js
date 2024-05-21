@@ -1,5 +1,4 @@
 function paginatePages() {
-    
     const pagesDiv = document.getElementById("pagesDiv");
     fetch("/display_all_pages")
         .then((response) => response.json()) // Parse response as JSON
@@ -15,44 +14,52 @@ function viewSite(route) {
 function dashboardReturn() {
     window.location.href = "/session/endbuild";
 }
-function setEditMode(toggle, route) {
+function setEditMode(toggle) {
     scrollDiv = findClosestDiv();
+    var pathname = window.location.pathname;
+    var parts = pathname.split("/");
+    var route = parts[parts.length - 1];
     window.location.href =
-        "/session/edit?" + toggle + "?" + route +"?"+scrollDiv
+        "/session/edit?" + toggle + "?" + route + "?" + scrollDiv;
 }
 
 function findClosestDiv() {
-    var rowMarks = document.querySelectorAll('.row_mark');
+    var rowMarks = document.querySelectorAll(".rowInsert");
     let closestDiv = null;
-    let closestDistance = Infinity;
+    let minVerticalDistance = Infinity;
+    const verticalCenter = window.innerHeight / 2; // Calculate vertical center of the page
+
     rowMarks.forEach((div) => {
-        const distance = Math.abs(div.getBoundingClientRect().top - headSpace);
-        if (distance < closestDistance) {
+        const divRect = div.getBoundingClientRect();
+        const divCenter = (divRect.top + divRect.bottom) / 2; // Calculate center of the bounding box
+
+        const verticalDistance = Math.abs(divCenter - verticalCenter);
+        if (verticalDistance < minVerticalDistance) {
             closestDiv = div;
-            closestDistance = distance;
+            minVerticalDistance = verticalDistance;
         }
     });
+    console.log(closestDiv.id);
     return closestDiv.id;
 }
 
+var csrfToken = document
+    .querySelector('meta[name="csrf-token"]')
+    .getAttribute("content");
 
-var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+function enterPageBuild(page, sentBy, rowId) {
+    var returnPage = page;
+    if (sentBy === "build") {
+        var pathname = window.location.pathname;
+        var parts = pathname.split("/");
+        returnPage = parts[parts.length - 1];
+    }
 
-function enterPageBuild(route, from, tabId) {
-    if (from === "build") {
-        setScrollTo(0);
-        var match = window.location.href.match(/\/([^\/?]+)(?:\?.*)?$/);
-        from =  match ? match[1] : null;
-    }
-    if (tabId) {
-        updateTabId(tabId);
-    }
     window.location.href =
-        "/session/build?" + route + "?" + from
+        "/session/build?" + page + "?" + returnPage + "?" + rowId;
 }
 
 function removeRowWarning(jItem) {
-    
     item = JSON.parse(jItem);
     document.getElementById("main_modal_label").innerHTML = "确认删除此行 ";
     fetch("/delete_row_form")
@@ -67,12 +74,6 @@ function removeRowWarning(jItem) {
             console.error("Error loading remove nav item:", error)
         );
 }
-
-
-
-
-
-
 
 function authOn() {
     fetch("/admin/on", {

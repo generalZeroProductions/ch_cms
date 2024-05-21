@@ -6,7 +6,7 @@
     if ($firstNav) {
         $route = $firstNav->route;
     }
-    Session::put('scrollTo',0);
+   //Session::forget('scrollTo',0);
 @endphp
 
 <script>

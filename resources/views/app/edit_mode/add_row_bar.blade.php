@@ -2,7 +2,7 @@
     $jDrop = json_encode(['page' => $page, 'row' => $row]);
 @endphp
 <br>
-<br>
+<hr>
 <div class="container-fluid yellow_row d-flex justify-content-center" id = "page_title_click" style="padding-top:8px"
     onclick="openMainModal('createRow','{{ $jDrop }}','modal-xl')">
     <div class = "row d-flex align-items-center">
@@ -11,8 +11,6 @@
     </div>
 </div>
 
-<br>
-<br>
 <hr>
 
 <style>
@@ -24,7 +22,7 @@
 
     .yellow_row {
         background-color: rgb(248, 212, 135);
-        height: 48px;
+        height: 88px;
         margin-top: 12px;
 
     }

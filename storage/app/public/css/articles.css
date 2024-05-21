@@ -56,3 +56,16 @@
         font-size: 24px;
         font-weight: bold;
     }
+
+    .image-pen-icon {
+        margin-left: 10px;
+        height: 18px
+    }
+
+    .image-icon-space {
+        height: 48px;
+    }
+
+    .image-thumb-rounded {
+        border-radius: 15px;
+    }

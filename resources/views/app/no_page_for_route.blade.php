@@ -1,31 +1,28 @@
 @php
-    $routeSelectId = 'select_' . $rowId . $tabId;
-    $saveRoute = 'save_' . $rowId . $tabId;
-    $formName = 'form_asign_tab'.$rowId.$tabId;
+
+  $editMode = Session::get('editMode');
+   $currentUrl = urldecode($_SERVER['REQUEST_URI']);
+        $urlParts = explode('/', $currentUrl);
 @endphp
 
 <div class="center-page site-blue">
     <div class="d-flex flex-column  mb-3">
         <div class="p-2" >
-            <p style = "padding:32px"> 路线“ <span> {{ $tabTitle }}</span> ”尚未分配页面。</p>
+            <p style = "padding:32px"> 无法在此位置找到任何内容</p>
         </div>
-        @if (!$mobile)
+        @if ($editMode)
             <div class="p-2">
-                <form method= 'POST' id ="{{$formName}}">
+                <form method= 'POST' id ="page_quick">
                     @csrf
-                    <div class="row d-flex justify-content-end " style= "padding:24px">
+                    <div class="row d-flex justify-content-end align-items-center" style= "padding:24px">
                         <div class="p-2 " style= "font-size:24px; ">
-                            从这里添加页面，或从标签编辑器中选择
+                           您想为此路线创建一个新页面吗？
                         </div>
                         <div class="p-2 flex-fill " style="margin-left:24px">
-                            <select class= "form-control route-select" id="{{ $routeSelectId }}">
-                                <option value = "select a route..">选择选项卡页面</option> 
-                            </select>
+                          <button type="submit" class = "btn btn-secondary"> 制作新页面</button>
                         </div>
-                        <input type="hidden" name="route" id="{{ $saveRoute }}">
-                        <input type="hidden" name="tab_id" value="{{ $tabId }}">
-                        <input type='hidden' name="tab_index" value="{{$tabIndex}}">
-                        <input type="hidden" name = "form_name" value = "tab_quick">
+                        <input type="hidden" name="route" id="save_route">
+                        <input type="hidden" name = "form_name" value = "page_quick">
                       
                      </div>
                 </form>
@@ -48,15 +45,11 @@
         color: white;
     }
 
-    .link-name {
-        color: rgb(215, 215, 201);
-        font-weight: 600;
-    }
 </style>
 
-<div class="no-route-scripts">
+<div class="no-page-scripts">
 <script>
-  populateRoutesNoTab('{{ $rowId }}','{{$tabIndex}}', '{{ $tabId }}');
+  populateRoutesNoPage();
 </script>
 
 </div>

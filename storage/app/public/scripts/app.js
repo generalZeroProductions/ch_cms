@@ -3,35 +3,31 @@ var iconsAsset;
 var fontsAsset;
 var scriptAsset;
 var allRoutes;
-var resizeTimeout;
+
 var allImages;
-var locItem;
-var modBody;
-var modTitleLabel;
-var refreshInline = false;
-var headSpace = 0;
+// var locItem;
+function renderFooter() {
+    var div = document.getElementById("site_footer");
+    renderToDiv(div, 'footer');
+}
 
 function renderPageContent(pageId, scroller) {
     var div = document.getElementById("page_content");
     var sequence = "page^" + pageId;
     // Create a new promise
+
     var loadScriptsPromise = new Promise((resolve, reject) => {
+        loadScripts();
+        loadNoRoutes();
         resolve();
     });
 
     renderToDiv(div, sequence, scroller)
         .then(() => {
-            // Once rendering is complete, execute loadScripts() after resolving the new promise
             return loadScriptsPromise.then(() => {
-                enableScrolling();
-                loadScripts();
-                loadNoRoutes();
-                console.log("LOOK FOR ROW " + scroller);
+               
                 var row = document.getElementById(scroller);
                 if (row) {
-                    console.log(
-                        "FOUND SCROLL- " + row.id + " headspace " + headSpace
-                    );
                     var desiredOffset = row.getBoundingClientRect().top - headSpace; // Calculate desired offset
                     var scrollToOffset = window.scrollY + desiredOffset;
                     window.scrollTo({
@@ -41,17 +37,15 @@ function renderPageContent(pageId, scroller) {
                 }
             });
         })
-        .then(() => {
-          
-        })
         .catch((error) => {
             console.error("Error refreshing page:", error);
         });
 }
 
+
+
 function renderToDiv(div, sequence) {
   preventScrolling();
-    console.log("RENDER TO DIV CALL");
     return new Promise((resolve, reject) => {
         fetch("/render_/render_content/" + sequence)
             .then((response) => {
@@ -71,7 +65,7 @@ function renderToDiv(div, sequence) {
                         behavior: "smooth",
                     });
                     loadScripts();
-                  
+                    showEditors()
                 resolve();
             })
             .catch((error) => {
@@ -82,8 +76,8 @@ function renderToDiv(div, sequence) {
 }
 
 function insertForm(formName, item, divId) {
-    console.log("INSERT FORM DIV ID: " + divId);
     preventScrolling();
+    hideEditors();
     var div = document.getElementById(divId);
     fetch("/insert_/insert_form/" + formName, {
         method: "GET",
@@ -97,6 +91,7 @@ function insertForm(formName, item, divId) {
             formRouter(formName, item);
             enableScrolling();
             columnShift(formName, item);
+           
         })
         .catch((error) => {
             console.error(
@@ -138,7 +133,7 @@ function writeNoReturn(formName) {
     console.log("WRITING NO RETURN: " + formName);
     var form = document.getElementById(formName);
     if (!form) {
-        console.log("NO FING FORM");
+        console.log("NO F-ING FORM");
         return;
     }
     form.addEventListener("submit", function (event) {
@@ -148,6 +143,21 @@ function writeNoReturn(formName) {
     fetch("/write_/write_form/", {
         method: "POST",
         body: formData,
+    });
+}
+
+function hideEditors(){
+    var allEditors = document.querySelectorAll('.hide-editor');
+    allEditors.forEach(element => {
+        element.style.visibility = 'hidden';
+        
+    });
+}
+function showEditors(){
+    var allEditors = document.querySelectorAll('.hide-editor');
+    allEditors.forEach(element => {
+        element.style.visibility = 'visible';
+        
     });
 }
 
@@ -187,6 +197,14 @@ function loadScripts() {
             eval(loadTabCall[0]);
         }
     });
+    var footScripts = document.querySelectorAll(".footer_scripts");
+    footScripts.forEach((script)=>{
+        var innerHtml = script.innerHTML;
+        var setUpFooterCall = innerHtml.match(/changeFooterSetup\([^)]*\)/);
+        if (setUpFooterCall !== null) {
+            eval(setUpFooterCall[0]);
+        }
+    })
     var slideScripts = document.querySelectorAll(".slide_scripts");
     slideScripts.forEach((script) => {
         var innerHtml = script.innerHTML;
@@ -223,6 +241,9 @@ function formRouter(formName, item) {
     }
     if (formName.includes("page")) {
         pageFormRouter(formName, item);
+    }
+    if(formName.includes("footer")){
+        footerFillout(formName, item);
     }
 }
 

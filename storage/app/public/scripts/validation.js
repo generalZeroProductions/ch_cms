@@ -60,15 +60,9 @@ function validateTabTitle(title, event) {
     var text = event.target.value;
     var text = event.target.value.trim();
     if (text === "") {
-        if (hasTabs()) {
-            title.style.backgroundColor = "rgb(210, 210, 223)";
-            title.placeholder = "没有标题的项卡将被删除";
-            enableTabSubmit();
-        } else {
-            title.style.backgroundColor = "rgb(241, 78, 78)";
-            title.placeholder = "项卡必须有标题";
-            disableSubmit("edit_tabs");
-        }
+        title.style.backgroundColor = "rgb(241, 78, 78)";
+        title.placeholder = "项卡必须有标题";
+        disableSubmit("edit_tabs");
     } else {
         title.style.backgroundColor = "";
         enableTabSubmit();

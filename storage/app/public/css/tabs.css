@@ -1,0 +1,35 @@
+.tab-edit-pen {
+    height: 20px;
+}
+
+.tabs-editor-spacing {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    padding-left: 28px;
+}
+.tab-item-on {
+    font-size: 30px;
+    font-weight: 600;
+    text-decoration: none;
+    color: black;
+}
+
+.tab-item-off {
+    font-size: 24px;
+    font-weight: 400;
+    color: rgb(154, 154, 157);
+}
+
+.tab-item-off:hover {
+    font-size: 26px;
+    text-decoration: none;
+    color: black;
+}
+
+.tab-item-on:hover {
+    text-decoration: none;
+    color: black;
+}
+.tab-no-dots {
+    list-style: none;
+}

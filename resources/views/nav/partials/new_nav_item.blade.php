@@ -3,7 +3,7 @@
     $item = $nav->index;
 @endphp
 <li class="nav-item adder d-flex justify-content-center adder-narrow" id = "{{ $divId }}">
-    <a style= "cursor: pointer;" id="add_nav_anchor" class="nav-link "
+    <a style= "cursor: pointer;" id="add_nav_anchor" class="nav-link hide-editor"
         onClick = "insertForm('add_nav', '{{ $item }}' ,  '{{ $divId }}')">
         <img src = "{{ asset('icons\add_nav.svg') }}" class="add-nav-icon">
     </a>

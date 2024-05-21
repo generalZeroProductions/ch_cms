@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\PageMaker;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ConsoleController;
 use App\Http\Controllers\ImageController;
@@ -29,6 +30,9 @@ Route::post('admin/on', function () {
     return response()->json(['status' => 'login_failed'], 401);
 });
 
+Route::get('footer', function () {
+    return View::make('app.footer');
+})->name('footer');
 // these might be better placed in there respective sections.  page, slide, etc.
 //  CREATE AND DELETE FOR PAGES
 Route::post('/create_slideshow', [SlideController::class, 'createSlideshow'])->name('create_slideshow');
@@ -46,7 +50,7 @@ Route::get('/delete_row_form', function () {
 Route::post('/delete_page', [PageController::class, 'deletePage'])->name('deletePage');
 
 Route::get('/delete_page_form', function () {
-    return View::make('app.layouts.partials.delete_page_form');
+    return View::make('app.edit_mode.delete_page_form');
 })->name('deletePageForm');
 
 // CONSOLE ROUTING
@@ -209,6 +213,9 @@ Route::get('/insert_/insert_form/{formName}', function ($formName) {
     if (strpos($formName, 'page') !== false) {
         $htmlResponse = PageController::insert($formName);
         return $htmlResponse;
+    } if (strpos($formName, 'footer') !== false) {
+        $htmlResponse = PageController::insert($formName);
+        return $htmlResponse;
     } else {
         // Handle other cases here if needed
         return response()->json(['error' => 'Invalid form request'], 400);
@@ -237,7 +244,11 @@ Route::get('/render_/render_content/{render}', function ($render) {
         Log::info('to article render');
         $htmlResponse = ArticleController::render($render);
         return $htmlResponse;
-    } else {
+    } elseif (strpos($render, 'footer') !== false) {
+        Log::info('to footer render');
+        $htmlResponse = PageController::render($render);
+        return $htmlResponse;
+    }else {
       
        return response()->json(['error' => 'Invalid form request'], 400);
     }
@@ -278,6 +289,11 @@ Route::post('/write_/write_form', function (Request $request) {
     }
     elseif (strpos($request->form_name, 'logo') !== false) {
         Log::info('try to write article');
+        $pageCtl = new PageController();
+        return $pageCtl->write($request);
+    }
+    elseif (strpos($request->form_name, 'footer') !== false) {
+        Log::info('form name has footer');
         $pageCtl = new PageController();
         return $pageCtl->write($request);
     }else {}

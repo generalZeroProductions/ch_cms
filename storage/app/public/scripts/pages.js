@@ -1,3 +1,8 @@
+var modBody;
+var modTitleLabel;
+// var refreshInline = false;
+var headSpace = 0;
+
 function pageFormRouter(formName, jItem) {
     var item = JSON.parse(jItem);
     originalPageTitle = item.title;
@@ -144,15 +149,19 @@ function insertCreateRowForm(jItem) {
         .catch((error) => console.error("Error loading newNavSelect:", error));
 }
 
-function deletePageWarning(item) {
-    const parseItem = JSON.parse(item);
+function deletePageWarning(jItem) {
+    console.log(jItem);
+    var item = JSON.parse(jItem);
+    console.log(item.title);
+    
     document.getElementById("main_modal_label").innerHTML = "确认删除页面";
     fetch("/delete_page_form")
         .then((response) => response.text())
         .then((html) => {
+            if(modBody){
             modBody.innerHTML = html;
-            document.getElementById("delete_btn").innerHTML = "删除";
-            document.getElementById("page_id").value = parseItem.id;
+            document.getElementById("page_id").value = item.id;
+            }
         })
         .catch((error) =>
             console.error("Error loading remove nav item:", error)

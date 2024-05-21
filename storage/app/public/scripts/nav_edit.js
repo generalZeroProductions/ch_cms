@@ -4,11 +4,9 @@ function renderNavigation(pageName) {
     renderToDiv(div, sequence)
         .then(() => {
             setHeadSpace(); 
-            var editLogo = document.getElementById("logo_thumb");
-            console.log("RENDRED NAV");
+            var editLogo = document.getElementById("logo_thumb");  
             if(editLogo)
             {
-                console.log("GOT LOGO");
                 logoFormFillout(null);
             }
         })

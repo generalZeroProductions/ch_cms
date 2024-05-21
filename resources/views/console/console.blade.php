@@ -18,6 +18,8 @@
     <script src="{{ asset('scripts/articles.js') }}"></script>
     <script src="{{ asset('scripts/dashboard.js') }}"></script>
     <script src="{{ asset('scripts/tooltips.js') }}"></script>
+      <script src="{{ asset('scripts/pages.js') }}"></script>
+        <script src="{{ asset('scripts/window.js') }}"></script>
 
 </head>
 

@@ -51,6 +51,13 @@ function editTabsSetup(formName, jItem) {
     var sequence = "tab_menu^" + item.rowId + "^"+item.pageId;
     btn.onclick = function () {
         if (verifySubmit(btn)) {
+            if(renderDiv)
+            {
+                console.log('got render Div');
+            }
+            else{
+                console.log('no render DIV -- ITEM was '+ item.rowId);
+            }
             writeAndRender(formName, sequence, renderDiv);
         }
     };
@@ -158,12 +165,14 @@ function addTab(newTab, listDiv) {
     });
 
     newInput.addEventListener("input", function (event) {
+        console.log("listened to input");
         validateTabTitle(newInput, event);
         var text = event.target.value;
         var itemId = newTab.id;
         if (text != "select a page") {
             updateTab(itemId, { title: text });
         }
+        updateTabData();
     });
     updateTabData();
 }

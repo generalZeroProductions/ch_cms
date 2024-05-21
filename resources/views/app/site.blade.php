@@ -22,25 +22,32 @@
         use Illuminate\Support\Facades\Session;
         use App\Models\Navigation;
         use App\Models\ContentItem;
-        
+        $route=null;
+        $pageId = null;
         $currentUrl = urldecode($_SERVER['REQUEST_URI']);
         $urlParts = explode('/', $currentUrl);
-        Log::info($urlParts[1].' LOOKING FOR THIS URL');
+        Log::info($urlParts[1] . ' LOOKING FOR THIS URL');
         $page = ContentItem::where('type', 'page')
             ->where('title', $urlParts[1])
             ->first();
-        Log::info($page->title);
+        if ($page) {
+            $pageId = $page->id;
+            $route = $page->title;
+        }
+
         $scrollTo = Session::get('scrollTo');
         Session::forget('scrollTo');
         $allRoutes = setAllRoutes();
-        
 
     @endphp
 
     <div class="nav-fixed-top" id="main-navigation"></div>
     <div id="headspace" style= "height:200"></div>
-
+    @php
+        //echo $scrollTo. ' how its set before nav';
+    @endphp
     <div id="page_content"></div>
+    <div id="site_footer"></div>
     <script src="{{ asset('scripts/jquery-3.2.1.slim.min.js') }}"></script>
     <script src="{{ asset('scripts/popper.min.js') }}"></script>
     <script src="{{ asset('scripts/bootstrap.min.js') }}"></script>
@@ -57,11 +64,12 @@
         imagesAsset = "{{ asset('images/') }}/";
         fontsAsset = "{{ asset('fonts/') }}/";
         allRoutes = decodeRoutes('{{ $allRoutes }}');
-        renderNavigation('{{ $page->title }}')
-        renderPageContent('{{ $page->id }}', '{{ $scrollTo }}');
+        renderNavigation('{{ $route }}')
+        renderFooter();
+        renderPageContent('{{ $pageId }}', '{{ $scrollTo }}');
         currentScreen = window.innerWidth;
         window.addEventListener('resize', function() {
-            handleResize("{{ $page->title }}");
+            handleResize("{{ $route }}");
         });
 
     }

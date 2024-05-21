@@ -4,20 +4,18 @@ function articleFormRouter(formName, item) {
         titleTextFillout(formName, item);
     }
 }
-function updateHtmlDivString() {
-    var htmlDivStringInput = document.getElementById("htmlDivString");
-    const htmlDiv = document.getElementById("htmlDiv");
-    htmlDivStringInput.value = htmlDiv.innerHTML;
-}
+
 function titleTextFillout(formName, jItem, body) {
     var item = JSON.parse(jItem);
-
+    editingDiv = null;
     addFieldAndValue(formName + "_title", item.article.title);
 
     var editDiv = document.getElementById("htmlDiv");
-    editDiv.insertAdjacentHTML('beforeend', item.body);
-   
+    editingDiv = editDiv;
+    editDiv.insertAdjacentHTML("beforeend", item.body);
+
     editDiv.addEventListener("input", function (event) {
+        console.log("LISTENING");
         updateHtmlDivString();
     });
     // addFieldAndValue("htmlDiv", item.article.body);
@@ -53,7 +51,6 @@ function titleTextFillout(formName, jItem, body) {
         useInfo.checked = true;
     }
     useInfo.addEventListener("change", function () {
-     
         if (useInfo.checked) {
             showInfo.classList.remove("hide-info-link");
             showInfo.classList.add("show-info-link");
@@ -100,7 +97,7 @@ function titleTextFillout(formName, jItem, body) {
             writeAndRender(formName, sequence, div);
         }
     };
-    updateHtmlDivString() ;
+    updateHtmlDivString();
 }
 
 function removeHtmlTags(input) {
@@ -136,70 +133,126 @@ function validateInfoTitle(title, btn) {
         btn.classList.remove("disabled");
     }
 }
-function boldSelected() {
+function boldSelected(route) {
     const selection = window.getSelection();
     const range = selection.getRangeAt(0);
     const span = document.createElement("span");
     span.style.fontWeight = 800;
     range.surroundContents(span);
-    updateHtmlDivString();
+    if(route==='article')
+    {
+        updateHtmlDivString();
+    }
+    else{
+        var div = findContainerDiv(range.startContainer);
+        writeFooterBody(div.id);
+    }
+    
 }
-function unboldSelected() {
+function unboldSelected(route) {
     const selection = window.getSelection();
     const range = selection.getRangeAt(0);
     const span = document.createElement("span");
-    span.style.fontWeight = 400;
+    span.style.fontWeight = 600;
+    if(route==='article')
+    {
+        span.style.fontWeight = 400;
+    }
     range.surroundContents(span);
     updateHtmlDivString();
+    if(route==='article')
+    {
+        updateHtmlDivString();
+    }
+    else{
+        var div = findContainerDiv(range.startContainer);
+        writeFooterBody(div.id);
+    }
 }
 
 
-
-
-// Function to open the modal
+var editingDiv;
 function addLink() {
+    console.log("called");
     const selection = window.getSelection();
     const range = selection.getRangeAt(0);
-    openLinkModal(range); // Pass the range to the modal function
-  }
-  
-  // Function to open the link modal and pass the range
-  function openLinkModal(range) {
-    // Store the range in a global variable or pass it to the modal
-    $('#linkModal').modal('show');
+    editingDiv =findContainerDiv(range.startContainer);
+    openLinkModal(range);
+}
+
+function openLinkModal(range) {
+    $("#linkModal").modal("show");
     window.range = range; // Store the range in a global variable
-  }
-  
-  // Function to save the href value and add the link
-  function saveLink() {
-    const hrefInput = document.getElementById('hrefInput');
+}
+
+function saveLink() {
+    var hrefInput = document.getElementById("hrefInput");
     const hrefValue = hrefInput.value;
-  
-    if (hrefValue && window.range) { // Check if range is defined
-      const range = window.range; // Get the range from the global variable
-      const link = document.createElement("a");
-      link.href = hrefValue; // Set the href value provided by the user
-      link.textContent = range.toString();
-      range.deleteContents();
-      range.insertNode(link);
-      updateHtmlDivString();
+
+    if (hrefValue && window.range) {
+        // Check if range is defined
+        const range = window.range; // Get the range from the global variable
+        const link = document.createElement("a");
+        link.href = hrefValue; // Set the href value provided by the user
+        link.textContent = range.toString();
+        range.deleteContents();
+        range.insertNode(link);
+        updateHtmlDivString();
     }
-  
-    $('#linkModal').modal('hide'); // Hide the modal after saving
-  }
+    $("#linkModal").modal("hide"); // Hide the modal after saving
+}
+function updateHtmlDivString() {
+   
+    // const htmlDiv = document.getElementById("htmlDiv");
+    // htmlDivStringInput.value = htmlDiv.innerHTML;
+    if(editingDiv)
+    {
+        console.log("WE ARE DINDNG THE DUDE");
+        if(editingDiv.id === "htmlDiv")
+        {
+            var htmlDivStringInput = document.getElementById("htmlDivString");
+            htmlDivStringInput.value = editingDiv.innerHTML;
 
-  
+        }
+        else{
+            writeFooterBody(editingDiv.id);
+        }
+       
+    }
 
-function removeLink() {
+}
+
+function findContainerDiv(node) {
+    while (
+        node &&
+        node.tagName !== "DIV" 
+    ) {
+        node = node.parentNode;
+    }
+    console.log("node is "+node.id);
+    return node;
+}
+
+function removeLink(route) {
     const selection = window.getSelection();
+    var useRange = null;
     if (!selection.isCollapsed) {
         const range = selection.getRangeAt(0);
+        useRange = selection.getRangeAt(0);
         const link = range.commonAncestorContainer.parentNode.closest("a");
         if (link) {
             const text = document.createTextNode(link.textContent);
             link.parentNode.insertBefore(text, link);
             link.parentNode.removeChild(link);
         }
+        if(route==='article')
+        {
+            updateHtmlDivString();
+        }
+        else{
+            var div = findContainerDiv(range.startContainer);
+            writeFooterBody(div.id);
+        }
     }
-    updateHtmlDivString();
+   
 }

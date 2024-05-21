@@ -25,9 +25,9 @@ echo '<style>  .image-crop {
 
 <div id={{ $divId }}>
     @if ($editMode && !$tabContent)
-        <div class="d-flex align-items-center icon-space">
+        <div class="d-flex align-items-center image-icon-space hide-editor">
             <a href="#" onClick="insertForm('img_edit^{{$column->id}}', '{{ $item }}', '{{ $divId }}' )">
-                <img src="{{ asset('icons/pen.svg') }}" class="pen-icon">
+                <img src="{{ asset('icons/pen.svg') }}" class="image-pen-icon">
             </a>
         </div>
     @endif
@@ -40,18 +40,4 @@ echo '<style>  .image-crop {
 
 </div>
 
-<style>
-    .pen-icon {
-        margin-left: 10px;
-        height: 18px
-    }
 
-    .icon-space {
-        height: 48px;
-    }
-
-    .image-thumb-rounded {
-        border-radius: 15px;
-    }
-
-</style>

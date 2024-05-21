@@ -1,3 +1,5 @@
+var resizeTimeout;
+
 function setHeadSpace(){
     
     var mainNav = document.getElementById("site_nav_bar");
@@ -51,7 +53,7 @@ function handleResize(route) {
 console.log("calling resize: " +currentScreen);
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(function () {
-        if (Math.abs(window.innerWidth - currentScreen) > 15) {
+        if (route && Math.abs(window.innerWidth - currentScreen) > 15) {
             window.location.href =
                 "/session/screen?" +
                 window.innerWidth +

@@ -102,7 +102,7 @@ Log::info('@ tab content'.count($tabs));
                 ->first();
             if (isset($page)) {
                 Log::info('## Got PAGE');
-                $content = $maker->pageHTML($page, true);
+                $content = $maker->pageHTML($page, true,$row);
                 $contents[] = $content;
             } else {
                 Log::info('## make no nab');

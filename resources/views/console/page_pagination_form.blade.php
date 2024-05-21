@@ -1,28 +1,34 @@
-
- @php
+@php
     use App\Models\ContentItem;
     $index = 0;
 @endphp
 
 @foreach ($records as $record)
     @php
-          $heading = 'movie';
-          $topRow = ContentItem::where('parent',$record->id)->orderBy('index')->first();
-         $heading = $topRow->heading;
+        $heading = '无内容';
+        $topRow = ContentItem::where('parent', $record->id)
+            ->orderBy('index')
+            ->first();
+        if (isset($topRow)) {
+            Log::info($topRow);
+            $heading = $topRow->body;
+        }
+
     @endphp
     @if ($index % 2 === 0)
-        <div class = "row">
+        <div class = "row center-paginate">
         @else
-            <div class = "row" style= "background-color:#ced8e3;">
+            <div class = "row center-paginate" style= "background-color:#ced8e3;">
     @endif
-    <div class= 'col-md-4'>
+    <div class= 'col-md-4 '>
         <p>{{ $record->title }}</p>
     </div>
     <div class= 'col-md-4'>
         <p>{{ $heading }}</p>
     </div>
     <div class= 'col-md-2' style="text-align:center">
-        <button onClick="enterPageBuild('{{ $record->title }}',null,null)" class='btn btn-primary' style='margin-top:4px'>
+        <button onClick="enterPageBuild('{{ $record->title }}','dashboard', null)" class='btn btn-primary'
+            style='margin-top:4px'>
             <img src="{{ asset('icons/build.svg') }}">
         </button>
     </div>
@@ -60,3 +66,11 @@
         </div>
     </div>
 </div>
+
+
+<style>
+.center-paginate{
+    padding-top:6px !important;
+}
+
+</style>

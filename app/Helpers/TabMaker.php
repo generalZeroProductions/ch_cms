@@ -22,10 +22,9 @@ class TabMaker
         $allRoutes = $setters->setAllRoutes();
         $mobile = Session::get('mobile');
         if ($mobile) {
-            dd('moble');
             $htmlString .= View::make('tabs/accordian', [
                 'editMode' => Session::get('editMode'),
-                'tabs' => $tabs[0],
+                'tabs' => $tabs,
                 'contents' => $setters->setTabContents($tabs, $row, $mobile, $allRoutes),
                 'allRoutes' => $allRoutes,
                 'rowId' => $row->id,
@@ -50,6 +49,7 @@ class TabMaker
         if ($editMode && !$tabContent) {
             $htmlString .= View::make('app.edit_mode.add_row_bar', ['page' => $page, 'row' => $row]);
         }
+     
         return $htmlString;
     }
 }

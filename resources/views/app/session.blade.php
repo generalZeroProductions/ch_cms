@@ -28,22 +28,19 @@
             Session::put('editMode', true);
         }
         $returnLocation = '/' . $sequence[2];
+        Log::info('edit return to ' . $sequence[2]);
         Session::put('scrollTo', $sequence[3]);
     }
 
     if ($sequence[0] === 'build') {
-        if ($sequence[1] === 'dashboard') {
-            Session::put('returnPage', '');
-            Session::put('tabId', '');
-            Session::put('scrollTo', 0);
-            $returnLocation = '/' . $sequence[1];
-        } else {
-            Session::put('returnPage', $sequence[2]);
-            $returnLocation = '/' . $sequence[1];
-        }
-
+        Log::info('enter build mode ' . $instructions);
         Session::put('buildMode', true);
         Session::put('editMode', true);
+        $returnLocation = '/' . $sequence[1];
+        Session::put('returnPage', $sequence[2]);
+        if (isset($sequence[3])) {
+            Session::put('scrollTo', 'rowInsert' . $sequence[3]);
+        }
     }
 
     //   QUESTIONS HERE FOR SURE  PROBABLY COMBINE INTO BUILD
@@ -56,9 +53,9 @@
     if ($sequence[0] === 'view') {
         Session::forget('returnPage');
         Session::put('buildMode', false);
-        Session::forget('scrollTo');
         $loc = $sequence[1];
         if ($sequence[1] === 'dashboard') {
+            Session::forget('scrollTo');
             $loc = '';
         }
         $returnLocation = '/' . $loc;

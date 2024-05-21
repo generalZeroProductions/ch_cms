@@ -48,7 +48,7 @@ function changeTab(rowId, anchorId, tabIndex, fromClick) {
             page.style.display = "block";
             displayedPage = page; // Save the displayed page
         } else {
-            page.style.display = "none";
+         page.style.display = "none";
         }
     });
 
@@ -86,8 +86,9 @@ function populateRoutesNoTab(pageId,rowId, tabIndex, tabId) {
         event.preventDefault();
     });
     routeSelect.addEventListener("change", function (event) {
+        console.log('ACTION');
         useRoute.value = routeSelect.value;
-        var renderDiv = document.getElementById('rowInsert'+item.rowId);
+        var renderDiv = document.getElementById('rowInsert'+rowId);
         var sequence = "tab_menu^" + rowId + "^"+pageId;
         writeAndRender(formName,sequence,renderDiv)
        
