@@ -1,5 +1,4 @@
 @php
-    use Illuminate\Support\Facades\Log;
     $tStyle = $column->styles['title'];
     $title = $column->title;
     $body = $column->body;

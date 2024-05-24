@@ -5,7 +5,7 @@
 
 <input type="hidden" name = "form_name" value = "edit_footer_item">
 </form>
-@include('app.footer_item_edit_bar')
+@include('footer.footer_item_edit_bar')
 <div id="footer_items_list">
 </div>
 <br>

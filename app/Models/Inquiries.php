@@ -9,6 +9,6 @@ class Inquiries extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'type', 'body', 'name', 'contact'
+        'type', 'body', 'name', 'contact', 'read'
     ];
 }

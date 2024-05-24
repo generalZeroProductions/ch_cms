@@ -28,10 +28,14 @@ class TabController extends Controller
     }
     public function assignRoute(Request $request)
     {
+        Log::info($request);
+       
         $tab = Navigation::findOrFail($request->tab_id);
         $tab->route = $request->route;
         $tab->save();
+        Log::info($tab->parent);
         Session::put('tabKey', $request->tab_id);
+        Session::put('scrollTo', 'rowInsert'.$tab->parent);
     }
     public function write(Request $request)
     {
@@ -87,7 +91,7 @@ class TabController extends Controller
             'parent' => $newRow->id,
         ]);
         $page = ContentItem::findOrFail($request->page_id);
-        Session::put('scrollTo', 'rowInsert' . $request->row_id);
+        Session::put('scrollTo', 'rowInsert' . $newRow->id);
         return redirect()->route('root', ['page' => $page->title]);
     }
     public function loadTabContent($tabRoute)
@@ -144,33 +148,7 @@ class TabController extends Controller
     public static function render($render)
     {
         Log::info('tab render sequence ' . $render);
-        // tab_menu_direct
         $rData = explode('^', $render);
-        // if ($rData[0] === 'tab_refresh') {
-        //     Log::info('index ' . $rData[2]);
-        //     $tab = Navigation::findOrFail($rData[3]);
-        //     Log::info('got tab ' . $tab->title . ' routes to ' . $tab->route);
-        //     $page = ContentItem::where('title', $tab->route)->first();
-        //     if (isset($page)) {
-        //         Log::info('trying ' . $page->title);
-        //         $pageMaker = new PageMaker();
-        //         $htmlString = $pageMaker->pageHTML($page, true);
-        //         return new Response($htmlString, 200, ['Content-Type' => 'text/html']);
-        //     } else {
-        //         $row = ContentItem::find($rData[1]);
-        //         $setter = new Setters();
-        //         $htmlString = View::make('tabs.no_tab_assigned', [
-        //             'tabId' => $tab->id,
-        //             'tabIndex' => $rData[2],
-        //             'tabTitle' => $tab->title,
-        //             'rowId' => $row->id,
-        //             'mobile' => Session::get('mobile'),
-        //             'allRoutes' => $setter->setAllRoutes(),
-        //         ])->render();
-        //         return new Response($htmlString, 200, ['Content-Type' => 'text/html']);
-        //     }
-
-        // } 
         if ($rData[0] === 'tab_menu') {
             $row = ContentItem::findOrFail($rData[1]);
             $page = ContentItem::findOrFail($rData[2]);

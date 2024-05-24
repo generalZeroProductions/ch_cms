@@ -1,15 +1,16 @@
 
-only call loadScripts and get headSpace once !!!!
 
-text one of each type and make sure tabs adjust 
-
+css clean up? 
+routes cleanup?
+add row doesn't scroll on first try or on index 1 
+delete row doesn't scrool at all
 hide all edit elements at insert, reveal all at render 
 
 
 users table and create user for super 
-contact us 
-cancel button where needed.   
-'enter' listeners.
+contact us innquiries
+cancel button where needed. !!  
+'enter' listeners.!!
 
 DONE 
 git push origin all-in-line -v

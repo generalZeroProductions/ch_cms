@@ -1,17 +1,17 @@
 @php
-    use Illuminate\Support\Facades\Log;
     $articleId = 'article_' . $column->id;
 @endphp
-
-<div class = 'row-contain'>
-    <div class = "row">
-        <div class="col-md-12" id = "{{ $articleId }}">
-            @include('articles.partials.title_text', [
-                'pageId' => $pageId,
-                'rowId' => $rowId,
-                'column' => $column,
-                'index'=>$index
-            ])
-        </div>
-    </div>
+@if (!$tabContent)
+    <div class = 'row row-contain'>
+    @else
+        <div class = "row tab-contain-one">
+@endif
+<div id = "{{ $articleId }}">
+    @include('articles.partials.title_text', [
+        'pageId' => $pageId,
+        'rowId' => $rowId,
+        'column' => $column,
+        'index' => $index,
+    ])
+</div>
 </div>

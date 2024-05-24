@@ -1,11 +1,22 @@
-function paginatePages() {
+function paginatePages(index) {
     const pagesDiv = document.getElementById("pagesDiv");
-    fetch("/display_all_pages")
-        .then((response) => response.json()) // Parse response as JSON
-        .then((data) => {
-            pagesDiv.innerHTML = data.html;
+    fetchRecords("/display_all_pages/"+index,pagesDiv);
+}
+
+function paginateInquiries(index) {
+    const inquiriesDiv = document.getElementById("inquiresDiv");
+    fetchRecords("/display_all_inquiries/"+index,inquiriesDiv);
+} 
+
+
+function fetchRecords(url,div) {
+    console.log('do we have a fetch')
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            div.innerHTML = data.html;
         })
-        .catch((error) => console.error("Error loading pages:", error));
+        .catch(error => console.error('Error loading inquiries:', error));
 }
 
 function viewSite(route) {
@@ -74,7 +85,22 @@ function removeRowWarning(jItem) {
             console.error("Error loading remove nav item:", error)
         );
 }
+function markContactRead(id){
+    formName = "mark_contact_read_"+id;
+writeNoReturn(formName);
 
+}
+function showInquiry(id){
+    var bodies = document.querySelectorAll('.contact-body')
+    bodies.forEach(body => {
+        body.style.display="none";
+        if(body.id==='inq_display'+id){
+            body.style.display="block";  
+        }  
+    });
+    var image = document.getElementById("read_contact"+id);
+    image.setAttribute("src", iconsAsset+'glasses_white.svg');
+}
 function authOn() {
     fetch("/admin/on", {
         method: "POST",

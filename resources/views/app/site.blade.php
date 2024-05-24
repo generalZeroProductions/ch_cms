@@ -34,15 +34,22 @@
             $pageId = $page->id;
             $route = $page->title;
         }
+        else{
+            if($urlParts[1]==="联系我们")
+            {
+               $pageId = '联系我们';
+            }
+        }
 
         $scrollTo = Session::get('scrollTo');
-        Session::forget('scrollTo');
+       
+       // Session::forget('scrollTo');
         $allRoutes = setAllRoutes();
 
     @endphp
 
     <div class="nav-fixed-top" id="main-navigation"></div>
-    <div id="headspace" style= "height:200"></div>
+    <div id="headspace"></div>
     @php
         //echo $scrollTo. ' how its set before nav';
     @endphp
@@ -51,7 +58,6 @@
     <script src="{{ asset('scripts/jquery-3.2.1.slim.min.js') }}"></script>
     <script src="{{ asset('scripts/popper.min.js') }}"></script>
     <script src="{{ asset('scripts/bootstrap.min.js') }}"></script>
-
 
 
 
@@ -64,9 +70,12 @@
         imagesAsset = "{{ asset('images/') }}/";
         fontsAsset = "{{ asset('fonts/') }}/";
         allRoutes = decodeRoutes('{{ $allRoutes }}');
-        renderNavigation('{{ $route }}')
-        renderFooter();
-        renderPageContent('{{ $pageId }}', '{{ $scrollTo }}');
+
+        renderAll('{{ $route }}','{{ $pageId }}', '{{ $scrollTo }}');
+       // renderNavigation('{{ $route }}');
+       
+       // renderPageContent('{{ $pageId }}', '{{ $scrollTo }}');
+       //  renderFooter();
         currentScreen = window.innerWidth;
         window.addEventListener('resize', function() {
             handleResize("{{ $route }}");

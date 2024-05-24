@@ -87,6 +87,7 @@ function duplicatePageName(title) {
 }
 
 function openMainModal(action, item, modalSize) {
+    console.log(item);
     preventScrolling();
     // add listenr on close to enable scrolling;
     var dialogElement = document.getElementById("main_modal_dialog");
@@ -103,9 +104,35 @@ function openMainModal(action, item, modalSize) {
         editSlidesForm(item);
     } else if (action === "deletePage") {
         deletePageWarning(item);
+    } else if (action === "deleteInquiry") {
+        deleteInqWarning(item);
     }
 }
 
+function deleteInqWarning(jItem) {
+    scrollBack =  window.scrollY
+    var item = JSON.parse(jItem);
+    console.log("ATDELETE");
+    document.getElementById("main_modal_label").innerHTML =
+        "您确定要删除此查询吗";
+    fetch("/delete_contact_form")
+        .then((response) => response.text())
+        .then((html) => {
+            if (modBody) {
+                modBody.innerHTML = html;
+                var inqId = document.getElementById("inq_id");
+                inqId.value = item.id;
+                var scrollDash = document.getElementById("scrollDash");
+                console.log(scrollDash);
+                scrollDash.value = scrollBack;
+            } else {
+                console.log("NO MOD BODY");
+            }
+        })
+        .catch((error) =>
+            console.error("Error loading  delete Contact item:", error)
+        );
+}
 function insertCreateRowForm(jItem) {
     var closeBtn = document.getElementById("close_main_modal");
     closeBtn.addEventListener("click", function (event) {
@@ -152,15 +179,14 @@ function insertCreateRowForm(jItem) {
 function deletePageWarning(jItem) {
     console.log(jItem);
     var item = JSON.parse(jItem);
-    console.log(item.title);
-    
+
     document.getElementById("main_modal_label").innerHTML = "确认删除页面";
     fetch("/delete_page_form")
         .then((response) => response.text())
         .then((html) => {
-            if(modBody){
-            modBody.innerHTML = html;
-            document.getElementById("page_id").value = item.id;
+            if (modBody) {
+                modBody.innerHTML = html;
+                document.getElementById("page_id").value = item.id;
             }
         })
         .catch((error) =>

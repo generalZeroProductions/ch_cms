@@ -19,11 +19,11 @@ function changeFooterSetup(type) {
 
 function switchToSingle() {
     var div = document.getElementById("site_footer");
-    writeAndRender("single_footer_form", "footer", div);
+    writeAndRender("single_footer_form", "footer", div,['footer']);
 }
 function switchToDouble() {
     var div = document.getElementById("site_footer");
-    writeAndRender("double_footer_form", "footer", div);
+    writeAndRender("double_footer_form", "footer", div,['footer']);
 }
 
 function footerFillout(formName, jItem) {
@@ -45,7 +45,7 @@ function footerFillout(formName, jItem) {
         var text = record.body;
         record.body = decodeHTML(text);
        });
-        writeAndRender("edit_footer_item", "footer", div);
+        writeAndRender("edit_footer_item", "footer", div,['footer']);
     };
 }
 
@@ -63,7 +63,7 @@ function newFooterFromSource(footer) {
 function newFooter() {
     var foot = {
         record: false,
-        id: null,
+        id: footIds,
         body: "new footer item",
         name: "editableDiv" + footIds,
         index: footerDataList.length,
@@ -84,9 +84,7 @@ function createEditableDiv(footer) {
     var footDiv = document.getElementById("footer_items_list");
     var editableDiv = document.createElement("div");
     editableDiv.contentEditable = "true";
-    // var htmBody = decodeURIComponent(footer.body);
      var getDecode = decodeHTML(footer.body);
-    // editableDiv.insertAdjacentHTML("beforeend",footer.body);
     editableDiv.innerHTML = getDecode;
     editableDiv.id = "editableDiv" + footer.id;
     editableDiv.className = "p-2";
@@ -104,8 +102,6 @@ function writeFooterBody(divId) {
     var div = document.getElementById(divId);
     var index = footerDataList.findIndex((item) => item.name === divId);
     footerDataList[index].body = div.innerHTML;
-    var show = document.getElementById("show_me_ht");
-    show.innerHTML = footerDataList[index].body;
     updateFooterData();
 }
 

@@ -1,6 +1,6 @@
 @php
 
-    $jNav = json_encode(['nav' => $nav, 'key' => $nav->index]);
+    $jNav = json_encode($nav);
     $divId = $nav->id . '_' . $nav->title;
     $navKey = Session::get('navKey');
 @endphp
@@ -16,12 +16,12 @@
             </a>
         </div>
         <div class="p-2 ">
-            <a style= "cursor: pointer;" onClick = "insertForm('edit_nav','{{ $jNav }}',  '{{ $divId }}')" class = "hide-editor">
+            <a style= "cursor: pointer;" onClick = "insertForm('edit_nav','{{ $jNav }}',  '{{ $divId }}')" class = "hide-editor-nav">
                 <img src={{ asset('icons/pen.svg') }} class="edit-nav-pen"></a>
         </div>
         @if ($canDelete)
             <div class="p-2 ">
-                <a style= "cursor: pointer;" class="hide-editor"
+                <a style= "cursor: pointer;" class="hide-editor-nav"
                     onClick = "insertForm('nav_delete','{{ $jNav }}', '{{ $divId }}')">
                     <img src={{ asset('icons/trash.svg') }} class = "edit-nav-trash"></a>
             </div>

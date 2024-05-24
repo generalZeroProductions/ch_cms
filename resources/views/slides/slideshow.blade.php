@@ -4,9 +4,7 @@
     if (Session::has('screenwidth')) {
         echo "<style>
         .banner_container {
-            width: " .
-            Session::get('screenwidth') .
-            "px;
+            width:100%;
             height: " .
             $slideHeight .
             "px;
@@ -27,62 +25,21 @@
 @endphp
 
 
+
+{{-- 
 @if (count($slideList) > 0)
 
-    <div id="{{ $slideBox }}">
+  --}}  <div id="{{ $slideBox }}"> 
         @if (count($slideList) > 1)
-
-            <div class="carousel slide" data-ride="carousel" id = "{{ $slideshowId }}">
-                <!-- Indicators -->
-                <ul class="carousel-indicators">
-                    @foreach ($slideList as $slide)
-                        @if ($index === 0)
-                            <li data-target="#{{ $slideshowId }}" data-slide-to="{{ $index }}" class="active">
-                            </li>
-                        @else
-                            <li data-target="#{{ $slideshowId }}" data-slide-to="{{ $index }}1"></li>
-                        @endif
-                        @php
-                            $index += 1;
-                        @endphp
-                    @endforeach
-
-                </ul>
-                @php
-                    $index = 0;
-                @endphp
-                <!-- The slideshow -->
-                <div class="carousel-inner">
-                    @foreach ($slideList as $slide)
-                        @if ($index === 0)
-                            <div class="carousel-item banner_container active">
-                            @else
-                                <div class="carousel-item banner_container">
-                        @endif
-                        <img src ="{{ asset('images/' . $slide->image) }} " class = "image-fluid">
-                        <div class="carousel-caption d-none d-md-block">
-                            <h2>{{ $slide->body }}</h2>
-                        </div>
-                </div>
-                @php
-                    $index += 1;
-                @endphp
-        @endforeach
-        <a class="carousel-control-prev" href="#{{ $slideshowId }}" data-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
-        </a>
-        <a class="carousel-control-next" href="#{{ $slideshowId }}" data-slide="next">
-            <span class="carousel-control-next-icon"></span>
-        </a>
-    </div>
-    </div>
+@include('slides.slide_carousel',['slideList'=>$slideList,'slideshowId'=>$slideshowId])
+   
 @else
     <div class = 'banner_container'>
         <img src ="{{ asset('images/' . $slideList[0]['image']) }} " class = "image-fluid">
     </div>
-@endif
-@endif
-@if ($editMode)
+@endif{{--
+@endif  --}}
+@if ($editMode && !$tabContent)
     @include('slides.forms.edit_slides_bar', [
         'slideBox' => $slideBox, 
         'pageId' => $pageId,
@@ -90,5 +47,5 @@
         'slideJson' => $slideJson,
     ])
 @endif
-</div>
-</div>
+
+</div> 

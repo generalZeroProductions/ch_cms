@@ -32,7 +32,7 @@
     height:24px;
 }
 .tab-title{
-    width:136px !important;
+    width:55% !important;
 }
 .tab-title::placeholder{
     color:white !important;

@@ -4,31 +4,29 @@ var subNavIndex = 0;
 
 function newSubnavFromSource(subItem, list) {
     var newItem = {
-        record:true,
+        record: true,
         id: subItem.id,
         title: subItem.title,
         route: subItem.route,
         index: subItem.index,
-        trash:subItem.title,
+        trash: subItem.title + subItem.index,
     };
     addSubItem(newItem, list);
 }
 function createSubNavItem() {
     var list = document.getElementById("dropdown_list");
     var newItem = {
-        record:false,
-        title: "新子菜单"+dropdownData.length,
-        route: '/',
-        index: dropdownData.length-1,
-        trash:"newItem"+dropdownData.length,
+        record: false,
+        title: "新子菜单" + dropdownData.length,
+        route: "/",
+        index: dropdownData.length - 1,
+        trash: "newItem" + dropdownData.length,
     };
 
     addSubItem(newItem, list);
 }
 function deleteSubNav(index) {
-    console.log(index);
     var deleted_sub = dropdownData[index];
-    console.log(deleted_sub);
     deletedSubs.push(deleted_sub);
     updateData = JSON.stringify(deletedSubs);
     var deletedSubssField = document.getElementById("deleted_subs");
@@ -42,33 +40,15 @@ function deleteSubNav(index) {
             }
         });
     }
-    var divToRemove = document.getElementById("sub_nav" + deleted_sub.trash);
+    var divToRemove = document.getElementById(deleted_sub.trash);
     divToRemove.remove();
     updateDropdownData();
 }
 
-// function deleteSlide(slide) {
-//     var delete_slide = slideShowItems[slide];
-//     deletedSlides.push(delete_slide);
-//     updateData = JSON.stringify(deletedSlides);
-//     var deletedSlidesField = document.getElementById("deleted_slides");
-//     deletedSlidesField.value = updateData;
-//     slideShowItems.splice(slide, 1);
-//     for (let i = slide; i < slideShowItems.length; i++) {
-//         if (slideShowItems[i].index > slide) {
-//             slideShowItems[i].index--;
-//         }
-//     }
-
-//     updateSlideData();
-
-//     showAllSlides();
-// }
-
 function addSubItem(newItem, list) {
     dropdownData.push(newItem);
     var subItemDiv = document.createElement("div");
-    subItemDiv.id = "sub_nav" + newItem.title;
+    subItemDiv.id = newItem.trash;
     var newDiv = document.createElement("div");
     newDiv.classList.add("d-flex");
     newDiv.classList.add("tab_li_spacer");
@@ -77,6 +57,7 @@ function addSubItem(newItem, list) {
     deleteLink.onclick = function () {
         deleteSubNav(newItem.index);
     };
+
     deleteLink.classList.add("trashcan");
     var img1 = document.createElement("img");
     img1.classList.add("link_icon_spacer");
@@ -101,15 +82,28 @@ function addSubItem(newItem, list) {
     var newSelect = document.createElement("select");
     newSelect.classList.add("form-control", "local-ctl");
     newSelect.id = "select_" + newItem.id;
+    var option = document.createElement("option");
+    option.value = "选择页面路由";
+    option.text = "选择页面路由";
+
+    newSelect.appendChild(option);
     allRoutes.forEach(function (page) {
         var option = document.createElement("option");
         option.value = page;
         option.text = page;
         if (page === newItem.route) {
-            option.selected = true; 
+            option.selected = true;
         }
         newSelect.appendChild(option);
     });
+    var option = document.createElement("option");
+    option.value = "联系我们";
+    option.text = "联系我们";
+    if (newItem.route=== "联系我们") {
+        option.selected = true;
+    }
+    newSelect.appendChild(option);
+
     newDiv2.appendChild(newSelect);
     subItemDiv.appendChild(newDiv2);
     list.appendChild(subItemDiv);
@@ -138,7 +132,6 @@ function updateSubnav(itemId, newData) {
     updateDropdownData();
 }
 
-
 function updateDropdownData() {
     var hiddenField = document.getElementById("dropDownData");
     hiddenField.value = JSON.stringify(dropdownData);
@@ -153,4 +146,3 @@ function updateDropdownData() {
         });
     }
 }
-

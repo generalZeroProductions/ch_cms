@@ -5,7 +5,7 @@ function articleFormRouter(formName, item) {
     }
 }
 
-function titleTextFillout(formName, jItem, body) {
+function titleTextFillout(formName, jItem) {
     var item = JSON.parse(jItem);
     editingDiv = null;
     addFieldAndValue(formName + "_title", item.article.title);
@@ -18,7 +18,7 @@ function titleTextFillout(formName, jItem, body) {
         console.log("LISTENING");
         updateHtmlDivString();
     });
-    // addFieldAndValue("htmlDiv", item.article.body);
+ 
     addFieldAndValue("article_id", item.article.id);
     addFieldAndValue("row_id", item.rowId);
     addFieldAndValue("page_id", item.pageId);
@@ -35,7 +35,7 @@ function titleTextFillout(formName, jItem, body) {
     sizeSelect.value = match.toString();
 
     sizeSelect.addEventListener("change", function () {
-        setTitleHeight(sizeSelect.value);
+        setTitleHeight(sizeSelect.value,'edit_text_article_title');
     });
     titleStyle.className = "form-control t" + match;
 
@@ -90,11 +90,11 @@ function titleTextFillout(formName, jItem, body) {
     });
 
     var div = document.getElementById("rowInsert" + item.rowId);
-
+  
     var sequence = "update_article^" + item.pageId + "^" + item.rowId;
     saveBtn.onclick = function () {
         if (verifySubmit(saveBtn)) {
-            writeAndRender(formName, sequence, div);
+            writeAndRender(formName, sequence, div,[]);
         }
     };
     updateHtmlDivString();
@@ -104,8 +104,8 @@ function removeHtmlTags(input) {
     return input.replace(/<\/?[^>]+(>|$)/g, "");
 }
 
-function setTitleHeight(selectedOption) {
-    var articleTitle = document.getElementById("edit_text_article_title");
+function setTitleHeight(selectedOption, field) {
+    var articleTitle = document.getElementById(field);
     var selectedClass = "form-control"; // Start with 'form-control'
     if (selectedOption === "1") {
         selectedClass += " t1";

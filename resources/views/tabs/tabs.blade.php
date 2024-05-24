@@ -1,6 +1,4 @@
 @php
-    use Illuminate\Support\Facades\Log;
-   
     $tabCol = 'tab_col_' . $rowId;
     $contentCol = 'content_col_' . $rowId;
     $contentBoxId = 'content_' . $rowId;
@@ -10,30 +8,30 @@
     $tagAnchor = 'tab_' . $rowId . $tab0->index;
 @endphp
 
-<div class="row-contain d-flex justify-content-start" id="{{ $rowId }}">
-    <div class="col-3" id = "{{ $tabCol }}">
-        @include('/tabs/tab_menu', [
-            'tabs' => $tabs,
-            'tab0' => $tab0,
-            'rowId' => $rowId,
-            'pageId' => $pageId,
-            'divId' => $tabCol,
-        ])
-    </div>
-    <div class="col-9 " id="{{ $contentCol }}">
-        @php
-            $i = 0;
-        @endphp
-        @foreach ($contents as $content)
-            <div id="contents{{ $i }}" class="tabContent_{{ $rowId }}">
-                {!! $content !!}
-            </div>
+    <div class="row" id="{{ $rowId }}">
+        <div class="col-3 tab-menu" id = "{{ $tabCol }}">
+            @include('/tabs/tab_menu', [
+                'tabs' => $tabs,
+                'tab0' => $tab0,
+                'rowId' => $rowId,
+                'pageId' => $pageId,
+                'divId' => $tabCol,
+            ])
+        </div>
+        <div class="col-9 " id="{{ $contentCol }}">
             @php
-                $i++;
+                $i = 0;
             @endphp
-        @endforeach
+            @foreach ($contents as $content)
+                <div id="contents{{ $i }}" class="tabContent_{{ $rowId }}">
+                    {!! $content !!}
+                </div>
+                @php
+                    $i++;
+                @endphp
+            @endforeach
+        </div>
     </div>
-</div>
 
 
 <div class = 'run-scripts'>
@@ -41,4 +39,3 @@
         changeTab('{{ $rowId }}', '{{ $tagAnchor }}', '{{ $tab0Index }}', false);
     </script>
 </div>
-

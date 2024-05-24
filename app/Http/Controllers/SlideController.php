@@ -52,6 +52,7 @@ class SlideController extends Controller
     }
     public function updateSlideshow(Request $request)
     {
+        Log::info($request);
         $slideData = json_decode($request->data);
         foreach ($slideData as $slide) {
             if (isset($slide->record)) {

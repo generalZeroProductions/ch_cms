@@ -48,7 +48,7 @@ function imageFormFillout(formName_sent, jItem) {
         "img_edit^" + item.pageId + "^" + item.rowId + "^" + item.column.id;
     var btn = document.getElementById("img_edit_btn");
     btn.onclick = function () {
-        writeAndRender(formName, sequence, rowDiv);
+        writeAndRender(formName, sequence, rowDiv,[]);
     };
 }
 

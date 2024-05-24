@@ -32,10 +32,10 @@ function editTabsSetup(formName, jItem) {
     tabData = [];
     deletedTabs = [];
     var contentCol = document.getElementById("content_col_" + item.rowId);
-    contentCol.className = "col-6";
+    contentCol.className = "col-7";
     var tabCol = "tab_col_" + item.rowId;
     var div = document.getElementById(tabCol);
-    div.className = "col-6";
+    div.className = "col-5";
     addFieldAndValue("row_id", item.rowId);
     var form = document.getElementById(formName);
     var lists = form.querySelectorAll("#tab_list");
@@ -58,7 +58,7 @@ function editTabsSetup(formName, jItem) {
             else{
                 console.log('no render DIV -- ITEM was '+ item.rowId);
             }
-            writeAndRender(formName, sequence, renderDiv);
+            writeAndRender(formName, sequence, renderDiv,['tabs']);
         }
     };
     subNavIndex = item.tabs.length;
@@ -73,6 +73,7 @@ function editTabsSetup(formName, jItem) {
 function createTabItem() {
     var list = document.getElementById("tab_list");
     var newItem = {
+        record:false,
         id: null,
         title: "新选项卡" + tabData.length,
         route: "no_tab_assigned",
@@ -84,6 +85,7 @@ function createTabItem() {
 function newTabFromSource(tab, listDiv) {
     console.log("making_tab " + tab.title);
     var newTab = {
+        record:true,
         id: tab.id,
         title: tab.title,
         route: tab.route,
@@ -118,8 +120,8 @@ function addTab(newTab, listDiv) {
     newDiv.id = "tab_div" + newTab.trash;
     newDiv.classList.add("row");
     newDiv.classList.add("tab_li_spacer");
-    var deleteLink = document.createElement("a");
 
+    var deleteLink = document.createElement("a");
     deleteLink.onclick = function () {
         deleteTab(newTab.index);
     };
@@ -129,11 +131,14 @@ function addTab(newTab, listDiv) {
     img1.src = iconsAsset + "trash.svg";
     deleteLink.appendChild(img1);
     newDiv.appendChild(deleteLink);
+
+
     var newInput = document.createElement("input");
     newInput.setAttribute("type", "text");
     newInput.id = "text_" + newTab.id;
     newInput.value = newTab.title;
     newInput.classList.add("tab-title");
+    newInput.setAttribute("autocomplete", "off");
     newDiv.appendChild(newInput);
     listDiv.appendChild(newDiv);
     var img = document.createElement("img");
@@ -145,7 +150,7 @@ function addTab(newTab, listDiv) {
     newSelect.id = "select_" + newTab.id;
     var defOption = document.createElement("option");
     defOption.value = "select a page";
-    defOption.text = "select a page";
+    defOption.text = "选择一个页面";
     newSelect.appendChild(defOption);
     allRoutes.forEach(function (page) {
         var option = document.createElement("option");
@@ -187,8 +192,7 @@ function updateTab(tabId, newData) {
 
 function updateTabData() {
     var hiddenField = document.getElementById("tabData");
-    var display = document.getElementById("dataUpdate");
-    display.innerHTML = JSON.stringify(tabData);
+
     hiddenField.value = JSON.stringify(tabData);
 
     var trash = document.querySelectorAll(".trashcan");

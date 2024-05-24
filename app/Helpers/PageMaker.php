@@ -11,16 +11,18 @@ class PageMaker
 
     public function pageHTML($page, $tabContent, $tabRow)
     {
+        
         Log::info('@ PageMaker');
         if (!isset($page)) {
-            Log::info('SHOULD be no page asigned');
+    
             $htmlString = View::make('app.no_page_for_route');
             return $htmlString;
         }
+       
         $articleMaker = new ArticleMaker();
         $editMode = Session::get('editMode');
         $backColor = 'white';
-        if ($tabContent) {
+        if ($editMode && $tabContent) {
             $backColor = 'rgb(205, 207, 216)';
         }
 
@@ -57,7 +59,7 @@ class PageMaker
                 } else {
 
                     if ($tabContent) {
-                        $htmlString .= View::make('app.cant_display_tabs');
+                        $htmlString .= View::make('tabs.cant_display_tabs');
                     } else {
                         $tabMaker = new TabMaker();
                         $htmlString .= $tabMaker->renderTabRow($page, $row, $tabContent);

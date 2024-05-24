@@ -110,6 +110,7 @@ class ArticleMaker
             'slideList' => $slides[0],
             'slideJson' => $slides[1],
             'slideHeight' => $row->styles['height'],
+            'tabContent'=>$tabContent
         ])->render();
 
         if ($editMode && !$tabContent) {

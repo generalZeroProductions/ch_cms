@@ -11,18 +11,18 @@
 {{-- @include('app.edit_mode.auth_on_off') --}}
 <?php
 
-//echo 'return = ' . Session::get('returnPage') . '///    tab = ' . Session::get('tabId') . '/// build =' . Session::get('buildMode') . '///edit = ' . Session::get('editMode') . '///screen =' . Session::get('screenwidth') . '///scroll =' . Session::get('scrollTo') . '///key =' . Session::get('navKey');
+echo 'return = ' . Session::get('returnPage') . '///    tab = ' . Session::get('tabId') . '/// build =' . Session::get('buildMode') . '///edit = ' . Session::get('editMode') . '///screen =' . Session::get('screenwidth') . '///scroll =' . Session::get('scrollTo') . '///key =' . Session::get('navKey');
 ?>
 
 <div class ='edit-container ' id = "edit_mode_contain">
-    <div class="row d-flex justify-content-end align-items-center rounded-box">
+    <div class="row d-flex align-content-center rounded-box">
         <div class=col-7>
             @if ($editMode)
                 @include('forms.logo_editor')
             @endif
         </div>
         <div class=col-5>
-            <div class= "row flex-d justify-content-end" style = "padding-right:12px; padding-bottom:52px">
+            <div class= "row flex-d justify-content-end align-content-center" style = "padding-right:12px; padding-bottom:52px">
                 @if ($buildMode)
                     <button class="btn btn-primary btn-top-console " onClick="viewSite('{{ $returnLoc }}')">查看网站
                         <img src="{{ asset('icons/view.svg') }}" class="top-console-icon-view">
@@ -60,7 +60,7 @@
         height: 50px;
         margin-left: 10px;
         margin-right: 10px;
-        margin-top: 8px;
+        margin-top: 18px;
         display: block;
         font-size: large !important;
         font-weight: 600 !important;
@@ -91,7 +91,6 @@
     }
 
     .edit-container {
-       
         padding-top: 5px;
         padding-right: 5px;
         padding-left: 5px;

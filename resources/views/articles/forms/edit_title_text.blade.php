@@ -95,7 +95,7 @@
 
       <div class="d-flex justify-content-end">
           <div class="p-2 ">
-              <button type="btn " id="cancel_article_edit" class="btn btn-secondary  article-button">
+              <button onClick="location.reload()" type="btn " class="btn btn-secondary  article-button">
                   <img src="{{ asset('icons/close_empty.svg') }}" class = "article-button-icon">
               </button>
           </div>

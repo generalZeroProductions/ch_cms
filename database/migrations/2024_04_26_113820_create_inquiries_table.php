@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('body');
             $table->string('type');
             $table->string('contact');
+            $table->boolean('read');
             $table->timestamps();
         });
 

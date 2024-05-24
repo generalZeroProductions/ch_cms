@@ -2,7 +2,6 @@
     $routeSelectId = 'select_' . $rowId . $tabId;
     $saveRoute = 'save_' . $rowId . $tabId;
     $formName = 'form_asign_tab' . $rowId . $tabId;
-    echo 'rowId here' . $rowId;
 @endphp
 
 <div class="center-page site-blue">

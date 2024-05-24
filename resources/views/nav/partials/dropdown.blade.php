@@ -9,7 +9,7 @@
       </a>
       <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           @foreach ($subs as $subNav)
-              <a class="dropdown-item" href="/{{$subNav->route}}">{{ $subNav->title }}</a>
+              <a class="dropdown-item" href="{{$subNav->route}}">{{ $subNav->title }}</a>
           @endforeach
       </div>
   </li>

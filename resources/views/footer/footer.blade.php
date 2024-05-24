@@ -1,23 +1,23 @@
 
 
 @if($editMode)
-@include('app.footer_split_select', ['footType'=>$footType])
+@include('footer.footer_split_select', ['footType'=>$footType])
 @endif
 <div class="container-fluid navbar-light bg-light footer">
 @if ($footType === 'single')
     <div class="row d-flex justify-content-center" id="footDiv3">
     <div class= "col12">
-        @include('app.foot_column', ['items' => $foots3, 'divId'=>'footDiv3'])
+        @include('footer.foot_column', ['items' => $foots3, 'divId'=>'footDiv3'])
         </div>
     </div>
 @else
     <div class="container ">
         <div class="row">
             <div class="col-6" id = "footDiv1" >
-                @include('app.foot_column', ['items' => $foots1,'divId'=>'footDiv1'])
+                @include('footer.foot_column', ['items' => $foots1,'divId'=>'footDiv1'])
             </div>
             <div class="col-6" id="footDiv2">
-                @include('app.foot_column', ['items' => $foots2,'divId'=>'footDiv2'])
+                @include('footer.foot_column', ['items' => $foots2,'divId'=>'footDiv2'])
             </div>
         </div><!-- Content here -->
     </div>

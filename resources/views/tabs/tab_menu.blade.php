@@ -3,7 +3,7 @@
     $jTabs = json_encode(['pageId' => $pageId, 'tabs' => $tabs, 'rowId' => $rowId]);
 @endphp
 
-<div style= "height:0" id="{{ $scrollTabs }}"></div>
+<div style= "height:0" id="{{ $scrollTabs }}">
 @if ($editMode)
     <div style= "height:44"></div>
     <div class="tabs-editor-spacing">
@@ -28,7 +28,7 @@
         @endforeach
     </ul>
 </div>
-
+</div>
 
 <div class = 'run-scripts'>
     <script>

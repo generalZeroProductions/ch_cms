@@ -5,6 +5,7 @@ function setHeadSpace(){
     var mainNav = document.getElementById("site_nav_bar");
     var headSpaceDiv = document.getElementById("headspace");
     mainNavBottom = 0;
+    console.log("calling headSpace");
     if(mainNav)
     {console.log('found nav');
     var  mainNavBottom = mainNav.getBoundingClientRect().bottom + 24;
@@ -19,6 +20,7 @@ function setHeadSpace(){
     }
     headSpace = mainNavBottom;
     headSpaceDiv.style.height = `${mainNavBottom}px`;
+ 
 }
 
 function preventScrolling() {

@@ -60,6 +60,10 @@ Route::get('/login', function () {
     return View::make('console.login');
 })->name('login');
 
+// Route::get('/contact', function () {
+//     return View::make('console.contact');
+// })->name('contact');
+Route::post('/delete_contact', [ConsoleController::class, 'deleteContact']);
 Route::get('/dashboard', function () {
     return View::make('console.dashboard');
 })->name('dashboard');
@@ -67,11 +71,19 @@ Route::get('/dashboard', function () {
 Route::get('/pagination_form', function () {
     return View::make('console.page_pagination_form');
 })->name('paginationForm');
+Route::get('/delete_contact_form', function () {
+    return View::make('app.edit_mode.delete_inq_form');
+})->name('paginationForm');
 
-Route::get('/display_all_pages', [ConsoleController::class, 'displayAllPages'])->name('displayAllPages');
+Route::get('/display_all_pages/{index}', [ConsoleController::class, 'displayAllPages'])->name('displayAllPages');
+Route::get('/display_all_inquiries/{index}', [ConsoleController::class, 'displayAllInquiries']);
+
 Route::post('console/register', [ConsoleController::class, 'createUser']);
 Route::post('/console/login', [ConsoleController::class, 'login']);
 Route::post('page_edit/create_new/{returnTo}', [PageController::class, 'createPage'])->name('createPage');
+
+
+
 
 //ARTICLES
 // Route::get('/insert_update_article', function () {
@@ -183,6 +195,7 @@ Route::get('/session/{newLocation?}', function ($newLocation = null) {
 })->name('sessionSet');
 
 Route::get('/{page?}', function ($page = null) {
+    Log::info('at root looking for: '.$page);
     return view('app.site', ['page' => $page]);
 })->name('root');
 
@@ -194,14 +207,17 @@ Route::get('/site2/site', function () {
     return View::make('app.site2');
 })->name('site2');
 
-Route::get('/insert_/insert_form/{formName}', function ($formName) {
-    Log::info('INSERT_: ' . $formName);
+Route::get('/insert_/insert_form/{sequence}', function ($sequence) {
+    $sData = explode('^', $sequence);
+    $formName = $sData[0];
+    Session::put('scrollTo', 'rowInsert'.$sData[count($sData)-1]);
     if (strpos($formName, 'nav') !== false) {
         log::info($formName . 'requested ');
         $htmlResponse = NavController::insert($formName);
         return $htmlResponse;
     }if (strpos($formName, 'img') !== false) {
-        $htmlResponse = ImageController::insert($formName);
+        $imgFormName = $sData[0].'^'.$sData[1];
+        $htmlResponse = ImageController::insert($imgFormName);
         return $htmlResponse;
     }if (strpos($formName, 'tab') !== false) {
         $htmlResponse = TabController::insert($formName);
@@ -216,7 +232,8 @@ Route::get('/insert_/insert_form/{formName}', function ($formName) {
     } if (strpos($formName, 'footer') !== false) {
         $htmlResponse = PageController::insert($formName);
         return $htmlResponse;
-    } else {
+    }
+     else {
         // Handle other cases here if needed
         return response()->json(['error' => 'Invalid form request'], 400);
     }
@@ -248,7 +265,12 @@ Route::get('/render_/render_content/{render}', function ($render) {
         Log::info('to footer render');
         $htmlResponse = PageController::render($render);
         return $htmlResponse;
-    }else {
+    }elseif (strpos($render, '联系我们') !== false) {
+        Log::info('to contacts page render');
+        $htmlResponse = ConsoleController::render($render);
+        return $htmlResponse;
+    }
+    else {
       
        return response()->json(['error' => 'Invalid form request'], 400);
     }
@@ -296,5 +318,13 @@ Route::post('/write_/write_form', function (Request $request) {
         Log::info('form name has footer');
         $pageCtl = new PageController();
         return $pageCtl->write($request);
+    } elseif (strpos($request->form_name, 'contact') !== false) {
+        Log::info('form name has contact');
+        $consoleCtl = new ConsoleController();
+        return $consoleCtl->write($request);
+    }elseif (strpos($request->form_name, 'thankyou') !== false) {
+        Log::info('form name has contact');
+        $consoleCtl = new ConsoleController();
+        return $consoleCtl->write($request);
     }else {}
 })->name('write');

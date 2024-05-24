@@ -2,9 +2,11 @@
     $articleId1 = 'article_1' . $rowId;
     $articleId2 = 'article_2' . $rowId;
 @endphp
-
-<div class = 'row-contain'>
-    <div class = 'row'>
+@if(!$tabContent)
+<div class = 'row row-contain'>
+@else
+<div class = 'row tab-contain'>
+@endif
         <div class="col-md-6" id = "{{ $articleId1 }}">
             @include('articles.partials.title_text', [
                 'pageId' => $pageId,
@@ -24,4 +26,4 @@
             ])
         </div>
     </div>
-</div>
+

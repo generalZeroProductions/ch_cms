@@ -1,7 +1,7 @@
 @php
     use Illuminate\Support\Facades\Log;
     $jNav = json_encode($nav);
-    $jDrop = json_encode(['nav' => $nav, 'sub' => $subs, 'key' => $nav->index]);
+    $jDrop = json_encode(['nav' => $nav, 'sub' => $subs]);
     $divId = $nav->id . '_' . $nav->title;
     $navKey = Session::get('navKey');
 @endphp
@@ -21,17 +21,17 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             @foreach ($subs as $subNav)
-                <a class="dropdown-item"href="/{{ $subNav->route }}">{{ $subNav->title }}</a>
+                <a class="dropdown-item"href="{{ $subNav->route }}">{{ $subNav->title }}</a>
             @endforeach
         </div>
     </div>
-    <div class="p-2 hide-editor">
-        <a style= "cursor: pointer;" class="hide-editor"
+    <div class="p-2 hide-editor-nav">
+        <a style= "cursor: pointer;" 
             onClick = "insertForm('dropdown_editor_nav','{{ $jDrop }}',  '{{ $divId }}')">
             <img src={{ asset('icons/pen.svg') }} class="edit-nav-pen"></a>
     </div>
-    <div class="p-2 hide-editor">
-        <a style= "cursor: pointer;" class="hide-editor"
+    <div class="p-2 hide-editor-nav">
+        <a style= "cursor: pointer;" 
             onClick = "insertForm( 'nav_delete','{{ $jNav }}', '{{ $divId }}')">
             <img src={{ asset('icons/trash.svg') }} class = "edit-nav-trash"></a>
     </div>

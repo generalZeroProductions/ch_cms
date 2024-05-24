@@ -13,7 +13,7 @@ class NavController extends Controller
 {
     public static function insert($formName)
     {
-        Log::info('nav insert calling: ' . $formName);
+      
         if ($formName === 'edit_nav') {
             $htmlString = View::make('nav.forms.edit_standard_form')->render();
             return new Response($htmlString, 200, ['Content-Type' => 'text/html']);
@@ -32,7 +32,7 @@ class NavController extends Controller
     }
     public function write(Request $request)
     {
-        Log::info('At Write: ' . $request->form_name);
+      
         if ($request->form_name === 'nav_delete') {
             $this->deleteNavItem($request);
         }
@@ -52,7 +52,7 @@ class NavController extends Controller
     }
     public static function render($render)
     {
-        Log::info('@render nav request');
+      
         $data = explode('^', $render);
         if ($data[0] === 'navigation') {
             $navMake = new NavMaker();
@@ -96,6 +96,7 @@ class NavController extends Controller
 
     public function deleteNavItem(Request $request)
     {
+        Log::info($request);
         $otherNav = Navigation::whereIn('type', ['nav', 'drop'])->get();
 
         if (!$otherNav->isEmpty()) {
@@ -120,17 +121,22 @@ class NavController extends Controller
 
     public function updateDropdown(Request $request)
     {
-        Log::info('update nav request');
-        Log::info($request);
+      Log::info('UPDATing FROPDOSN');
         $reqData = json_decode($request->data);
         $dropNav = Navigation::findOrFail($request->item_id);
         $dropNav->title = $request->title;
         $dropNav->save();
         foreach ($reqData as $sub) {
-            if (isset($sub->id)) {
+            if ($sub->record) {
+                $route = $sub->route;
+                if($sub->route==='选择页面路由')
+                {
+                    Log::info('route was nada');
+                    $route = '/';
+                }
                 $record = Navigation::findOrFail($sub->id);
                 $record->index = $sub->index;
-                $record->route = $sub->route;
+                $record->route = $route;
                 $record->title = $sub->title;
                 $record->save();
             } else {
@@ -139,13 +145,14 @@ class NavController extends Controller
                     'route' => $sub->route,
                     'title' => $sub->title,
                     'parent' => $dropNav->id,
+                    'index'=>$sub->index
                 ]);
             }
         }
         if (isset($request->deleted)) {
             $deleteData = json_decode($request->deleted);
             foreach ($deleteData as $delete) {
-                if (isset($delete->id)) {
+                if ($delete->record) {
                     $remove = Navigation::findOrFail($delete->id);
                     $remove->delete();
                 }
@@ -155,9 +162,6 @@ class NavController extends Controller
 
     public function addDropdown(Request $request)
     {
-        Log::info('add drop request');
-        Log::info($request);
-
         $otherNav = Navigation::whereIn('type', ['nav', 'drop'])->get();
         $dropCount = 1;
 
@@ -177,7 +181,6 @@ class NavController extends Controller
             'type' => 'drop',
             'index' => $request->key + 1,
             'title' => '新的下拉菜单' . $dropCount,
-            'route' => null,
         ]);
 
         for ($i = 0; $i < 3; $i++) {

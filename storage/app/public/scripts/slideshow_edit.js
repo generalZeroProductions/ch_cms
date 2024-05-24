@@ -8,15 +8,25 @@ function slideHeightListen(rowId, height) {
     forms[0].addEventListener("submit", function (event) {
         preventDefault();
     });
+    var btn = document.getElementById('submit_slide_height_btn');
+    btn.addEventListener("click", function (event) {
+        updateSlideHeight(slideHeight, rowId);
+        btn.classList.add("disabled");
+        btn.setAttribute("disabled",'true');
+    });
     var slideHeight = document.getElementById("slide_height" + rowId);
     slideHeight.value = height;
     slideHeight.addEventListener("input", function (event) {
         warnUnusable(slideHeight, rowId);
+        btn.classList.remove("disabled");
+        btn.removeAttribute("disabled");
     });
     slideHeight.addEventListener("focus", function (event) {
         function handleKeyDown(event) {
             if (event.key === "Enter") {
                 updateSlideHeight(slideHeight, rowId);
+                btn.classList.add("disabled");
+                btn.setAttribute("disabled",'true');
             }
         }
         document.addEventListener("keydown", handleKeyDown);
@@ -24,6 +34,7 @@ function slideHeightListen(rowId, height) {
     slideHeight.addEventListener("blur", function (event) {
         document.removeEventListener("keydown", handleKeyDown);
     });
+   
 }
 
 function editSlidesForm(jItem) {

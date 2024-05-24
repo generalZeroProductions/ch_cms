@@ -1,19 +1,4 @@
-function renderNavigation(pageName) {
-    var div = document.getElementById("main-navigation");
-    var sequence = "navigation^" + pageName;
-    renderToDiv(div, sequence)
-        .then(() => {
-            setHeadSpace(); 
-            var editLogo = document.getElementById("logo_thumb");  
-            if(editLogo)
-            {
-                logoFormFillout(null);
-            }
-        })
-        .catch((error) => {
-            console.error("Error refreshing page:", error);
-        });
-}
+
 
 function filloutNavForms(formName, jItem) {
     var form = document.getElementById(formName);
@@ -28,6 +13,10 @@ function filloutNavForms(formName, jItem) {
         addFieldAndValue(formName + "_title", item.nav.title);
         addFieldAndValue("key", item.key);
         var route_select = document.getElementById("route_select");
+        var option = document.createElement("option");
+        option.value = "选择页面路由";
+        option.text = "选择页面路由";
+        route_select.appendChild(option);
         allRoutes.forEach(function (page) {
             var option = document.createElement("option");
             option.value = page;
@@ -37,28 +26,36 @@ function filloutNavForms(formName, jItem) {
             }
             route_select.appendChild(option);
         });
+        var option = document.createElement("option");
+        option.value = "联系我们";
+        option.text = "联系我们";
+        if (item.route === "联系我们") {
+            option.selected = true;
+        }
+        route_select.appendChild(option);
         var div = document.getElementById("main-navigation");
         var sequence = "navigation^" + item.key;
         setupFormSubmit(formName, sequence, div);
     }
     if (formName == "nav_delete") {
+        console.log(jItem);
         var item = JSON.parse(jItem);
-        addFieldAndValue("item_id", item.nav.id);
-        addFieldAndValue("key", item.key);
+        addFieldAndValue("item_id", item.id);
+
         var deleteBtn = document.getElementById("delete_nav_btn");
         var div = document.getElementById("main-navigation");
-        var sequence = "navigation^" + item.key;
+        var sequence = "navigation^" + item.id;
         deleteBtn.onclick = function () {
             writeAndRender("nav_delete", sequence, div);
         };
         var cancelBtn = document.getElementById("cancel_delete_btn");
         cancelBtn.onclick = function () {
-            renderNavigation(item.key);
+            renderNavigation(item.index);
         };
     }
 
     if (formName === "add_nav") {
-
+        console.log(jItem);
         addFieldAndValue("standard_key", jItem);
         addFieldAndValue("dropdown_key", jItem);
         var addDiv = document.getElementById("add_at" + jItem);
@@ -81,7 +78,6 @@ function filloutNavForms(formName, jItem) {
     }
 
     if (formName === "dropdown_editor_nav") {
-       
         var item = JSON.parse(jItem);
         var div = document.getElementById("main-navigation");
         var sequence = "navigation^" + item.key;

@@ -6,7 +6,7 @@
     <input type="hidden" name = "form_name" value = "edit_footer_item">
 </form>
 <div class = "container">
-    @include('app.footer_item_edit_bar')
+    @include('footer.footer_item_edit_bar')
     <div class = "row">
 
         <div class=col-12 id="footer_items_list">
@@ -14,17 +14,16 @@
         <br>
     </div>
 
-<div class = "row" id= "show_me_ht"></div>
-    <div class="row">
+    <div class="row d-flex align-content-end" style="margin-top:6px;">
         <div class = "col-6  foot-ctls-left" id="delete_footer">
-            <a style="cursor:pointer" onclick="deleteFooter()"> <img src="{{ asset('icons/trash.svg') }}"></a>
-            <span class="add-label"> remove a footer</span>
+            <a style="cursor:pointer" onclick="deleteFooter()"> <img src="{{ asset('icons/trash.svg') }}" class ="foot-trash-icon"></a>
+            <span class="add-label"> 删除新行</span>
         </div>
 
 
         <div class = "col-6 foot-ctls-right">
-            <span class="add-label"> add a footer</span>
-            <a style="cursor:pointer" onclick="newFooter()"> <img src="{{ asset('icons/add.svg') }}"></a>
+            <span class="add-label"> 添加新行</span>
+            <a style="cursor:pointer" onclick="newFooter()"> <img src="{{ asset('icons/add.svg') }}"class ="foot-trash-icon"></a>
         </div>
 
     </div>
@@ -46,5 +45,8 @@
 
     .add-label {
         padding-right: 8px;
+    }
+    .foot-trash-icon{
+        height:22px;
     }
 </style>

@@ -12,11 +12,14 @@
     </div>
 @endif
 @foreach ($items as $item)
-<p class = "footer-line">
+<div >
+<p >
 @php
  echo htmlspecialchars_decode($item->body)
 @endphp
 </p>
+
+</div>
 @endforeach
 <style>
 .footer-line{

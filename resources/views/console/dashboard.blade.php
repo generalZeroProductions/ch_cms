@@ -1,11 +1,32 @@
 @php
-Session::put('returnPage','');
+    use App\Models\ContentItem;
+    use Illuminate\Support\Facades\Session;
+    Session::forget('returnPage');
+    $contact = ContentItem::where('type', 'contact')->first();
+    $thankyou = ContentItem::where('type', 'thankyou')->first();
+    $cStyle = $contact->styles['title'];
+    $tStyle = $thankyou->styles['title'];
+    $scroll = 0;
+    if (Session::has('scrollDash')) {
+        $scroll = Session::get('scrollDash');
+        Session::forget('scrollDash');
+    }
+    $inqIndex = 0;
+    if (Session::has('inqIndex')) {
+        $inqIndex = Session::get('inqIndex');
+        Session::forget('inqIndex');
+    }
+    $pageIndex = 0;
+    if (Session::has('pageIndex')) {
+        $pageIndex = Session::get('inqIndex');
+        Session::forget('pageIndex');
+    }
+
 @endphp
 
 @extends('console.console')
 @section('content')
     @php
-        use Illuminate\Support\Facades\Session;
         Session::put('buildMode', false);
     @endphp
     <br>
@@ -42,6 +63,7 @@ Session::put('returnPage','');
                 </form>
             </div>
         </div>
+        {{-- start with pages  layout --}}
         <hr>
         <div class = "row ">
             <div class=col-md-4>
@@ -57,16 +79,63 @@ Session::put('returnPage','');
                 <p class='page_list_heading'>删除页面</p>
             </div>
         </div>
-        <div id="pagesDiv">
+        <div id="pagesDiv"> </div>
+
+        <br>
+        <br>
+        <div class = "row d-flex rounded-box">
+            <div class="col-8 d-flex justify-content-center align-content-center" style="padding-top:8px">
+                <h4>询问</h4>
+            </div>
+            <div class="col-2">
+                <button class="btn btn-outline-primary btn-top-console "
+                    onClick=" editContactSetup('contact','{{ $cStyle }}')">
+                    配置查询页面
+                </button>
+            </div>
+
+            <div class="col-2"> <button class="btn btn-outline-primary btn-top-console"
+                    onClick=" editContactSetup('thankyou','{{ $tStyle }}') ">
+                    配置感谢页面
+                </button>
+            </div>
+
+        </div>
+        <div id="contact_editor" style="display:none">
+            @include('console.edit_contact_body')
+        </div>
+        <div id="thankyou_editor" style="display:none">
+            @include('console.edit_thankyou')
+        </div>
+        <br>
+        <hr>
+
+        {{-- start with inquires layout --}}
+        <div class = "row ">
+            <div class=col-md-4>
+                <p class='page_list_heading'>Date </p>
+            </div>
+            <div class=col-md-4>
+                <p class='page_list_heading'>sender </p>
+            </div>
+            <div class=col-md-2 style="text-align:center">
+                <p class='page_list_heading'>read </p>
+            </div>
+            <div class=col-md-2 style="text-align:center">
+                <p class='page_list_heading'>delete</p>
+            </div>
+        </div>
+
+        <div id="inquiresDiv">
+
         </div>
     </div>
-
 @endsection
 @include('forms.main_modal')
 <style>
     .btn-top-console {
         height: 50px;
-        width:150px;
+        width: 150px;
         margin-left: 10px;
         margin-right: 10px;
         display: block;
@@ -86,17 +155,17 @@ Session::put('returnPage','');
 
     .rounded-box {
         border-radius: 8px;
-        /* Adjust the value to control the roundness of the corners */
         padding: 2px;
-        /* Adjust the value to control the padding */
         border: 2px solid #ccc;
-        /* Optional: add a border for better visibility */
     }
 </style>
 
 <script>
     window.onload = function() {
         scriptAsset = "{{ asset('scripts/') }}/";
-        paginatePages();
+        iconsAsset = "{{ asset('icons/') }}/";
+        paginatePages('{{ $inqIndex }}');
+        paginateInquiries('{{ $inqIndex }}');
+        window.scrollTo(0, 0);
     };
 </script>

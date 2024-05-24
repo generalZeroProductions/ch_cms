@@ -90,7 +90,7 @@ function populateRoutesNoTab(pageId,rowId, tabIndex, tabId) {
         useRoute.value = routeSelect.value;
         var renderDiv = document.getElementById('rowInsert'+rowId);
         var sequence = "tab_menu^" + rowId + "^"+pageId;
-        writeAndRender(formName,sequence,renderDiv)
+        writeAndRender(formName,sequence,renderDiv,['tabs'])
        
     });
 }

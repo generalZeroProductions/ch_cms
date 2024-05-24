@@ -1,8 +1,5 @@
 @php
     use Illuminate\Support\Facades\Log;
-    if (Session::has('key')) {
-        echo 'key ' . Session::get('key');
-    }
     $nextDrop = 0;
 @endphp
 
@@ -22,17 +19,16 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
         <ul class="navbar-nav ml-auto">
-            @foreach ($navItems as $key => $nav)
+            @foreach ($navItems as $nav)
                 @if ($nav->type === 'nav')
                     @if ($editMode)
                         @include('nav.partials.nav_item_edit_mode', [
                             'nav' => $nav,
-                            'canDelete' => $canDelete,
-                            'key'=>$key
+                            'canDelete' => $canDelete
                         ])
                         @include('nav.partials.new_nav_item')
                     @else
-                        @include('nav.partials.nav_item', ['nav' => $nav, 'key'=>$key])
+                        @include('nav.partials.nav_item', ['nav' => $nav])
                     @endif
                 @endif
                 @if ($nav->type === 'drop')
@@ -40,15 +36,13 @@
                         @include('nav.partials.dropdown_edit_mode', [
                             'nav' => $nav,
                             'canDelete' => $canDelete,
-                            'subs' => $dropData[$nextDrop],
-                            'key' => $key,
+                            'subs' => $dropData[$nextDrop]
                         ])
-                        @include('nav.partials.new_nav_item')
+                        @include('nav.partials.new_nav_item',['nav'=>$nav])
                     @else
                         @include('nav.partials.dropdown', [
                             'nav' => $nav,
-                            'subs' => $dropData[$nextDrop],
-                            'key' => $key,
+                            'subs' => $dropData[$nextDrop]
                         ])
                     @endif
                     @php

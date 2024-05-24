@@ -34,7 +34,10 @@
                 </form>
                 <input type = "text" class = "form-control slide-height-input " id="{{ $changeHeightId }}"
                     autocomplete="off" value="{{ $slideHeight }}" name ="height">
-                <label class = "slide-height-label">像素</label>
+                <label  class = "pixel-label">像素</label>
+                <button id="submit_slide_height_btn" class = "btn btn-primary slide-btn disabled" disabled>
+                <img src = "{{asset('/icons/save.svg')}}" style="height:22px">
+                </button>
             </div>
         </div>
         <div class="col-4 green-back">
@@ -51,6 +54,14 @@
 
 </div>
 <style>
+
+.slide-btn{
+    display:flex;
+    margin-top:8px;
+    width:36px !important;
+    height:36px !important;
+    padding:6px !important;
+}
     .green-back {
         background-color: rgb(164, 241, 204);
     }
@@ -71,6 +82,16 @@
         margin-left: 18px;
         margin-right: 10px;
         margin-top: 8px;
+     
+    }
+     .pixel-label {
+        font-size: 12px;
+        font-weight: 650;
+        color: white;
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-top: 14px;
+       
     }
 
     .slide-height-input {
