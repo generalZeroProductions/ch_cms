@@ -11,7 +11,7 @@
 @endif
 
 
-<div class="col-3 " id="{{ $imageId }}">
+<div class="col-md-3" id="{{ $imageId }}">
     @include('articles.partials.image_column', [
         'pageId' => $pageId,
         'rowId' => $rowId,
@@ -19,12 +19,20 @@
     ])
 
 </div>
-<div class="col-9 " id = "{{ $articleId }}">
-    @include('articles.partials.title_text', [
+<div class="col-md-9" id = "{{ $articleId }}">
+     @include('articles.partials.title_text', [
         'pageId' => $pageId,
         'rowId' => $rowId,
-        'column' => $column1,
+        'article' => $article,
         'info' => $info,
+        'index' => $index,
     ])
 </div>
+</div>
+
+
+<div class = "imageSizingScript">
+<script>
+setImageColumsSize('none');
+</script>
 </div>

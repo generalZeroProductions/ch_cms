@@ -3,7 +3,7 @@
 @endphp
 <br>
 <hr>
-<div class="container-fluid yellow_row d-flex justify-content-center" id = "page_title_click" style="padding-top:8px"
+<div class="container-fluid yellow_row d-flex justify-content-center  hide-editor" id = "page_title_click" style="padding-top:8px"
     onclick="openMainModal('createRow','{{ $jDrop }}','modal-xl')">
     <div class = "row d-flex align-items-center">
         <p class="title-indicator">创建行</p>

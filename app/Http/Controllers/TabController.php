@@ -18,9 +18,7 @@ class TabController extends Controller
 
     public static function insert($formName)
     {
-        Log::info('in  make: ' . $formName);
         if ($formName === 'edit_tabs') {
-            Log::info('in Edit tabs now make: ' . $formName);
             $htmlString = View::make('tabs.edit_tabs_form')->render();
             return new Response($htmlString, 200, ['Content-Type' => 'text/html']);
         }
@@ -28,12 +26,9 @@ class TabController extends Controller
     }
     public function assignRoute(Request $request)
     {
-        Log::info($request);
-       
         $tab = Navigation::findOrFail($request->tab_id);
         $tab->route = $request->route;
         $tab->save();
-        Log::info($tab->parent);
         Session::put('tabKey', $request->tab_id);
         Session::put('scrollTo', 'rowInsert'.$tab->parent);
     }
@@ -112,7 +107,6 @@ class TabController extends Controller
     }
     public function updateTabs(Request $request)
     {
-        Log::info($request);
         $subData = json_decode($request->data);
         foreach ($subData as $tab) {
             if (isset($tab->id)) {
@@ -147,7 +141,6 @@ class TabController extends Controller
     }
     public static function render($render)
     {
-        Log::info('tab render sequence ' . $render);
         $rData = explode('^', $render);
         if ($rData[0] === 'tab_menu') {
             $row = ContentItem::findOrFail($rData[1]);

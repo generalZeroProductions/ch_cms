@@ -60,25 +60,54 @@ Route::get('/login', function () {
     return View::make('console.login');
 })->name('login');
 
-// Route::get('/contact', function () {
-//     return View::make('console.contact');
-// })->name('contact');
+
+
+
 Route::post('/delete_contact', [ConsoleController::class, 'deleteContact']);
 Route::get('/dashboard', function () {
     return View::make('console.dashboard');
 })->name('dashboard');
 
-Route::get('/pagination_form', function () {
-    return View::make('console.page_pagination_form');
-})->name('paginationForm');
+// Route::get('/pagination_form', function () {
+//     return View::make('console.page_pagination_form');
+// })->name('paginationForm');
+
 Route::get('/delete_contact_form', function () {
     return View::make('app.edit_mode.delete_inq_form');
 })->name('paginationForm');
 
 Route::get('/display_all_pages/{index}', [ConsoleController::class, 'displayAllPages'])->name('displayAllPages');
 Route::get('/display_all_inquiries/{index}', [ConsoleController::class, 'displayAllInquiries']);
+Route::get('/display_all_users/{index}', [ConsoleController::class, 'displayAllUsers']);
 
-Route::post('console/register', [ConsoleController::class, 'createUser']);
+
+
+//    USER ROUTES 
+
+Route::get('/add_user', function () {
+    return View::make('console.add_user_form');
+})->name('addUser');
+Route::post('/console/addUser', [ConsoleController::class, 'createUser']);
+
+Route::get('/edit_user', function () {
+    return View::make('console.edit_user_form');
+})->name('editUser');
+Route::post('/console/editUser', [ConsoleController::class, 'editUser']);
+
+Route::get('/delete_user', function () {
+    return View::make('console.delete_user_form');
+})->name('deleteUser');
+
+Route::post('/console/delete_user', [ConsoleController::class, 'deleteUser']);
+
+
+
+
+
+// Route::post('console/register', [ConsoleController::class, 'createUser']);
+
+
+
 Route::post('/console/login', [ConsoleController::class, 'login']);
 Route::post('page_edit/create_new/{returnTo}', [PageController::class, 'createPage'])->name('createPage');
 
@@ -107,9 +136,11 @@ Route::post('/use_image', [ImageController::class, 'useImage'])->name('use_image
 Route::get('/insert_image_icons_3', function () {
     return View::make('images.partials.image_icons_3');
 })->name('insertImageIcons3');
+
 Route::get('/insert_image_icons_2', function () {
     return View::make('images.partials.image_icons_2');
 })->name('insertImageIcons2');
+
 Route::get('/insert_upload_file', function () {
     return View::make('slides.partials.upload_file_bar');
 })->name('insertUploadFile');
@@ -136,9 +167,10 @@ Route::get('/load_tab/no_tab_assigned', function () {
 Route::get('/no_tab_assigned', function () {
     View::make('tabs.no_tab_assigned');
 })->name('noTabAssigned');
-// two routes returning the same thing??
+// two routes returning the same thing??  MIGHTBE NIETHER
 
 Route::post('/quick_tab_asign', [TabController::class, 'quickAssign'])->name('QuickTabAssign');
+
 Route::get('/edit_tabs', function () {
     return View::make('tabs.edit_tabs_form');
 })->name('editTabs');
@@ -195,7 +227,6 @@ Route::get('/session/{newLocation?}', function ($newLocation = null) {
 })->name('sessionSet');
 
 Route::get('/{page?}', function ($page = null) {
-    Log::info('at root looking for: '.$page);
     return view('app.site', ['page' => $page]);
 })->name('root');
 
@@ -212,7 +243,6 @@ Route::get('/insert_/insert_form/{sequence}', function ($sequence) {
     $formName = $sData[0];
     Session::put('scrollTo', 'rowInsert'.$sData[count($sData)-1]);
     if (strpos($formName, 'nav') !== false) {
-        log::info($formName . 'requested ');
         $htmlResponse = NavController::insert($formName);
         return $htmlResponse;
     }if (strpos($formName, 'img') !== false) {
@@ -234,13 +264,11 @@ Route::get('/insert_/insert_form/{sequence}', function ($sequence) {
         return $htmlResponse;
     }
      else {
-        // Handle other cases here if needed
         return response()->json(['error' => 'Invalid form request'], 400);
     }
 })->name('insertForm');
 
 Route::get('/render_/render_content/{render}', function ($render) {
-    Log::info('#render request: ' . $render);
 
     if (strpos($render, 'nav') !== false) {
         $htmlResponse = NavController::render($render);
@@ -250,23 +278,18 @@ Route::get('/render_/render_content/{render}', function ($render) {
         $htmlResponse = PageController::render($render);
         return $htmlResponse;
     }  elseif (strpos($render, 'tab') !== false) {
-        Log::info('to tab draw');
         $htmlResponse = TabController::render($render);
         return $htmlResponse;
     } elseif (strpos($render, 'img') !== false) {
-        Log::info('to image draw');
         $htmlResponse = ImageController::render($render);
         return $htmlResponse;
     } elseif (strpos($render, 'article') !== false) {
-        Log::info('to article render');
         $htmlResponse = ArticleController::render($render);
         return $htmlResponse;
     } elseif (strpos($render, 'footer') !== false) {
-        Log::info('to footer render');
         $htmlResponse = PageController::render($render);
         return $htmlResponse;
     }elseif (strpos($render, '联系我们') !== false) {
-        Log::info('to contacts page render');
         $htmlResponse = ConsoleController::render($render);
         return $htmlResponse;
     }
@@ -277,7 +300,6 @@ Route::get('/render_/render_content/{render}', function ($render) {
 })->name('render');
 
 Route::post('session_var/{value}', function (Request $request) {
-    Log::info('sesstion scroll request'. $request);
     $data = explode('^',  $request);
     if (strpos( $request, 'scroll') !== false) {
         Session::put('ScrollTo', $data[1]);
@@ -285,7 +307,6 @@ Route::post('session_var/{value}', function (Request $request) {
 });
 
 Route::post('/write_/write_form', function (Request $request) {
-    Log::info("write request: " . $request->form_name);
     if (strpos($request->form_name, 'img') !== false) {
         $imageController = new ImageController();
         return $imageController->editImage($request);
@@ -293,37 +314,29 @@ Route::post('/write_/write_form', function (Request $request) {
         $navController = new NavController();
         return $navController->write($request);
     } elseif (strpos($request->form_name, 'tab') !== false) {
-        Log::info('try to write tabs');
         $tabController = new TabController();
         return $tabController->write($request);
     } elseif (strpos($request->form_name, 'page') !== false) {
-        Log::info('try to write pages');
         $pageController = new PageController();
         return $pageController->write($request);
     } elseif (strpos($request->form_name, 'article') !== false) {
-        Log::info('try to write article');
         $articleCtl = new ArticleController();
         return $articleCtl->write($request);
     } elseif (strpos($request->form_name, 'slide') !== false) {
-        Log::info('try to write article');
         $slideCtl = new SlideController();
         return $slideCtl->write($request);
     }
     elseif (strpos($request->form_name, 'logo') !== false) {
-        Log::info('try to write article');
         $pageCtl = new PageController();
         return $pageCtl->write($request);
     }
     elseif (strpos($request->form_name, 'footer') !== false) {
-        Log::info('form name has footer');
         $pageCtl = new PageController();
         return $pageCtl->write($request);
     } elseif (strpos($request->form_name, 'contact') !== false) {
-        Log::info('form name has contact');
         $consoleCtl = new ConsoleController();
         return $consoleCtl->write($request);
     }elseif (strpos($request->form_name, 'thankyou') !== false) {
-        Log::info('form name has contact');
         $consoleCtl = new ConsoleController();
         return $consoleCtl->write($request);
     }else {}

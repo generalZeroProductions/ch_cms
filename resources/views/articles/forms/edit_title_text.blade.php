@@ -43,9 +43,8 @@
                   </button>
               </div>
           </div>
-          <div id="htmlDiv" class="p-2" contenteditable="true" style="border: 1px solid black; min-height: 300px;">
-              {{-- <textarea style="display: none;" class="form-control long-text" maxlength="8000" id ="edit_text_article_body"
-                      name="body"></textarea> --}}
+          <div id="htmlDiv" class="p-2 edit_body" contenteditable="true" style="border: 1px solid black; min-height: 300px;">
+
           </div>
 
           <br>
@@ -108,10 +107,6 @@
 
   </div>
 
-  <!-- Button to trigger the modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-  Open Modal
-</button>
 
 <!-- Link Modal -->
 @include('forms.add_link_modal')

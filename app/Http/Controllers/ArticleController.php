@@ -15,9 +15,7 @@ class ArticleController extends Controller
 {
     public static function insert($formName)
     {
-        Log::info('in  make: ' . $formName);
         if ($formName === 'edit_text_article') {
-            Log::info('in Edit title text: ' . $formName);
             $htmlString = View::make('articles.forms.edit_title_text')->render();
             return new Response($htmlString, 200, ['Content-Type' => 'text/html']);
         }
@@ -25,15 +23,12 @@ class ArticleController extends Controller
     }
     public function write(Request $request)
     {
-        Log::info('iside of write');
-        Log::info($request);
         if ($request->form_name === 'edit_text_article') {
             $this->updateArticle($request);
         }
     }
     public static function render($render)
     {
-        Log::info('ARTICLE RENDER SEQUENCE ' . $render);
         $rData = explode('^', $render);
         if ($rData[0] === 'update_article') {
             $page = ContentItem::findOrFail($rData[1]);
@@ -136,11 +131,10 @@ class ArticleController extends Controller
 
     public function updateArticle(Request $request)
     {
-        Log::info(' # artice updateer' . $request);
         $article = ContentItem::findOrFail($request->article_id);
         $article->title = $request->title;
-        $article->body = htmlspecialchars($request->body);
-
+        $article->body = $request->body;
+Log::info($request->body);
         $useInfo = 'off';
         if (isset($request->use_info_checkbox)) {
             $useInfo = 'on';

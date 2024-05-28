@@ -4,28 +4,28 @@ var tabIndex;
 var newTabId;
 var subNavIndex;
 
-function updateTabId(tabId) {
-    fetch("/tab/new/" + tabId, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": csrfToken, // Add CSRF token to headers
-        },
-    })
-        .then((response) => {
-            if (response.ok) {
-                console.log(response);
-            } else {
-                console.error("Failed to change tabId ");
-            }
-        })
-        .catch((error) => {
-            console.error(
-                "Error occurred while turning on authentication:",
-                error
-            );
-        });
-}
+// function updateTabId(tabId) {
+//     fetch("/tab/new/" + tabId, {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/json",
+//             "X-CSRF-TOKEN": csrfToken, // Add CSRF token to headers
+//         },
+//     })
+//         .then((response) => {
+//             if (response.ok) {
+//                 console.log(response);
+//             } else {
+//                 console.error("Failed to change tabId ");
+//             }
+//         })
+//         .catch((error) => {
+//             console.error(
+//                 "Error occurred while turning on authentication:",
+//                 error
+//             );
+//         });
+// }
 
 function editTabsSetup(formName, jItem) {
     var item = JSON.parse(jItem);
@@ -44,20 +44,11 @@ function editTabsSetup(formName, jItem) {
     rowId.value = item.rowId;
     var pageId = document.getElementById("page_id");
     pageId.value = item.pageId;
-    if (!div) {
-        console.log("div NOT FOUND");
-    }
+  
     var renderDiv = document.getElementById('rowInsert'+item.rowId);
     var sequence = "tab_menu^" + item.rowId + "^"+item.pageId;
     btn.onclick = function () {
         if (verifySubmit(btn)) {
-            if(renderDiv)
-            {
-                console.log('got render Div');
-            }
-            else{
-                console.log('no render DIV -- ITEM was '+ item.rowId);
-            }
             writeAndRender(formName, sequence, renderDiv,['tabs']);
         }
     };
@@ -83,7 +74,6 @@ function createTabItem() {
     addTab(newItem, list);
 }
 function newTabFromSource(tab, listDiv) {
-    console.log("making_tab " + tab.title);
     var newTab = {
         record:true,
         id: tab.id,
@@ -95,7 +85,6 @@ function newTabFromSource(tab, listDiv) {
     addTab(newTab, listDiv);
 }
 function deleteTab(index) {
-    console.log("sent index " + index);
     var deleteTab = tabData[index];
     deletedTabs.push(deleteTab);
     updateData = JSON.stringify(deletedSlides);
@@ -170,7 +159,6 @@ function addTab(newTab, listDiv) {
     });
 
     newInput.addEventListener("input", function (event) {
-        console.log("listened to input");
         validateTabTitle(newInput, event);
         var text = event.target.value;
         var itemId = newTab.id;

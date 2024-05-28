@@ -1,9 +1,10 @@
 @php
     $scrollTabs = 'scroll_' . $rowId;
     $jTabs = json_encode(['pageId' => $pageId, 'tabs' => $tabs, 'rowId' => $rowId]);
+    $menuHeight = count($tabs)*38;
 @endphp
 
-<div style= "height:0" id="{{ $scrollTabs }}">
+<div style= "height:{{$menuHeight}}px;" id="{{ $scrollTabs }}">
 @if ($editMode)
     <div style= "height:44"></div>
     <div class="tabs-editor-spacing">

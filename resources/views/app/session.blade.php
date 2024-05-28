@@ -52,11 +52,15 @@
     //   QUESTIONS HERE FOR SURE
     if ($sequence[0] === 'view') {
         Session::forget('returnPage');
+        Session::forget('scrollTo');
         Session::put('buildMode', false);
         $loc = $sequence[1];
         if ($sequence[1] === 'dashboard') {
-            Session::forget('scrollTo');
             $loc = '';
+        }
+        Log::info($sequence);
+        if(isset($sequence[2])){
+            Session::put('scrollTo', $sequence[2]);
         }
         $returnLocation = '/' . $loc;
     }

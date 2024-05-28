@@ -9,18 +9,18 @@
                 <form method = 'POST' action='console/login'>
                     @csrf
                     <div class="form-group">
-                        <label for="exampleInputEmail1">login</label>
+                        <label for="login">{{ config('app.name') }}.com  管理员登录</label>
                     </div>
                     <div class="form-group">
-                        <label for="exampleInputEmail1">username</label>
+                        <label for="username">用户名</label>
                         <input type="text" class="form-control" id="name" aria-describedby="name"
-                            placeholder="Enter username" name="name">
+                            placeholder="输入用户名" name="name">
                     </div>
                     <div class="form-group">
-                        <label for="exampleInputPassword1">Password</label>
-                        <input type="password" class="form-control" id="pass_word" placeholder="Password" name="password">
+                        <label for="password">密码</label>
+                        <input type="password" class="form-control" id="pass_word" placeholder="密码" name="password">
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary" >登录</button>
                 </form>
             </div>
             <div class = 'col-md-4 col-sm-0'>

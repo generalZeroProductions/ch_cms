@@ -56,7 +56,6 @@ function setupContactForm() {
     });
 
     var button = document.getElementById("submit_contact_btn");
-    console.log("adding event listener");
 
     button.addEventListener("click", function (event) {
         var valid = true;
@@ -73,7 +72,6 @@ function setupContactForm() {
             noContact.style.display = "block";
         }
         if (valid) {
-            console.log("BUTTON CLICK HERE");
             var div = document.getElementById("contact_us_div");
             writeAndRender("client_contact_form", "联系我们", div);
         }
@@ -81,7 +79,6 @@ function setupContactForm() {
 }
 
 function editContactSetup(formName, tStyle) {
-    console.log(tStyle + "THATS WHAT YOU SNET");
     var editContactDiv = document.getElementById(formName + "_editor");
     editContactDiv.style.display = "block";
     var textFields = [];
@@ -132,7 +129,6 @@ function editContactSetup(formName, tStyle) {
 
     var btn = document.getElementById("submit_" + formName + "_update");
     btn.addEventListener("click", function (event) {
-        // Prevent the default form submission behavior
         event.preventDefault();
         var valid = true;
         textFields.forEach((field) => {
@@ -148,4 +144,3 @@ function editContactSetup(formName, tStyle) {
     });
 }
 
-function deleteContact(id) {}

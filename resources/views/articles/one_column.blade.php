@@ -1,5 +1,6 @@
 @php
-    $articleId = 'article_' . $column->id;
+
+    $articleId = 'article_' . $rowId;
 @endphp
 @if (!$tabContent)
     <div class = 'row row-contain'>
@@ -10,7 +11,8 @@
     @include('articles.partials.title_text', [
         'pageId' => $pageId,
         'rowId' => $rowId,
-        'column' => $column,
+        'article' => $article,
+        'info' => $info,
         'index' => $index,
     ])
 </div>

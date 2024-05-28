@@ -1,6 +1,15 @@
 var slideShowItems = [];
 var deletedSlides = [];
 
+
+function startCarousel(divId){
+    console.log("running start slides");
+      $("#" + divId).carousel({
+          interval: 4000, 
+          ride: "carousel", 
+      });
+}
+
 function slideHeightListen(rowId, height) {
     var row = document.getElementById("rowInsert" + rowId);
     var forms = row.querySelectorAll("#change_slide_height");
@@ -40,7 +49,6 @@ function slideHeightListen(rowId, height) {
 function editSlidesForm(jItem) {
     slideShowItems = [];
     deletedSlides = [];
-    console.log(jItem);
     var item = JSON.parse(jItem);
     item.slides.forEach((slide) => {
         createNewSlide(slide);
@@ -57,8 +65,6 @@ function editSlidesForm(jItem) {
             document.getElementById("scroll_to").value = window.scrollY;
             var closeBtn = document.getElementById("close_main_modal");
             closeBtn.addEventListener("click", function (event) {
-                console.log("clicked close");
-                enableScrolling();
             });
             var submitButton = document.getElementById("submit_slideshow_btn");
             submitButton.addEventListener("click", function (event) {
@@ -253,11 +259,10 @@ function updateSlideCaption(id, caption) {
 
 function updateSlideData() {
     var slideData = document.getElementById("slide_show_data");
-    updateData = JSON.stringify(slideShowItems); // Assuming 'data' is the ID of the hidden field
-    slideData.value = updateData; // Convert the object to a JSON string and set it as the value of the hidden field
+    updateData = JSON.stringify(slideShowItems); 
+    slideData.value = updateData; 
     var btn = document.getElementById("submit_slideshow_btn");
     var warn = document.getElementById("cant_sumbit_slides");
-    console.log("total slides " + slideShowItems.length);
     if (slideShowItems.length === 0) {
         btn.classList.add("disabled");
         btn.setAttribute("style", "cursor:default");
@@ -293,7 +298,6 @@ function deleteSlide(slide) {
 
 function createNewSlide(slide) {
     if (slide === null) {
-        console.log("TRING to create");
         var newSlide = {
             source: "server",
             image: "defaultSlide.jpg",
@@ -316,5 +320,5 @@ function createNewSlide(slide) {
         };
         slideShowItems.push(newSlide);
     }
-    console.log(slideShowItems);
+   
 }

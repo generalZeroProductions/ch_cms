@@ -26,7 +26,6 @@
         </div>
         <div class="stack-icons">
             @include('images.partials.image_preview', ['style' => $style])
-
             @include('images.partials.corners_select')
         </div>
         <label class = 'form-label-sm'>图片标题</label>

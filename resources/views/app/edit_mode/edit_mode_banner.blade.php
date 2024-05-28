@@ -6,12 +6,17 @@
             $returnLoc = Session::get('returnPage');
             Session::forget('returnPage');
     }  
+    $returnScroll = null;
+    if(Session::has('scrollTo'))
+    {
+        $returnScroll = Session::get('scrollTo');
+    }
 
 @endphp
 {{-- @include('app.edit_mode.auth_on_off') --}}
 <?php
 
-echo 'return = ' . Session::get('returnPage') . '///    tab = ' . Session::get('tabId') . '/// build =' . Session::get('buildMode') . '///edit = ' . Session::get('editMode') . '///screen =' . Session::get('screenwidth') . '///scroll =' . Session::get('scrollTo') . '///key =' . Session::get('navKey');
+//echo 'return = ' . Session::get('returnPage') . '///    tab = ' . Session::get('tabId') . '/// build =' . Session::get('buildMode') . '///edit = ' . Session::get('editMode') . '///screen =' . Session::get('screenwidth') . '///scroll =' . Session::get('scrollTo') . '///key =' . Session::get('navKey');
 ?>
 
 <div class ='edit-container ' id = "edit_mode_contain">
@@ -24,7 +29,7 @@ echo 'return = ' . Session::get('returnPage') . '///    tab = ' . Session::get('
         <div class=col-5>
             <div class= "row flex-d justify-content-end align-content-center" style = "padding-right:12px; padding-bottom:52px">
                 @if ($buildMode)
-                    <button class="btn btn-primary btn-top-console " onClick="viewSite('{{ $returnLoc }}')">查看网站
+                    <button class="btn btn-primary btn-top-console " onClick="viewSite('{{ $returnLoc }}?{{$returnScroll}}')">查看网站
                         <img src="{{ asset('icons/view.svg') }}" class="top-console-icon-view">
                     </button>
                     <form method = 'POST' action = "/page_edit/create_new/builder">

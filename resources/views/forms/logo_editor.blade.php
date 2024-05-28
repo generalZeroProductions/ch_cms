@@ -14,9 +14,11 @@
 
 
 
-<div class = "row" style="padding:0px 12px">
-    <div class=col-8-md>
-        <form id = "logo_edit">
+
+    <form id = "logo_edit">
+    <div class = "row" style="padding:0px 12px">
+        <div class=col-8-md>
+
             @csrf
             <div class = "row ">
                 <div class = " col-3-md toggle" style = "margin-left:20px;">
@@ -58,34 +60,43 @@
 
                 </div>
             </div>
-            <input type="hidden" name = "title" id="send_logo_title" value="{{ $logo->title }}">
-            <input type="hidden" name = "form_name" value="logo_edit">
-            <input type="hidden" name = "from_server" value='0' id="logo_from_server">
-            <input type = "hidden" name = "image_name" id = "logo_image_name" value="{{ $logo->route }}">
-        </form>
-    </div>
-    <div class = "col-4-md title-col" style = "margin-left:40px;">
-        <div class = "row align-items-center">
-            <div class="custom-control custom-switch" name = "use_title">
-                <input type="checkbox" class="custom-control-input" id="title_Toggle" <?php echo $showTitle ? 'checked' : ''; ?>
-                    name = "use_title">
-                <label id = "logo_title" class="custom-control-label" for="title_Toggle">标志文字</label>
-            </div>
-        </div>
-        <div class = "row align-items-center">
-            <div class = "col-9-md">
-                <input type= "text" class = "logo-h3" value = "{{ $logo->title }}" id ="logo_text" name="title">
-            </div>
-            <div class="col-3-md">
-                <button onClick="submitLogoChange()" class = "btn btn-primary save_logo_btn disabled"
-                    id ="save_logo_btn">
-                    <img src = "{{ asset('/icons/save.svg') }}" class="save_icon_logo">
-                </button>
-            </div>
-        </div>
-    </div>
 
-</div>
+
+        </div>
+        <div class = "col-4-md title-col" style = "margin-left:40px;">
+            <div class = "row align-items-center">
+                <div class="custom-control custom-switch" name = "use_title">
+                    <input type="checkbox" class="custom-control-input" id="title_Toggle" <?php echo $showTitle ? 'checked' : ''; ?>
+                        name = "use_title">
+                    <label class="custom-control-label" for="title_Toggle">标志文字</label>
+                </div>
+            </div>
+            <div class = "row align-items-center">
+                <div class = "col-9-md">
+                    <input type= "text" class = "logo-h3" value = "{{ $logo->title }}" id ="logo_text"
+                        name="title">
+                </div>
+                <div class="col-3-md">
+                    <button onClick="submitLogoChange()" class = "btn btn-primary save_logo_btn disabled"
+                        id ="save_logo_btn">
+                        <img src = "{{ asset('/icons/save.svg') }}" class="save_icon_logo">
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <input type="hidden" name = "title" id="send_logo_title" value="{{ $logo->title }}">
+        <input type="hidden" name = "form_name" value="logo_edit">
+        <input type="hidden" name = "from_server" value='0' id="logo_from_server">
+        <input type = "hidden" name = "image_name" id = "logo_image_name" value="{{ $logo->route }}">
+        </div> 
+    </form>
+
+
+
+
+
 
 
 
@@ -103,7 +114,7 @@
 
     .logo-h3 {
         margin-top: 11px;
-        margin-right:8px;
+        margin-right: 8px;
         height: 52px;
         font-size: 20px;
         font-weight: 500;

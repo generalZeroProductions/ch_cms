@@ -1,6 +1,11 @@
 .row-contain{
-    margin-left:8vw;
-    margin-right:8vw;
+    width:90%;
+    margin-left:5%;
+    margin-right:5%;
+}
+.row-contain-tabs {
+    margin-left: 8vw;
+    margin-right: 0px;
 }
 .tab-contain-right{
     padding: 0 1% 0 2%;
@@ -16,7 +21,7 @@
 }
 
 .tab-menu{
-    padding: 10px 20px;
+    padding: 10px 5vw;
 }
 .disabled{
     background-color:lightslategray !important;

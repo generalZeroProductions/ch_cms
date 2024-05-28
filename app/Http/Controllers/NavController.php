@@ -96,7 +96,6 @@ class NavController extends Controller
 
     public function deleteNavItem(Request $request)
     {
-        Log::info($request);
         $otherNav = Navigation::whereIn('type', ['nav', 'drop'])->get();
 
         if (!$otherNav->isEmpty()) {
@@ -121,7 +120,6 @@ class NavController extends Controller
 
     public function updateDropdown(Request $request)
     {
-      Log::info('UPDATing FROPDOSN');
         $reqData = json_decode($request->data);
         $dropNav = Navigation::findOrFail($request->item_id);
         $dropNav->title = $request->title;
@@ -131,7 +129,6 @@ class NavController extends Controller
                 $route = $sub->route;
                 if($sub->route==='选择页面路由')
                 {
-                    Log::info('route was nada');
                     $route = '/';
                 }
                 $record = Navigation::findOrFail($sub->id);

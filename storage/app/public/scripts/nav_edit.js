@@ -9,9 +9,9 @@ function filloutNavForms(formName, jItem) {
     }
     if (formName === "edit_nav") {
         var item = JSON.parse(jItem);
-        addFieldAndValue("item_id", item.nav.id);
-        addFieldAndValue(formName + "_title", item.nav.title);
-        addFieldAndValue("key", item.key);
+        addFieldAndValue("item_id", item.id);
+        addFieldAndValue(formName + "_title", item.title);
+   
         var route_select = document.getElementById("route_select");
         var option = document.createElement("option");
         option.value = "选择页面路由";
@@ -21,7 +21,7 @@ function filloutNavForms(formName, jItem) {
             var option = document.createElement("option");
             option.value = page;
             option.text = page;
-            if (page === item.nav.route) {
+            if (page === item.route) {
                 option.selected = true;
             }
             route_select.appendChild(option);
@@ -34,11 +34,10 @@ function filloutNavForms(formName, jItem) {
         }
         route_select.appendChild(option);
         var div = document.getElementById("main-navigation");
-        var sequence = "navigation^" + item.key;
+        var sequence = "navigation^" + item.index;
         setupFormSubmit(formName, sequence, div);
     }
     if (formName == "nav_delete") {
-        console.log(jItem);
         var item = JSON.parse(jItem);
         addFieldAndValue("item_id", item.id);
 
@@ -46,7 +45,7 @@ function filloutNavForms(formName, jItem) {
         var div = document.getElementById("main-navigation");
         var sequence = "navigation^" + item.id;
         deleteBtn.onclick = function () {
-            writeAndRender("nav_delete", sequence, div);
+            writeAndRender("nav_delete", sequence, div,['nav']);
         };
         var cancelBtn = document.getElementById("cancel_delete_btn");
         cancelBtn.onclick = function () {
@@ -55,7 +54,6 @@ function filloutNavForms(formName, jItem) {
     }
 
     if (formName === "add_nav") {
-        console.log(jItem);
         addFieldAndValue("standard_key", jItem);
         addFieldAndValue("dropdown_key", jItem);
         var addDiv = document.getElementById("add_at" + jItem);
@@ -64,16 +62,17 @@ function filloutNavForms(formName, jItem) {
         var div = document.getElementById("main-navigation");
         var sequence = "navigation^" + jItem;
         var standardBtn = document.getElementById("add_standard_btn");
+        var scripts =['nav'];
         standardBtn.onclick = function () {
-            writeAndRender("add_standard", sequence, div);
+            writeAndRender("add_standard", sequence, div,scripts);
         };
         var dropdownBtn = document.getElementById("add_dropdown_btn");
         dropdownBtn.onclick = function () {
-            writeAndRender("add_dropdown", sequence, div);
+            writeAndRender("add_dropdown", sequence, div,scripts);
         };
         var cancelAdd = document.getElementById("cancel_add_nav");
         cancelAdd.onclick = function () {
-            renderNavigation(jItem);
+            renderNavigation();
         };
     }
 

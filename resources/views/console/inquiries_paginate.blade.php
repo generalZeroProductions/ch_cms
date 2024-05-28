@@ -42,7 +42,7 @@
             @endif
         </div>
         <div class="col-md-2" style="text-align:center">
-            <button class="btn btn-danger" style="margin-top:4px" onClick="openMainModal('deleteInquiry', '{{ json_encode($record) }}', '.modal-sm')">
+            <button class="btn btn-danger" style="margin-top:4px" onClick="openMainModal('deleteInquiry', '{{$record->id }}', '.modal-sm')">
                 <img src="{{ asset('icons/trash_white.svg') }}" style="height:18px">
             </button>
         </div>

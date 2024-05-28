@@ -11,8 +11,6 @@ use Illuminate\Support\Facades\Storage;
 class SlideController extends Controller
 {public function write(Request $request)
     {
-    Log::info('iside of write');
-    Log::info($request);
     if ($request->form_name === 'change_slide_height') {
         $row = ContentItem::findOrFail($request->row_id);
         $row->styles = ['height' => $request->height];
@@ -21,7 +19,6 @@ class SlideController extends Controller
 }
     public function createSlideshow(Request $request)
     {
-        Log::info($request);
         $rows = ContentItem::where('parent', $request->page_id)->get();
         foreach ($rows as $row) {
             if ($row->index > $request->row_index) {
@@ -52,7 +49,6 @@ class SlideController extends Controller
     }
     public function updateSlideshow(Request $request)
     {
-        Log::info($request);
         $slideData = json_decode($request->data);
         foreach ($slideData as $slide) {
             if (isset($slide->record)) {

@@ -3,7 +3,6 @@
     $height = 220;
     if ($style === 'rounded-circle') {
         $height = $width;
-        echo $height;
     }
     echo '<style>  .image-crop {
         width:' .

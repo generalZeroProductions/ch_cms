@@ -1,5 +1,5 @@
 @php
-    use App\Models\ContentItem;
+    use App\Models\User;
     $index = 0;
     $ogIndex = $recordsIndex;
     $records = $allRecords->slice($recordsIndex, 10);
@@ -9,39 +9,31 @@
 @endphp
 
 @foreach ($records as $record)
-    @php
-        $heading = '无内容';
-        $topRow = ContentItem::where('parent', $record->id)
-            ->orderBy('index')
-            ->first();
-        if (isset($topRow)) {
-            Log::info($topRow);
-            $heading = $topRow->body;
-        }
-
-    @endphp
     @if ($index % 2 !== 0)
         <div class = "row center-paginate">
         @else
             <div class = "row center-paginate" style= "background-color:#ced8e3;">
     @endif
     <div class= 'col-md-4 '>
-        <p>{{ $record->title }}</p>
+        <p>{{ $record->name }}</p>
     </div>
     <div class= 'col-md-4'>
-        <p>{{ $heading }}</p>
+
     </div>
     <div class= 'col-md-2' style="text-align:center">
-        <button onClick="enterPageBuild('{{ $record->title }}','dashboard', null)" class='btn btn-primary'
+        @php
+            $jItem = ['user' => $record, 'users' => $allRecords];
+        @endphp
+        <button onClick="openMainModal('editUser','{{ json_encode($jItem) }}', 'modal-sm')" class='btn btn-warning'
             style='margin-top:4px'>
-            <img src="{{ asset('icons/build.svg') }}">
+            <img src="{{ asset('icons/edit_user.svg') }}">
         </button>
     </div>
     <div class= 'col-md-2' style="text-align:center">
-        @if (count($allRecords) > 1)
+        @if ($record->id > 1)
             <button class='btn btn-danger' style='margin-top:4px'
-                onClick="openMainModal('deletePage','{{$record->id }}','model-sm')">
-                <img src="{{ asset('icons/trash_white.svg') }}">
+                onClick="openMainModal('deleteUser','{{$record->id }}','model-sm')">
+                <img src="{{ asset('icons/delete_user.svg') }}">
             </button>
         @endif
     </div>

@@ -3,7 +3,6 @@ namespace App\Helpers;
 
 use App\Models\ContentItem;
 use App\Models\Navigation;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
 
@@ -11,8 +10,9 @@ class ArticleMaker
 {
     function makeArticle($page, $row, $tabContent)
     {
-        Log::info('@ article Maker');
+        $setter = new Setters();
         $editMode = Session::get("editMode");
+        $mobile = Session::get('mobile');
         $htmlString = '';
         if ($editMode && !$tabContent) {
             $htmlString .= View::make('app.edit_mode.delete_row_bar', ['page' => $page, 'row' => $row]);
@@ -27,14 +27,35 @@ class ArticleMaker
             ->orderBy('index')
             ->first();
 
+        $c1Info = ['id' => $info1->id,
+            'show' => $column1->styles['info'],
+            'type' => $info1->styles['type'],
+            'title' => $setter->prepareString($info1->title),
+            'route' => $info1->route];
+
+        $article1 = ['id' => $column1->id,
+            'title' => $setter->prepareString($column1->title),
+            'titleStyle' => $column1->styles['title'],
+            'body' => $setter->prepareString($column1->body)];
+
         $info2 = null;
-        $column2 = null;
+        $article2 = null;
         if (isset($columns[1])) {
             $column2 = $columns[1];
+            $info2 = Navigation::where('parent', $column2->id)
+                ->orderBy('index')
+                ->first();
+
             if ($column2->heading === 'title_text') {
-                $info2 = Navigation::where('parent', $column2->id)
-                    ->orderBy('index')
-                    ->first();
+                $c2Info = ['id' => $info2->id,
+                    'show' => $column2->styles['info'],
+                    'type' => $info2->styles['type'],
+                    'title' => $setter->prepareString($info2->title),
+                    'route' => $info2->route];
+                $article2 = ['id' => $column2->id,
+                    'title' => $setter->prepareString($column2->title),
+                    'titleStyle' => $column2->styles['title'],
+                    'body' => $setter->prepareString($column1->body)];
             }
         }
         if ($row->heading === 'one_column') {
@@ -42,10 +63,10 @@ class ArticleMaker
             $htmlString .= View::make('articles.one_column', [
                 'tabContent' => $tabContent,
                 'editMode' => Session::get('editMode'),
-                'column' => $column1,
-                'rowId' => $row->id,
+                'article' => $article1,
                 'pageId' => $page->id,
-                'info' => $info1,
+                'rowId' => $row->id,
+                'info' => $c1Info,
                 'index' => $row->index,
             ])->render();
 
@@ -53,31 +74,46 @@ class ArticleMaker
             $htmlString .= View::make('articles.two_column', [
                 'tabContent' => $tabContent,
                 'editMode' => Session::get('editMode'),
-                'column1' => $column1,
-                'info1' => $info1,
-                'info2' => $info2,
-                'column2' => $column2,
-                'rowId' => $row->id,
                 'pageId' => $page->id,
                 'index' => $row->index,
+                'article1' => $article1,
+                'info1' => $c1Info,
+                'article2' => $article2,
+                'info2' => $c2Info,
+                'rowId' => $row->id,
+
             ])->render();
         } elseif ($row->heading === 'image_right') {
-            $htmlString .= View::make('articles.image_right', [
-                'tabContent' => $tabContent,
-                'editMode' => Session::get('editMode'),
-                'column1' => $column1,
-                'column2' => $column2,
-                'info' => $info1,
-                'rowId' => $row->id,
-                'pageId' => $page->id,
-                'index' => $row->index,
-            ])->render();
+            if ($mobile) {
+                $htmlString .= View::make('articles.image_left', [
+                    'tabContent' => $tabContent,
+                    'editMode' => Session::get('editMode'),
+                    'article' => $article1,
+                    'column2' => $column2,
+                    'info' => $info1,
+                    'rowId' => $row->id,
+                    'pageId' => $page->id,
+                    'index' => $row->index,
+                ])->render();
+
+            } else {
+                $htmlString .= View::make('articles.image_right', [
+                    'tabContent' => $tabContent,
+                    'editMode' => Session::get('editMode'),
+                    'article' => $article1,
+                    'column2' => $column2,
+                    'info' => $info1,
+                    'rowId' => $row->id,
+                    'pageId' => $page->id,
+                    'index' => $row->index,
+                ])->render();
+            }
 
         } elseif ($row->heading === 'image_left') {
             $htmlString .= View::make('articles.image_left', [
                 'tabContent' => $tabContent,
                 'editMode' => Session::get('editMode'),
-                'column1' => $column1,
+                'article' => $article1,
                 'column2' => $column2,
                 'info' => $info1,
                 'rowId' => $row->id,
@@ -98,7 +134,7 @@ class ArticleMaker
         $editMode = Session::get("editMode");
         $htmlString = '';
         if ($editMode && !$tabContent) {
-        
+
             $htmlString .= View::make('app.edit_mode.delete_row_bar', ['page' => $page, 'row' => $row]);
         }
         $setters = new Setters();
@@ -110,7 +146,7 @@ class ArticleMaker
             'slideList' => $slides[0],
             'slideJson' => $slides[1],
             'slideHeight' => $row->styles['height'],
-            'tabContent'=>$tabContent
+            'tabContent' => $tabContent,
         ])->render();
 
         if ($editMode && !$tabContent) {
@@ -129,17 +165,17 @@ class ArticleMaker
             'title' => 'new column title',
             'heading' => 'title_text',
             'styles' => $cStyle,
-            'parent'=>$rowId,
-            'index'=>$index
+            'parent' => $rowId,
+            'index' => $index,
 
         ]);
         $infoStyle = ['type' => 'button'];
-         Navigation::create([
+        Navigation::create([
             'type' => 'info',
             'title' => '更多信息',
             'route' => '/',
             'styles' => $infoStyle,
-            'parent'=>$column->id
+            'parent' => $column->id,
         ]);
 
         return $column;

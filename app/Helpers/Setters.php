@@ -3,12 +3,19 @@ namespace App\Helpers;
 
 use App\Models\ContentItem;
 use App\Models\Navigation;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\Log;
+
 class Setters
 {
+    function prepareString($str)
+    {
+        $decodedString = htmlspecialchars_decode($str);
+        $escapedString = htmlspecialchars($decodedString, ENT_QUOTES, 'UTF-8');
+        return $escapedString;
+    }
 
     function setSubNavs($nav)
     {
@@ -23,7 +30,7 @@ class Setters
         usort($subNavItems, array($this, 'sortByIndex'));
         return $subNavItems;
     }
-    
+
     function getRowIdFromData($data)
     {
         foreach ($data as $d) {
@@ -59,7 +66,7 @@ class Setters
         foreach ($rows as $row) {
             $allRows[] = $row;
         }
-        usort($allRows, function($a, $b) {
+        usort($allRows, function ($a, $b) {
             return $a->index - $b->index;
         });
         return ($allRows);
@@ -74,7 +81,7 @@ class Setters
                 'image' => $slide->image,
                 'caption' => $slide->body,
                 'record' => $slide->id,
-                'index'=>$slide->index
+                'index' => $slide->index,
             ];
             $slideList[] = $slide;
             $slideJson[] = $jSlide;
@@ -83,7 +90,7 @@ class Setters
     }
     function tabZero($rowIndex, $tabs)
     {
-        if(Session::has('tabKey')){
+        if (Session::has('tabKey')) {
             $tabId = Session::get('tabKey');
             Session::forget('tabKey');
             return Navigation::findOrFail($tabId);
@@ -92,7 +99,7 @@ class Setters
     }
     function setTabContents($tabs, $row, $mobile, $allRoutes)
     {
-Log::info('@ tab content'.count($tabs));
+        Log::info('@ tab content' . count($tabs));
         $maker = new PageMaker();
         $contents = [];
         foreach ($tabs as $tab) {
@@ -102,7 +109,7 @@ Log::info('@ tab content'.count($tabs));
                 ->first();
             if (isset($page)) {
                 Log::info('## Got PAGE');
-                $content = $maker->pageHTML($page, true,$row);
+                $content = $maker->pageHTML($page, true, $row);
                 $contents[] = $content;
             } else {
                 Log::info('## make no nab');
@@ -110,8 +117,8 @@ Log::info('@ tab content'.count($tabs));
                     'tabId' => $tab->id,
                     'tabTitle' => $tab->title,
                     'tabIndex' => $tab->index,
-                    'rowId' => $row->id, 
-                    'pageId'=> $row->parent,
+                    'rowId' => $row->id,
+                    'pageId' => $row->parent,
                     'mobile' => Session::get('mobile'),
                     'allRoutes' => $allRoutes,
                 ])->render();

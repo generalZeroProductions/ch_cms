@@ -5,7 +5,7 @@ $jDrop = json_encode(['page'=>$page, 'row'=>$row])
 <br><br>
 
 
-<div class="container-fluid red_row d-flex justify-content-center" id = "page_title_click" style="padding-top:8px"
+<div class="container-fluid red_row d-flex justify-content-center  hide-editor" id = "page_title_click" style="padding-top:8px"
  onclick="openMainModal('removeRow', '{{ $jDrop }}','modal-sm')">
     <div class = "row d-flex align-items-center" >
         <p class="title-indicator">删除行</p>

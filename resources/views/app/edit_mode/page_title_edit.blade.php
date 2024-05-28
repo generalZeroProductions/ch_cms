@@ -1,4 +1,4 @@
- <div class="container-fluid blue_row d-flex justify-content-center" id = "page_title_click" style="padding-top:8px"
+ <div class="container-fluid blue_row d-flex justify-content-center  hide-editor" id = "page_title_click" style="padding-top:8px"
      onclick="insertForm('edit_title_page', '{{ json_encode($page) }}', 'page_title_click') ">
      <div class = "row d-flex align-items-center">
          <p class="title-indicator">页面名称:</p>

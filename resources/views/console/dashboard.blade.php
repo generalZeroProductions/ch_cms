@@ -1,6 +1,8 @@
 @php
     use App\Models\ContentItem;
+    use App\Models\User;
     use Illuminate\Support\Facades\Session;
+    $allUsers = User::all();
     Session::forget('returnPage');
     $contact = ContentItem::where('type', 'contact')->first();
     $thankyou = ContentItem::where('type', 'thankyou')->first();
@@ -8,7 +10,8 @@
     $tStyle = $thankyou->styles['title'];
     $scroll = 0;
     if (Session::has('scrollDash')) {
-        $scroll = Session::get('scrollDash');
+        echo Session::get('scrollDash');
+        $scroll = (int) Session::get('scrollDash');
         Session::forget('scrollDash');
     }
     $inqIndex = 0;
@@ -18,8 +21,27 @@
     }
     $pageIndex = 0;
     if (Session::has('pageIndex')) {
-        $pageIndex = Session::get('inqIndex');
+        $pageIndex = Session::get('pageIndex');
         Session::forget('pageIndex');
+    }
+    $userIndex = 0;
+    if (Session::has('userIndex')) {
+        $userIndex = Session::get('userIndex');
+        Session::forget('userIndex');
+    }
+    $warnSuper = false;
+    $showUsers = false;
+
+    $user = Auth::user();
+    if (
+        $user &&
+        $user->id === 1 &&
+        $user->password === '$2y$12$6qGz1z753cKIxg/Kn89C1.QSq0PM6jpEXlnc4yIHqWQpSAWuhE7gC'
+    ) {
+        $warnSuper = true;
+    }
+    if ($user->super) {
+        $showUsers = true;
     }
 
 @endphp
@@ -30,7 +52,8 @@
         Session::put('buildMode', false);
     @endphp
     <br>
-    @include('app.edit_mode.auth_on_off')
+
+    {{-- @include('app.edit_mode.auth_on_off') --}}
     <div class="container">
         <div class = "row d-flex justify-content-between rounded-box">
             <div class="p-2">
@@ -40,10 +63,16 @@
             </div>
             <div class="p-2 ">
                 <h3 class="text-left">{{ config('app.name') }}.com 仪表板</h3>
+                @if ($warnSuper)
+                    <span style = "color:red"> 您已使用密码 123 以 super 身份登录。<br>为了数据的安全，您应该更改密码并添加新用户</span>
+                @endif
             </div>
-            <div class="p-2"> <button class = "btn btn-secondary btn-top-console">登出
+            <div class="p-2"> 
+            <form method="GET" action="/console/logout"> @csrf
+            <button type ="submit" class = "btn btn-secondary btn-top-console">登出
                     <img src = "{{ asset('/icons/logout.svg') }}" class="top-console-icon">
                 </button>
+                </form>
             </div>
 
         </div>
@@ -88,13 +117,13 @@
                 <h4>询问</h4>
             </div>
             <div class="col-2">
-                <button class="btn btn-outline-primary btn-top-console "
+                <button class="btn btn-outline-primary btn-main-console"
                     onClick=" editContactSetup('contact','{{ $cStyle }}')">
                     配置查询页面
                 </button>
             </div>
 
-            <div class="col-2"> <button class="btn btn-outline-primary btn-top-console"
+            <div class="col-2"> <button class="btn btn-outline-primary btn-main-console"
                     onClick=" editContactSetup('thankyou','{{ $tStyle }}') ">
                     配置感谢页面
                 </button>
@@ -113,23 +142,51 @@
         {{-- start with inquires layout --}}
         <div class = "row ">
             <div class=col-md-4>
-                <p class='page_list_heading'>Date </p>
+                <p class='page_list_heading'>日期 </p>
             </div>
             <div class=col-md-4>
-                <p class='page_list_heading'>sender </p>
+                <p class='page_list_heading'>发件人姓名 </p>
             </div>
             <div class=col-md-2 style="text-align:center">
-                <p class='page_list_heading'>read </p>
+                <p class='page_list_heading'>阅读查询 </p>
             </div>
             <div class=col-md-2 style="text-align:center">
-                <p class='page_list_heading'>delete</p>
+                <p class='page_list_heading'>删除</p>
             </div>
         </div>
 
         <div id="inquiresDiv">
 
         </div>
+        <br>
+        <br>
+
+        @if ($user->id === 1)
+            {{-- start with userrs layout --}}
+
+            <div class = "row d-flex rounded-box">
+                <div class="col-10 d-flex justify-content-center align-content-center" style="padding-top:8px">
+                    <h4>Users</h4>
+                </div>
+                <div class="col-2">
+                    <button class="btn btn-outline-primary btn-main-console "
+                        onClick="openMainModal('addUser','{{ json_encode($allUsers) }}', 'modal-md')">
+                        添加用户
+                    </button>
+                </div>
+
+
+
+            </div>
+            <hr>
+
+            <div id="usersDiv">
+
+            </div>
     </div>
+    @endif
+    <br>
+    <br>
 @endsection
 @include('forms.main_modal')
 <style>
@@ -138,6 +195,16 @@
         width: 150px;
         margin-left: 10px;
         margin-right: 10px;
+        display: block;
+        font-size: large !important;
+        font-weight: 600 !important;
+    }
+
+    .btn-main-console {
+        height: 44px;
+        width: 100%;
+        margin-left: 6px;
+        margin-right: 6px;
         display: block;
         font-size: large !important;
         font-weight: 600 !important;
@@ -161,11 +228,11 @@
 </style>
 
 <script>
+
     window.onload = function() {
         scriptAsset = "{{ asset('scripts/') }}/";
         iconsAsset = "{{ asset('icons/') }}/";
-        paginatePages('{{ $inqIndex }}');
-        paginateInquiries('{{ $inqIndex }}');
-        window.scrollTo(0, 0);
-    };
+        paginateAll('{{ $pageIndex }}', '{{ $inqIndex }}', '{{ $userIndex }}', '{{ $showUsers }}','{{$scroll}}');
+    }
+      
 </script>

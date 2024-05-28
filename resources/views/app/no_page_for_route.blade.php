@@ -5,12 +5,12 @@
         $urlParts = explode('/', $currentUrl);
 @endphp
 
-<div class="center-page site-blue">
+<div class="center-page site-yellow">
     <div class="d-flex flex-column  mb-3">
         <div class="p-2" >
             <p style = "padding:32px"> 无法在此位置找到任何内容</p>
         </div>
-        @if ($editMode)
+        {{-- @if ($editMode)
             <div class="p-2">
                 <form method= 'POST' id ="page_quick">
                     @csrf
@@ -27,7 +27,7 @@
                      </div>
                 </form>
             </div>
-        @endif
+        @endif --}}
     </div>
 </div>
 

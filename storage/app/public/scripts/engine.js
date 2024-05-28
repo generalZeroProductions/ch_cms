@@ -6,6 +6,13 @@ var allRoutes;
 
 var allImages;
 
+function renderNavigation() {
+    var navDiv = document.getElementById("main-navigation");
+    var navSequence = "navigation^" + route;
+    scripts = ["nav"];
+    renderToDiv(navDiv, navSequence, null, scripts);
+}
+
 async function renderAll(route, pageId, scroller) {
     try {
         var navDiv = document.getElementById("main-navigation");
@@ -19,7 +26,7 @@ async function renderAll(route, pageId, scroller) {
 
         var contentDiv = document.getElementById("page_content");
         var contentSequence = "page^" + pageId;
-        scripts = ["tabs", "slides", "contact"];
+        scripts = ["tabs", "slides", "contact","images"];
         await renderToDiv(contentDiv, contentSequence, scroller, scripts);
 
         setHeadSpace();
@@ -30,10 +37,10 @@ async function renderAll(route, pageId, scroller) {
 
 function renderToDiv(div, sequence, scroller, scripts) {
     return new Promise((resolve, reject) => {
-        console.log(
-            "RENDER TO DIV : scroller: " + scroller,
-            " sequence: " + sequence
-        );
+        // console.log(
+        //     "RENDER TO DIV : scroller: " + scroller,
+        //     " sequence: " + sequence+' scripts: '+ scripts
+        // );
 
         fetch("/render_/render_content/" + sequence)
             .then((response) => {
@@ -44,16 +51,11 @@ function renderToDiv(div, sequence, scroller, scripts) {
             })
             .then((html) => {
                 div.innerHTML = html;
-                console.log(
-                    "Finished setting innerHTML for sequence=" + sequence
-                );
                 loadScripts(scripts);
                 if (scroller) {
-                    console.log("FIND SCROLLER " + scroller);
                     requestAnimationFrame(() => {
                         var row = document.getElementById(scroller);
                         if (row) {
-                            console.log("found row");
                             var desiredOffset =
                                 row.getBoundingClientRect().top +
                                 window.scrollY -
@@ -78,7 +80,6 @@ function renderToDiv(div, sequence, scroller, scripts) {
 }
 
 function insertForm(formName, item, divId) {
-    preventScrolling();
     hideEditors();
     var div = document.getElementById(divId);
     var jItem = JSON.parse(item);
@@ -88,11 +89,10 @@ function insertForm(formName, item, divId) {
             "Content-Type": "application/json",
         },
     })
-        .then((response) => response.text()) // Parse response as text
+        .then((response) => response.text())
         .then((html) => {
-            div.innerHTML = html; // Set the HTML content to the div
+            div.innerHTML = html;
             formRouter(formName, item);
-            enableScrolling();
             columnShift(formName, item);
         })
         .catch((error) => {
@@ -116,7 +116,6 @@ function columnShift(formName, jItem) {
 }
 
 function writeAndReturn(formName, newPage) {
-    console.log("WRITING: " + formName);
     var form = document.getElementById(formName);
     form.addEventListener("submit", function (event) {
         event.preventDefault();
@@ -132,7 +131,6 @@ function writeAndReturn(formName, newPage) {
     });
 }
 function writeNoReturn(formName) {
-    console.log("WRITING NO RETURN: " + formName);
     var form = document.getElementById(formName);
     if (!form) {
         console.log("NO FORM AT WriteNoReturn");
@@ -187,7 +185,6 @@ function showEditors() {
 }
 
 function writeAndRender(formName, sequence, div, scripts) {
-    console.log("WRITING: " + formName + "div = " + div.id);
     var form = document.getElementById(formName);
     form.addEventListener("submit", function (event) {
         event.preventDefault();
@@ -200,7 +197,6 @@ function writeAndRender(formName, sequence, div, scripts) {
     })
         .then((response) => {
             if (response.ok) {
-                console.log("resoponse from WRITE went well");
                 renderToDiv(div, sequence, div.id, scripts);
             } else {
                 console.error("Form submission failed:", response.statusText);
@@ -214,12 +210,17 @@ function writeAndRender(formName, sequence, div, scripts) {
 }
 
 function loadScripts(scripts) {
+    if (!scripts) {
+        return;
+    }
+    console.log("calling load scripts");
     scripts.forEach((script) => {
         if (script === "nav") {
             var editLogo = document.getElementById("logo_thumb");
             if (editLogo) {
                 logoFormFillout(null);
             }
+            console.log("calling nav scripts");
         }
         if (script === "footer") {
             var footScripts = document.querySelectorAll(".footer_scripts");
@@ -232,6 +233,7 @@ function loadScripts(scripts) {
                     eval(setUpFooterCall[0]);
                 }
             });
+             console.log("calling footer scripts");
         }
         if (script === "tabs") {
             var runScripts = document.querySelectorAll(".run-scripts");
@@ -254,6 +256,7 @@ function loadScripts(scripts) {
                     eval(noRouteCall[0]);
                 }
             });
+             console.log("calling tabs scripts");
         }
         if (script === "slides") {
             var slideScripts = document.querySelectorAll(".slide_scripts");
@@ -267,7 +270,34 @@ function loadScripts(scripts) {
                     eval(loadSlideHeightCall[0]);
                 }
             });
+             var caroulselSctips = document.querySelectorAll(".carousel_scripts");
+             caroulselSctips.forEach((script) => {
+                 var innerHtml = script.innerHTML;
+                 var loadStartCall = innerHtml.match(
+                     /startCarousel\([^)]*\)/
+                 );
+
+                 if (loadStartCall !== null) {
+                     eval(loadStartCall[0]);
+                 }
+             });
+              console.log("calling slide scripts");
         }
+         if (script === "images") {
+              var imageScripts =
+                  document.querySelectorAll(".imageSizingScript");
+              imageScripts.forEach((script) => {
+                  var innerHtml = script.innerHTML;
+                  var loadImageSizeCall = innerHtml.match(
+                      /setImageColumsSize\([^)]*\)/
+                  );
+
+                  if (loadImageSizeCall !== null) {
+                      eval(loadImageSizeCall[0]);
+                  }
+              });
+               console.log("calling image scripts");
+         }
         if (script === "contact") {
             var contactScripts = document.querySelectorAll(".contactScript");
             contactScripts.forEach((script) => {
@@ -277,6 +307,7 @@ function loadScripts(scripts) {
                     eval(contactCall[0]);
                 }
             });
+             console.log("calling contact scripts");
         }
     });
 }
@@ -287,7 +318,6 @@ function loadNoRoutes() {
         var innerHtml = script.innerHTML;
         var noRouteCall = innerHtml.match(/populateRoutesNoTab\([^)]*\)/);
         if (noRouteCall !== null) {
-            console.log("RAN NO ROUTE CALL");
             eval(noRouteCall[0]);
         }
     });
@@ -303,7 +333,7 @@ function formRouter(formName, item) {
         editTabsSetup(formName, item);
     }
     if (formName.includes("article")) {
-        articleFormRouter(formName, item);
+        titleTextFillout(formName, item);
     }
     if (formName.includes("page")) {
         pageFormRouter(formName, item);

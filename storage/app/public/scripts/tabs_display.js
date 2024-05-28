@@ -36,35 +36,30 @@ function changeTab(rowId, anchorId, tabIndex, fromClick) {
     link.className = "tab-item-on";
     var contentBox = "tabContent_" + rowId;
     var contentDivs = document.querySelectorAll("." + contentBox);
-    console.log(contentDivs.length + " is how many divs we got");
     let displayedPage;
-
-    // Promise that resolves when styles are changed
 
     contentDivs.forEach((page) => {
         page.style.display = "none";
         if (page.id === "contents" + tabIndex) {
-            console.log('found page at '+page.id);
             page.style.display = "block";
-            displayedPage = page; // Save the displayed page
+            displayedPage = page;
         } else {
-         page.style.display = "none";
+            page.style.display = "none";
         }
     });
 
     if (fromClick) {
-
-        var desiredOffset = displayedPage.getBoundingClientRect().top - headSpace; // Calculate desired offset
-        var scrollToOffset = window.scrollY + desiredOffset; 
+        var desiredOffset =
+            displayedPage.getBoundingClientRect().top - headSpace; // Calculate desired offset
+        var scrollToOffset = window.scrollY + desiredOffset;
         window.scrollTo({
             top: scrollToOffset,
-            behavior: "smooth"
+            behavior: "smooth",
         });
-
     }
 }
 
-function populateRoutesNoTab(pageId,rowId, tabIndex, tabId) {
+function populateRoutesNoTab(pageId, rowId, tabIndex, tabId) {
     const row = document.getElementById(rowId);
     const selectRoutes = row.querySelectorAll("#select_" + rowId + tabId);
     const routeSelect = selectRoutes[0];
@@ -72,7 +67,6 @@ function populateRoutesNoTab(pageId,rowId, tabIndex, tabId) {
     const useRoute = routeValues[0];
     const replaceDivs = row.querySelectorAll(".tabContent_" + rowId);
     const div = replaceDivs[0];
-    console.log("how many : " + replaceDivs.length);
     allRoutes.forEach(function (page) {
         var option = document.createElement("option");
         option.value = page;
@@ -86,16 +80,12 @@ function populateRoutesNoTab(pageId,rowId, tabIndex, tabId) {
         event.preventDefault();
     });
     routeSelect.addEventListener("change", function (event) {
-        console.log('ACTION');
         useRoute.value = routeSelect.value;
-        var renderDiv = document.getElementById('rowInsert'+rowId);
-        var sequence = "tab_menu^" + rowId + "^"+pageId;
-        writeAndRender(formName,sequence,renderDiv,['tabs'])
-       
+        var renderDiv = document.getElementById("rowInsert" + rowId);
+        var sequence = "tab_menu^" + rowId + "^" + pageId;
+        writeAndRender(formName, sequence, renderDiv, ["tabs"]);
     });
 }
-
-
 
 function loadTabAcc(tab, div) {
     const tabItem = JSON.parse(tab);

@@ -12,16 +12,16 @@
         <div class = "row tab-contain-right">
 @endif
 
-
-<div class="col-9 d-flex " id = "{{ $articleId }}">
-    @include('articles.partials.title_text', [
+<div class="col-md-9" id = "{{ $articleId }}">
+     @include('articles.partials.title_text', [
         'pageId' => $pageId,
         'rowId' => $rowId,
-        'column' => $column1,
+        'article' => $article,
         'info' => $info,
+        'index' => $index,
     ])
 </div>
-<div class="col-3 d-flex image-column" id = "{{ $imageId }}">
+<div class="col-md-3" id = "{{ $imageId }}">
     @include('articles.partials.image_column', [
         'pageId' => $pageId,
         'rowId' => $rowId,
@@ -29,4 +29,11 @@
     ])
 
 </div>
+</div>
+
+
+<div class = "imageSizingScript">
+<script>
+setImageColumsSize('none');
+</script>
 </div>

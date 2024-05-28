@@ -8,9 +8,9 @@ use App\Models\ContentItem;
 use App\Models\Navigation;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\Log;
 
 class PageController extends Controller
 {
@@ -29,7 +29,6 @@ class PageController extends Controller
     }
     public function write(Request $request)
     {
-Log::info($request);
         if ($request->form_name === 'edit_title_page') {
             $this->updatePageTitle($request);
         } elseif ($request->form_name === 'logo_edit') {
@@ -75,7 +74,6 @@ Log::info($request);
         }
 
         if (isset($request->deleted)) {
-            Log::info('DELETED ITMES ');
             $deleteData = json_decode($request->deleted);
             foreach ($deleteData as $delete) {
                 if (isset($delete->record)) {
@@ -84,7 +82,6 @@ Log::info($request);
                 }
             }
         }
-        Log::info('FINISHED WRITEN GFOOTER ');
 
     }
 
@@ -116,7 +113,6 @@ Log::info($request);
     }
     public static function render($render)
     {
-        Log::info('makeing foot request '. $render);
         $rData = explode('^', $render);
         if (isset($rData[1])) {
             if ($rData[1] === '联系我们') {
@@ -132,7 +128,6 @@ Log::info($request);
             $htmlString = $pageMaker->pageHTML($page, false, null);
             return new Response($htmlString, 200, ['Content-Type' => 'text/html']);
         }if ($rData[0] === 'footer') {
-            Log::info('makeing foot request 2 ');
             $footMaker = new FootMaker();
             $htmlString = $footMaker->makeFooter();
             return new Response($htmlString, 200, ['Content-Type' => 'text/html']);
@@ -174,24 +169,10 @@ Log::info($request);
 
     public function deletePage(Request $request)
     {
-
         $page = ContentItem::findOrFail($request->page_id);
         $rows = ContentItem::where('parent', $page->id)->get();
         foreach ($rows as $row) {
-            $tabs = Navigation::where('parent', $row->id)->get();
-            foreach ($tabs as $tab) {
-                $tab->delete();
-            }
-
-            $columns = ContentItem::where('parent', $row->id)->get();
-            foreach ($columns as $col) {
-                $navs = Navigation::where('parent', $col->id)->get();
-                foreach ($navs as $nav) {
-                    $nav->delete();
-                }
-                $col->delete();
-            }
-            $row->delete();
+           $this->rowDeleter($row);
         }
         $page->delete();
         if (Session::has('pageIndex')) {
@@ -203,14 +184,42 @@ Log::info($request);
         }
         return redirect()->route('dashboard');
     }
+    public function rowDeleter($row)
+    {
 
+        $tabs = Navigation::where('type', ['tab'])->get();
+        foreach ($tabs as $tab) {
+            if ($tab->parent = $row->id) {
+                $tab->delete();
+            }
+        }
+
+        $columns = ContentItem::where('parent', $row->id)->get();
+        foreach ($columns as $col) {
+            $infos = Navigation::where('type', 'info')->get();
+            foreach ($infos as $info) {
+                if ($info->parent === $col->id) {
+                    $info->delete();
+                }
+            }
+            Log::info('Got first col infos');
+
+            $col->delete();
+        }
+
+        $row->delete();
+
+    }
     public function deleteRow(Request $request)
     {
+        Log::info($request);
         $rows = ContentItem::where('parent', $request->page_id)->orderBy('index')->get();
-        $nextRowInsert = null;
         $row = ContentItem::findOrFail($request->row_id);
+
+        $nextRowInsert = null;
+
         foreach ($rows as $r) {
-          
+
             if ($r->index > $row->index) {
                 $r->index = $r->index - 1;
                 $r->save();
@@ -219,19 +228,8 @@ Log::info($request);
                 }
             }
         }
-        $tabs = Navigation::where('parent', $request->row_id)->get();
-        foreach ($tabs as $tab) {
-            $tab->delete();
-        }
-        $columns = ContentItem::where('parent', $row->id)->get();
-        foreach ($columns as $col) {
-            $navs = Navigation::where('parent', $col->id)->get();
-            foreach ($navs as $nav) {
-                $nav->delete();
-            }
-            $col->delete();
-        }
-        $row->delete();
+
+        $this->rowDeleter($row);
         $page = ContentItem::findOrFail($request->page_id);
         Session::put('scrollTo', 'rowInsert' . $nextRowInsert);
         return redirect()->route('root', ['page' => $page->title]);

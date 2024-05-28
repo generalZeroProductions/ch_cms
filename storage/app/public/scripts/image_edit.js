@@ -10,7 +10,6 @@ function imageFormFillout(formName_sent, jItem) {
     form.addEventListener("submit", function (event) {
         preventDefault();
     });
-    console.log("PAST FORM");
     setImageAndCorners(div, item);
     var uploadBars = div.querySelectorAll("#upload_file_bar");
     var serverBars = div.querySelectorAll("#server_file_bar");
@@ -103,7 +102,6 @@ function setCornersStyle(id, div) {
             thumb[0].classList.add(id);
         }
     });
-    console.log("id type " + id);
     var cornerField = document.getElementById("corners_field");
     cornerField.value = id;
 }
@@ -134,7 +132,6 @@ function displayServerFile(id, div, imageName) {
                 var btn = document.getElementById("save_logo_btn");
                 btn.setAttribute("style", "cursor:pointer");
                 btn.classList.remove("disabled");
-                console.log("SET IMG NAME " + imageName);
             }
         }
     }
@@ -169,7 +166,6 @@ function displayUploadedImages(id, input, div) {
                 var btn = document.getElementById("save_logo_btn");
                 btn.setAttribute("style", "cursor:pointer");
                 btn.classList.remove("disabled");
-                console.log("SET IMG NAME " + file.name);
             }
         }
     };

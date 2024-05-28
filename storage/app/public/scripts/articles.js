@@ -1,30 +1,37 @@
-function articleFormRouter(formName, item) {
-    console.log("to fillout article??");
-    if (formName === "edit_text_article") {
-        titleTextFillout(formName, item);
-    }
+function reformatHtmlString(string)
+{
+    var tempDiv = document.createElement("div");
+     tempDiv.innerHTML = string;
+     var decodedString = tempDiv.textContent || tempDiv.innerText;
+     if (decodedString.startsWith('"') && decodedString.endsWith('"')) {
+         decodedString = decodedString.slice(1, -1);
+     }
+     return decodedString;
 }
 
 function titleTextFillout(formName, jItem) {
     var item = JSON.parse(jItem);
+    console.log(jItem);
     editingDiv = null;
-    addFieldAndValue(formName + "_title", item.article.title);
+    addFieldAndValue(formName + "_title", reformatHtmlString(item.article.title));
 
     var editDiv = document.getElementById("htmlDiv");
     editingDiv = editDiv;
-    editDiv.insertAdjacentHTML("beforeend", item.body);
+    editDiv.insertAdjacentHTML(
+        "beforeend",
+        reformatHtmlString(item.article.body)
+    );
 
     editDiv.addEventListener("input", function (event) {
-        console.log("LISTENING");
         updateHtmlDivString();
     });
- 
+
     addFieldAndValue("article_id", item.article.id);
     addFieldAndValue("row_id", item.rowId);
     addFieldAndValue("page_id", item.pageId);
     addFieldAndValue("scroll_to", item.rowId);
 
-    var style = item.article.styles["title"];
+    var style = item.article.titleStyle;
 
     var titleStyle = document.getElementById("edit_text_article_title");
 
@@ -35,7 +42,7 @@ function titleTextFillout(formName, jItem) {
     sizeSelect.value = match.toString();
 
     sizeSelect.addEventListener("change", function () {
-        setTitleHeight(sizeSelect.value,'edit_text_article_title');
+        setTitleHeight(sizeSelect.value, "edit_text_article_title");
     });
     titleStyle.className = "form-control t" + match;
 
@@ -43,7 +50,7 @@ function titleTextFillout(formName, jItem) {
     var showRadio = document.getElementById("info-radio");
 
     var useInfo = document.querySelector("#inlineCheckbox1");
-    var infoStyle = item.article.styles["info"];
+    var infoStyle = item.info.show;
     if (infoStyle != "on") {
         showInfo.classList.add("hide-info-link");
         showRadio.classList.add("hide-info-link");
@@ -64,24 +71,34 @@ function titleTextFillout(formName, jItem) {
         }
     });
 
-    var infoStyle = item.info.styles["type"];
+    var infoStyle = item.info.type;
     if (infoStyle === "button") {
         document.getElementById("radio_button").checked = true;
     } else {
         document.getElementById("radio_link").checked = true;
     }
     var routeSelect = document.getElementById("route_select");
+    var option = document.createElement("option");
+    option.value = "选择页面路由";
+    option.text = "选择页面路由";
+    route_select.appendChild(option);
     allRoutes.forEach(function (page) {
         var option = document.createElement("option");
         option.value = page;
         option.text = page;
-        if (page === item.route) {
+        if (page === item.info.route) {
             option.selected = true;
         }
         routeSelect.appendChild(option);
     });
+    var option = document.createElement("option");
+    option.value = "联系我们";
+    option.text = "联系我们";
+    if (item.info.route === "联系我们") {
+        option.selected = true;
+    }
+    route_select.appendChild(option);
     var saveBtn = document.getElementById("edit_article_btn");
-    var cancelBtn = document.getElementById("cancel_article");
     var infoTitle = document.getElementById("article_info_title");
 
     infoTitle.value = item.info.title;
@@ -90,23 +107,20 @@ function titleTextFillout(formName, jItem) {
     });
 
     var div = document.getElementById("rowInsert" + item.rowId);
-  
+
     var sequence = "update_article^" + item.pageId + "^" + item.rowId;
     saveBtn.onclick = function () {
         if (verifySubmit(saveBtn)) {
-            writeAndRender(formName, sequence, div,[]);
+            writeAndRender(formName, sequence, div, []);
         }
     };
     updateHtmlDivString();
 }
 
-function removeHtmlTags(input) {
-    return input.replace(/<\/?[^>]+(>|$)/g, "");
-}
 
 function setTitleHeight(selectedOption, field) {
     var articleTitle = document.getElementById(field);
-    var selectedClass = "form-control"; // Start with 'form-control'
+    var selectedClass = "form-control";
     if (selectedOption === "1") {
         selectedClass += " t1";
     } else if (selectedOption === "2") {
@@ -139,50 +153,44 @@ function boldSelected(route) {
     const span = document.createElement("span");
     span.style.fontWeight = 800;
     range.surroundContents(span);
-    if(route==='article')
-    {
+    if (route === "article") {
         updateHtmlDivString();
-    }
-    else{
+    } else {
         var div = findContainerDiv(range.startContainer);
         writeFooterBody(div.id);
     }
-    
 }
 function unboldSelected(route) {
     const selection = window.getSelection();
     const range = selection.getRangeAt(0);
     const span = document.createElement("span");
     span.style.fontWeight = 600;
-    if(route==='article')
-    {
+    if (route === "article") {
         span.style.fontWeight = 400;
     }
     range.surroundContents(span);
     updateHtmlDivString();
-    if(route==='article')
-    {
+    if (route === "article") {
         updateHtmlDivString();
-    }
-    else{
+    } else {
         var div = findContainerDiv(range.startContainer);
         writeFooterBody(div.id);
     }
 }
 
-
 var editingDiv;
 function addLink() {
-    console.log("called");
     const selection = window.getSelection();
     const range = selection.getRangeAt(0);
-    editingDiv =findContainerDiv(range.startContainer);
+    editingDiv = findContainerDiv(range.startContainer);
+    console.log(editingDiv.id+ " editing this");
     openLinkModal(range);
+    
 }
 
 function openLinkModal(range) {
     $("#linkModal").modal("show");
-    window.range = range; // Store the range in a global variable
+    window.range = range;
 }
 
 function saveLink() {
@@ -190,46 +198,33 @@ function saveLink() {
     const hrefValue = hrefInput.value;
 
     if (hrefValue && window.range) {
-        // Check if range is defined
-        const range = window.range; // Get the range from the global variable
+        const range = window.range;
         const link = document.createElement("a");
-        link.href = hrefValue; // Set the href value provided by the user
+        link.href = hrefValue;
         link.textContent = range.toString();
         range.deleteContents();
         range.insertNode(link);
         updateHtmlDivString();
     }
-    $("#linkModal").modal("hide"); // Hide the modal after saving
+    $("#linkModal").modal("hide");
 }
+
 function updateHtmlDivString() {
-   
-    // const htmlDiv = document.getElementById("htmlDiv");
-    // htmlDivStringInput.value = htmlDiv.innerHTML;
-    if(editingDiv)
-    {
-        console.log("WE ARE DINDNG THE DUDE");
-        if(editingDiv.id === "htmlDiv")
-        {
+    if (editingDiv) {
+        if (editingDiv.id === "htmlDiv") {
+            console.log("TRYING TO SAVE HERER")
             var htmlDivStringInput = document.getElementById("htmlDivString");
             htmlDivStringInput.value = editingDiv.innerHTML;
-
-        }
-        else{
+        } else {
             writeFooterBody(editingDiv.id);
         }
-       
     }
-
 }
 
 function findContainerDiv(node) {
-    while (
-        node &&
-        node.tagName !== "DIV" 
-    ) {
+    while (node && node.tagName !== "DIV"|| !node.classList.contains("edit_body")){
         node = node.parentNode;
     }
-    console.log("node is "+node.id);
     return node;
 }
 
@@ -245,14 +240,11 @@ function removeLink(route) {
             link.parentNode.insertBefore(text, link);
             link.parentNode.removeChild(link);
         }
-        if(route==='article')
-        {
+        if (route === "article") {
             updateHtmlDivString();
-        }
-        else{
+        } else {
             var div = findContainerDiv(range.startContainer);
             writeFooterBody(div.id);
         }
     }
-   
 }

@@ -13,10 +13,10 @@
 @endphp
 
 
-<div class="container-fluid">
+<div class="container-fluid hide-editor">
     <div class="row d-flex">
 
-        <div class="col-4 green-bar d-flex justify-content-center" id = "page_title_click" style="padding-top:8px"
+        <div class="col-4 green-bar d-flex justify-content-center " id = "page_title_click" style="padding-top:8px"
             onClick = "openMainModal('editSlideshow', '{{ $item }}','modal-xl')">
             <div class = "row d-flex align-items-center">
                 <p class="title-indicator">编辑幻灯片</p>

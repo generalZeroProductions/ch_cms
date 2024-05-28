@@ -13,13 +13,12 @@ function setupFormSubmit(formName, sequence, div) {
     var btn = document.getElementById(formName + "_btn");
     btn.onclick = function () {
         if (verifySubmit(btn)) {
-            writeAndRender(formName, sequence, div);
+            writeAndRender(formName, sequence, div,['nav']);
         }
     };
 }
 
 function enableSubmit(formName) {
-    console.log("ENABLING ");
     var btn = document.getElementById(formName + "_btn");
     var title = document.getElementById(formName + "_title");
     if (title.value != "") {

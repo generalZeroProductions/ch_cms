@@ -1,18 +1,13 @@
 @php
-    $tStyle = $column->styles['title'];
-    $title = $column->title;
-    $body = $column->body;
-    $decodedBody = htmlspecialchars_decode($body);
-    $escapedBody = addslashes($decodedBody);
-    $divId = 'article_' . $column->id;
+
+    $divId = 'article_' . $article['id'];
+    $tStyle = $article['titleStyle'];
     $item = json_encode([
         'pageId' => $pageId,
         'rowId' => $rowId,
-        'article' => $column,
-        'body' => $escapedBody,
+        'article' => $article,
         'info' => $info,
     ]);
-
 @endphp
 
 
@@ -25,20 +20,28 @@
             </a>
         </div>
     @endif
-    <div class={{ $tStyle }}> {{ $title }}</div>
+    <div class={{ $tStyle }}>
+        @php
+            echo htmlspecialchars_decode($article['title']);
+        @endphp
+    </div>
     @php
-        echo htmlspecialchars_decode($body);
+        echo htmlspecialchars_decode($article['body']);
     @endphp
     <br>
-    @if ($column->styles['info'] === 'on')
+    @if ($info['show'] === 'on')
         <br>
         <div style = "height:45px">
-            @if ($info->styles['type'] === 'button')
-                <button class="btn btn-outline-info" onClick="window.location='{{ $info->route }}'">
-                    <{{ $column->styles['title'] }}> {{ $info->title }} </{{ $column->styles['title'] }}>
+            @if ($info['type'] === 'button')
+                <button class="btn btn-outline-info" onClick="window.location='{{ $info['route'] }}'">
+                    <{{ $article['titleStyle'] }}>
+                        @php
+                            echo htmlspecialchars_decode($info['title']);
+                        @endphp
+                        </{{ $article['titleStyle'] }}>
                 </button>
             @else
-                <a class='article-info-link' href="/{{ $info->route }}"> {{ $info->title }}</a>
+                <a class='article-info-link' href="/{{ $info['route'] }}"> {{ $info['title'] }}</a>
             @endif
         </div>
     @endif

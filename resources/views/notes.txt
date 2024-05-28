@@ -7,8 +7,8 @@ delete row doesn't scrool at all
 hide all edit elements at insert, reveal all at render 
 
 
-users table and create user for super 
-contact us innquiries
+
+
 cancel button where needed. !!  
 'enter' listeners.!!
 

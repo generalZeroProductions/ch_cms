@@ -3,7 +3,6 @@ deleteFooterList = [];
 footIds = -1;
 
 function changeFooterSetup(type) {
-    console.log("calling footer here " + type);
     var singleSelect = document.getElementById("single_footer_click");
     var doubleSelect = document.getElementById("double_footer_click");
     if (type === "double") {
@@ -41,7 +40,6 @@ function footerFillout(formName, jItem) {
 
     btn.onclick = function () {
        footerDataList.forEach(record => {
-        console.log(record.body);
         var text = record.body;
         record.body = decodeHTML(text);
        });
@@ -87,7 +85,7 @@ function createEditableDiv(footer) {
      var getDecode = decodeHTML(footer.body);
     editableDiv.innerHTML = getDecode;
     editableDiv.id = "editableDiv" + footer.id;
-    editableDiv.className = "p-2";
+    editableDiv.className = "p-2 edit_body";
     editableDiv.style.border = "1px solid black";
     editableDiv.style.minHeight = "36px";
     editableDiv.style.fontSize = "13px";
@@ -98,7 +96,6 @@ function createEditableDiv(footer) {
     });
 }
 function writeFooterBody(divId) {
-    console.log("AT WRITE ")
     var div = document.getElementById(divId);
     var index = footerDataList.findIndex((item) => item.name === divId);
     footerDataList[index].body = div.innerHTML;
@@ -118,9 +115,7 @@ function deleteFooter() {
 
 function updateFooterData() {
     var hiddenField = document.getElementById("store_footer_data");
-    console.log(footerDataList[0].body)
     hiddenField.value = JSON.stringify(footerDataList);
-    console.log(hiddenField.value);
     var trash = document.getElementById("delete_footer");
     if (footerDataList.length === 1) {
         trash.style.visibility = "hidden";

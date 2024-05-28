@@ -1,4 +1,17 @@
 
+
+
+<div class="d-flex gray-row">
+    <div class="col-9">
+    </div>
+    <div class="col-3 d-flex justify-content-end align-items-center">
+        <button class = "btn btn-secondary btn-44-build"
+            onClick="enterPageBuild('{{$page->title}}','build','{{$row->id}}')">
+            建立页面
+            <img src={{ asset('icons/build.svg') }} class="build-icon">
+            </button>
+    </div>
+</div>
 <style>
     .gray-row {
         margin-top: 10px;
@@ -18,13 +31,3 @@
         margin-bottom:2px;
     }
 </style>
-
-<div class="d-flex gray-row">
-    <div class="col-9">
-    </div>
-    <div class="col-3 d-flex justify-content-end align-items-center">
-        <button class = "btn btn-secondary btn-44-build"
-            onClick="enterPageBuild('{{$page->title}}','build','{{$row->id}}')">
-            建立页面 <img src={{ asset('icons/build.svg') }} class="build-icon"></button>
-    </div>
-</div>

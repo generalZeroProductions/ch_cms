@@ -23,13 +23,7 @@
     $slideshowId = 'slide_show_' . $rowId;
 
 @endphp
-
-
-
-{{-- 
-@if (count($slideList) > 0)
-
-  --}}  <div id="{{ $slideBox }}"> 
+ <div id="{{ $slideBox }}"> 
         @if (count($slideList) > 1)
 @include('slides.slide_carousel',['slideList'=>$slideList,'slideshowId'=>$slideshowId])
    
@@ -37,8 +31,7 @@
     <div class = 'banner_container'>
         <img src ="{{ asset('images/' . $slideList[0]['image']) }} " class = "image-fluid">
     </div>
-@endif{{--
-@endif  --}}
+@endif
 @if ($editMode && !$tabContent)
     @include('slides.forms.edit_slides_bar', [
         'slideBox' => $slideBox, 
@@ -47,5 +40,4 @@
         'slideJson' => $slideJson,
     ])
 @endif
-
 </div> 

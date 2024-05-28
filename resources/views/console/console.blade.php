@@ -13,7 +13,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ asset('scripts/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('scripts/site.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/site.css') }}">
      <link rel="stylesheet" href="{{ asset('css/articles.css') }}">
     <script src="{{ asset('scripts/engine.js') }}"></script>
     <script src="{{ asset('scripts/articles.js') }}"></script>

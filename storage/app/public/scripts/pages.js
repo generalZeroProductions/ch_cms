@@ -87,9 +87,6 @@ function duplicatePageName(title) {
 }
 
 function openMainModal(action, item, modalSize) {
-    console.log(item);
-    preventScrolling();
-    // add listenr on close to enable scrolling;
     var dialogElement = document.getElementById("main_modal_dialog");
     dialogElement.className = "modal-dialog " + modalSize;
     $("#main_modal").modal("show");
@@ -106,13 +103,19 @@ function openMainModal(action, item, modalSize) {
         deletePageWarning(item);
     } else if (action === "deleteInquiry") {
         deleteInqWarning(item);
+    } else if (action === "addUser") {
+        addUser(item);
+    } else if (action === "editUser") {
+        editUser(item);
+    } else if (action === "deleteUser") {
+        deleteUser(item);
     }
+
+    
 }
 
-function deleteInqWarning(jItem) {
+function deleteInqWarning(item) {
     scrollBack =  window.scrollY
-    var item = JSON.parse(jItem);
-    console.log("ATDELETE");
     document.getElementById("main_modal_label").innerHTML =
         "您确定要删除此查询吗";
     fetch("/delete_contact_form")
@@ -121,9 +124,8 @@ function deleteInqWarning(jItem) {
             if (modBody) {
                 modBody.innerHTML = html;
                 var inqId = document.getElementById("inq_id");
-                inqId.value = item.id;
+                inqId.value = item;
                 var scrollDash = document.getElementById("scrollDash");
-                console.log(scrollDash);
                 scrollDash.value = scrollBack;
             } else {
                 console.log("NO MOD BODY");
@@ -134,20 +136,12 @@ function deleteInqWarning(jItem) {
         );
 }
 function insertCreateRowForm(jItem) {
-    var closeBtn = document.getElementById("close_main_modal");
-    closeBtn.addEventListener("click", function (event) {
-        console.log("clicked close");
-        enableScrolling();
-    });
-
     document.getElementById("main_modal_label").innerHTML =
         "选择要创建的行类型";
     item = JSON.parse(jItem);
-
     if (!item.row) {
         item.row = { id: 0, index: 0 };
     }
-    console.log("want an index? " + item.row.index);
     fetch("/row_type")
         .then((response) => response.text())
         .then((html) => {
@@ -176,17 +170,14 @@ function insertCreateRowForm(jItem) {
         .catch((error) => console.error("Error loading newNavSelect:", error));
 }
 
-function deletePageWarning(jItem) {
-    console.log(jItem);
-    var item = JSON.parse(jItem);
-
+function deletePageWarning(item) {
     document.getElementById("main_modal_label").innerHTML = "确认删除页面";
     fetch("/delete_page_form")
         .then((response) => response.text())
         .then((html) => {
             if (modBody) {
                 modBody.innerHTML = html;
-                document.getElementById("page_id").value = item.id;
+                document.getElementById("page_id").value = item;
             }
         })
         .catch((error) =>

@@ -1,14 +1,28 @@
 @php
     use Illuminate\Support\Facades\Log;
     $nextDrop = 0;
+    $showLogo = true;
+    if($logo->data['image']==='0')
+    {
+        $showLogo = false;
+    }
+    $showTitle = true;
+    if($logo->data['title']==='0')
+    {
+        $showTitle = false;
+    }
 @endphp
 
 <div id = "site_nav_bar">
 <nav class="navbar navbar-expand-lg navbar-light bg-light" >
     @if (!$editMode)
         <a class="navbar-brand" href="/" style="display: flex; align-items: center;">
+        @if($showLogo)
          <img src="{{ asset("images/$logo->route") }}" class="main-logo-crop">
+         @endif
+         @if($showTitle)
          <h3>{{$logo->title}}</h3>
+         @endif
          </a>
     @endif
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"

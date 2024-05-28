@@ -1,14 +1,12 @@
 var resizeTimeout;
 
 function setHeadSpace(){
-    
     var mainNav = document.getElementById("site_nav_bar");
     var headSpaceDiv = document.getElementById("headspace");
     mainNavBottom = 0;
-    console.log("calling headSpace");
     if(mainNav)
-    {console.log('found nav');
-    var  mainNavBottom = mainNav.getBoundingClientRect().bottom + 24;
+    {
+      mainNavBottom = mainNav.getBoundingClientRect().bottom + 24;
     }
     else
     {
@@ -20,22 +18,21 @@ function setHeadSpace(){
     }
     headSpace = mainNavBottom;
     headSpaceDiv.style.height = `${mainNavBottom}px`;
- 
 }
 
-function preventScrolling() {
-    var scrollTop = window.scrollY || document.documentElement.scrollTop;
-    document.body.style.position = "fixed";
-    document.body.style.top = `-${scrollTop}px`;
-    document.body.style.width = "100%";
-}
-function enableScrolling() {
-    var scrollTop = parseInt(document.body.style.top, 10);
-    document.body.style.position = "";
-    document.body.style.top = "";
-    document.body.style.width = "";
-    window.scrollTo(0, -scrollTop);
-}
+// function preventScrolling() {
+//     var scrollTop = window.scrollY || document.documentElement.scrollTop;
+//     document.body.style.position = "fixed";
+//     document.body.style.top = `-${scrollTop}px`;
+//     document.body.style.width = "100%";
+// }
+// function enableScrolling() {
+//     var scrollTop = parseInt(document.body.style.top, 10);
+//     document.body.style.position = "";
+//     document.body.style.top = "";
+//     document.body.style.width = "";
+//     window.scrollTo(0, -scrollTop);
+// }
 
 function findClosestDiv() {
     var rowMarks = document.querySelectorAll('.row_mark');
@@ -52,7 +49,6 @@ function findClosestDiv() {
 }
 var currentScreen;
 function handleResize(route) {
-console.log("calling resize: " +currentScreen);
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(function () {
         if (route && Math.abs(window.innerWidth - currentScreen) > 15) {
