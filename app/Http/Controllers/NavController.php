@@ -108,7 +108,7 @@ class NavController extends Controller
         }
         $item = Navigation::find($request->item_id);
         if ($item->type === 'drop') {
-            $subNavs = Navigation::where('parent', $item->id);
+            $subNavs = Navigation::where('parent', $item->id)->get();
             foreach ($subNavs as $sub) {
                 $sub->delete();
             }

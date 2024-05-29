@@ -99,7 +99,6 @@ class Setters
     }
     function setTabContents($tabs, $row, $mobile, $allRoutes)
     {
-        Log::info('@ tab content' . count($tabs));
         $maker = new PageMaker();
         $contents = [];
         foreach ($tabs as $tab) {
@@ -108,11 +107,9 @@ class Setters
                 ->where('title', $tab->route)
                 ->first();
             if (isset($page)) {
-                Log::info('## Got PAGE');
                 $content = $maker->pageHTML($page, true, $row);
                 $contents[] = $content;
             } else {
-                Log::info('## make no nab');
                 $content = View::make('tabs.no_tab_assigned', [
                     'tabId' => $tab->id,
                     'tabTitle' => $tab->title,

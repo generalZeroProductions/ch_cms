@@ -1,7 +1,23 @@
 @php
     $articleId1 = 'article_1' . $rowId;
     $articleId2 = 'article_2' . $rowId;
+    $spacing = 0;
+
+    if ($index !== 1) {
+        if ($article1['titleStyle'] === 't1') {
+            $spacing = 50;
+        } elseif ($article1['titleStyle'] === 't2') {
+            $spacing = 40;
+        } elseif ($article1['titleStyle'] === 't3') {
+            $spacing = 30;
+        } elseif ($article1['titleStyle'] === 't4') {
+            $spacing = 20;
+        } elseif ($article1['titleStyle'] === 't5') {
+            $spacing = 10;
+        }
+    }
 @endphp
+<div style='height:{{ $spacing }}px'></div>
 @if (!$tabContent)
     <div class = 'row row-contain'>
     @else
@@ -17,7 +33,7 @@
         'index' => $index,
     ])
 </div>
-<div class="col-md-6" id = "{{ $articleId2 }}">
+<div class="col-md-6" id = "{{ $articleId2 }}" style="text-align: justify">
     @include('articles.partials.title_text', [
         'pageId' => $pageId,
         'rowId' => $rowId,

@@ -12,7 +12,6 @@ class PageMaker
     public function pageHTML($page, $tabContent, $tabRow)
     {
         
-        Log::info('@ PageMaker');
         if (!isset($page)) {
     
             $htmlString = View::make('app.no_page_for_route');

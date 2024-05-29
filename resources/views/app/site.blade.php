@@ -26,7 +26,6 @@
         $pageId = null;
         $currentUrl = urldecode($_SERVER['REQUEST_URI']);
         $urlParts = explode('/', $currentUrl);
-        Log::info($urlParts[1] . ' LOOKING FOR THIS URL');
         $page = ContentItem::where('type', 'page')
             ->where('title', $urlParts[1])
             ->first();
@@ -55,7 +54,10 @@
         //echo $scrollTo. ' how its set before nav';
     @endphp
     <div id="page_content"></div>
+     <br>
+      <br>
     <div id="site_footer"></div>
+   
     <script src="{{ asset('scripts/jquery-3.2.1.slim.min.js') }}"></script>
     <script src="{{ asset('scripts/popper.min.js') }}"></script>
     <script src="{{ asset('scripts/bootstrap.min.js') }}"></script>

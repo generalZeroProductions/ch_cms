@@ -1,3 +1,12 @@
+@php
+$mobile = false;
+if(Session::has('mobile'))
+{
+    $mobile = Session::get('mobile');
+}
+@endphp
+
+
 @if (Auth::check())
     @include('app.edit_mode.edit_mode_banner',['logo'=>$logo])
     @if (!$buildMode)
@@ -8,10 +17,10 @@
 @endif
 
 
-@if (!$editMode)
+@if (!$editMode && !$mobile)
     <style>
         .navbar {
-            padding-right: 80px !important;
+            padding-right: 40px !important;
         }
     </style>
 @endif

@@ -59,7 +59,6 @@ class ArticleMaker
             }
         }
         if ($row->heading === 'one_column') {
-
             $htmlString .= View::make('articles.one_column', [
                 'tabContent' => $tabContent,
                 'editMode' => Session::get('editMode'),
@@ -69,7 +68,6 @@ class ArticleMaker
                 'info' => $c1Info,
                 'index' => $row->index,
             ])->render();
-
         } elseif ($row->heading === 'two_column') {
             $htmlString .= View::make('articles.two_column', [
                 'tabContent' => $tabContent,
@@ -81,7 +79,6 @@ class ArticleMaker
                 'article2' => $article2,
                 'info2' => $c2Info,
                 'rowId' => $row->id,
-
             ])->render();
         } elseif ($row->heading === 'image_right') {
             if ($mobile) {
@@ -95,7 +92,6 @@ class ArticleMaker
                     'pageId' => $page->id,
                     'index' => $row->index,
                 ])->render();
-
             } else {
                 $htmlString .= View::make('articles.image_right', [
                     'tabContent' => $tabContent,
@@ -108,7 +104,6 @@ class ArticleMaker
                     'index' => $row->index,
                 ])->render();
             }
-
         } elseif ($row->heading === 'image_left') {
             $htmlString .= View::make('articles.image_left', [
                 'tabContent' => $tabContent,

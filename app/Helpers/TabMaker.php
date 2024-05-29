@@ -11,8 +11,6 @@ class TabMaker
 {
     function renderTabRow($page,$row,$tabContent)
     {
-
-        Log::info('@tabs creator');
         $htmlString = '';
         $setters = new Setters();
         $tabs = Navigation::where('parent',$row->id)->orderBy('index')->get();
@@ -33,7 +31,6 @@ class TabMaker
 
         } else {
             if ($editMode && !$tabContent) {
-                Log::info('render a delete bar? ');
                 $htmlString .= View::make('app.edit_mode.delete_row_bar', ['page' => $page, 'row' => $row]);
             }
             $htmlString .= View::make('tabs/tabs', [

@@ -37,10 +37,6 @@ async function renderAll(route, pageId, scroller) {
 
 function renderToDiv(div, sequence, scroller, scripts) {
     return new Promise((resolve, reject) => {
-        // console.log(
-        //     "RENDER TO DIV : scroller: " + scroller,
-        //     " sequence: " + sequence+' scripts: '+ scripts
-        // );
 
         fetch("/render_/render_content/" + sequence)
             .then((response) => {
@@ -132,10 +128,6 @@ function writeAndReturn(formName, newPage) {
 }
 function writeNoReturn(formName) {
     var form = document.getElementById(formName);
-    if (!form) {
-        console.log("NO FORM AT WriteNoReturn");
-        return;
-    }
     form.addEventListener("submit", function (event) {
         event.preventDefault();
     });
@@ -213,14 +205,12 @@ function loadScripts(scripts) {
     if (!scripts) {
         return;
     }
-    console.log("calling load scripts");
     scripts.forEach((script) => {
         if (script === "nav") {
             var editLogo = document.getElementById("logo_thumb");
             if (editLogo) {
                 logoFormFillout(null);
             }
-            console.log("calling nav scripts");
         }
         if (script === "footer") {
             var footScripts = document.querySelectorAll(".footer_scripts");
@@ -233,7 +223,6 @@ function loadScripts(scripts) {
                     eval(setUpFooterCall[0]);
                 }
             });
-             console.log("calling footer scripts");
         }
         if (script === "tabs") {
             var runScripts = document.querySelectorAll(".run-scripts");
@@ -256,7 +245,6 @@ function loadScripts(scripts) {
                     eval(noRouteCall[0]);
                 }
             });
-             console.log("calling tabs scripts");
         }
         if (script === "slides") {
             var slideScripts = document.querySelectorAll(".slide_scripts");
@@ -281,23 +269,8 @@ function loadScripts(scripts) {
                      eval(loadStartCall[0]);
                  }
              });
-              console.log("calling slide scripts");
         }
-         if (script === "images") {
-              var imageScripts =
-                  document.querySelectorAll(".imageSizingScript");
-              imageScripts.forEach((script) => {
-                  var innerHtml = script.innerHTML;
-                  var loadImageSizeCall = innerHtml.match(
-                      /setImageColumsSize\([^)]*\)/
-                  );
 
-                  if (loadImageSizeCall !== null) {
-                      eval(loadImageSizeCall[0]);
-                  }
-              });
-               console.log("calling image scripts");
-         }
         if (script === "contact") {
             var contactScripts = document.querySelectorAll(".contactScript");
             contactScripts.forEach((script) => {
@@ -307,7 +280,6 @@ function loadScripts(scripts) {
                     eval(contactCall[0]);
                 }
             });
-             console.log("calling contact scripts");
         }
     });
 }

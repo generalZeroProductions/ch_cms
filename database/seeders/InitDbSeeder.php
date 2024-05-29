@@ -33,7 +33,7 @@ class InitDbSeeder extends Seeder
                 'type' => 'logo',
                 'data' => ['title' => '1', 'image' => 1],
                 'title' => '标志文字',
-                'route' => 'defaultImage.jpg',
+                'route' => 'defaultLogo.png',
             ]);
             $page = ContentItem::create([
                 'type' => 'page',
@@ -51,8 +51,8 @@ class InitDbSeeder extends Seeder
             $column = ContentItem::create([
                 'type' => 'column',
                 'heading' => 'title_text',
-                'title' => '迎您来到新网站',
-                'body' => '登录开始编辑。您的登录用户名“super”密码123',
+                'title' => '迎您来到新网站'.config('app.name'),
+                'body' => '登录开始编辑',
                 'styles' => ['info' => 'on', 'title' => 't3'],
                 'parent' => $row->id,
 

@@ -1,13 +1,13 @@
 var slideShowItems = [];
 var deletedSlides = [];
 
-
-function startCarousel(divId){
+function startCarousel(divId) {
     console.log("running start slides");
-      $("#" + divId).carousel({
-          interval: 4000, 
-          ride: "carousel", 
-      });
+    $("#" + divId).carousel({
+        interval: 4000,
+        ride: "carousel",
+    });
+
 }
 
 function slideHeightListen(rowId, height) {
@@ -17,11 +17,11 @@ function slideHeightListen(rowId, height) {
     forms[0].addEventListener("submit", function (event) {
         preventDefault();
     });
-    var btn = document.getElementById('submit_slide_height_btn');
+    var btn = document.getElementById("submit_slide_height_btn");
     btn.addEventListener("click", function (event) {
         updateSlideHeight(slideHeight, rowId);
         btn.classList.add("disabled");
-        btn.setAttribute("disabled",'true');
+        btn.setAttribute("disabled", "true");
     });
     var slideHeight = document.getElementById("slide_height" + rowId);
     slideHeight.value = height;
@@ -35,7 +35,7 @@ function slideHeightListen(rowId, height) {
             if (event.key === "Enter") {
                 updateSlideHeight(slideHeight, rowId);
                 btn.classList.add("disabled");
-                btn.setAttribute("disabled",'true');
+                btn.setAttribute("disabled", "true");
             }
         }
         document.addEventListener("keydown", handleKeyDown);
@@ -43,7 +43,6 @@ function slideHeightListen(rowId, height) {
     slideHeight.addEventListener("blur", function (event) {
         document.removeEventListener("keydown", handleKeyDown);
     });
-   
 }
 
 function editSlidesForm(jItem) {
@@ -64,8 +63,7 @@ function editSlidesForm(jItem) {
             document.getElementById("page_id").value = item.pageId;
             document.getElementById("scroll_to").value = window.scrollY;
             var closeBtn = document.getElementById("close_main_modal");
-            closeBtn.addEventListener("click", function (event) {
-            });
+            closeBtn.addEventListener("click", function (event) {});
             var submitButton = document.getElementById("submit_slideshow_btn");
             submitButton.addEventListener("click", function (event) {
                 if (submitButton.disabled) {
@@ -259,8 +257,8 @@ function updateSlideCaption(id, caption) {
 
 function updateSlideData() {
     var slideData = document.getElementById("slide_show_data");
-    updateData = JSON.stringify(slideShowItems); 
-    slideData.value = updateData; 
+    updateData = JSON.stringify(slideShowItems);
+    slideData.value = updateData;
     var btn = document.getElementById("submit_slideshow_btn");
     var warn = document.getElementById("cant_sumbit_slides");
     if (slideShowItems.length === 0) {
@@ -320,5 +318,4 @@ function createNewSlide(slide) {
         };
         slideShowItems.push(newSlide);
     }
-   
 }

@@ -5,7 +5,7 @@
            <input type = "hidden" id="page_id" name = "page_id">
            <input type= "hidden" name="form_name" value = "edit_title_page">
        </form>
-       <button type="submit" class = "btn btn-primary page-title-save-btn" id="edit_title_page_btn">
+       <button  class = "btn btn-primary page-title-save-btn" id="edit_title_page_btn">
            <img src="{{ asset('icons/save.svg') }}" class = "page-title-save-icon">
        </button>
 

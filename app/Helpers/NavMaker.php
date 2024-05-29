@@ -10,10 +10,7 @@ class NavMaker
 {
     public function navHTML($pageName)
     {
-        Log::info('@nav Maker, page name is ' . $pageName);
-        if (!isset($pageName)) {
-            Log::info('no page name');
-        }
+
         $drops = Navigation::where('type', 'drop')->orderBy('index')->get();
         $dropData = [];
         foreach ($drops as $nav) {
@@ -34,11 +31,8 @@ class NavMaker
                 $dNav = Navigation::findOrFail($indexItem->parent);
                 Session::put('navKey', $dNav->index);
             } else {
-                Session::put('navKey', $indexItem->index);
-                Log::info('index for nav is ' . $indexItem);
+                Session::put('navKey', $indexItem->index);      
             }
-        } else {
-            Log::info('no nav index found for ' . $pageName);
         }
         $canDelete = true;
         if (count($navItems) === 1) {

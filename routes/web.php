@@ -15,25 +15,14 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 
-Route::post('admin/off', function () {
-    Auth::logout();
-    return redirect()->back();
-});
 
-Route::post('admin/on', function () {
-    $username = 'super';
-    $password = '123';
 
-    if (Auth::attempt(['name' => $username, 'password' => $password])) {
-        return redirect()->back();
-    }
-    return response()->json(['status' => 'login_failed'], 401);
-});
-
-Route::get('footer', function () {
+Route::get('/footer', function () {
     return View::make('app.footer');
 })->name('footer');
-// these might be better placed in there respective sections.  page, slide, etc.
+
+
+
 //  CREATE AND DELETE FOR PAGES
 Route::post('/create_slideshow', [SlideController::class, 'createSlideshow'])->name('create_slideshow');
 Route::post('/create_one_column', [ArticleController::class, 'createOneColumn'])->name('create_one_column');
@@ -41,11 +30,30 @@ Route::post('/create_two_column', [ArticleController::class, 'createTwoColumn'])
 Route::post('/create_tabbed', [TabController::class, 'createTabbed'])->name('createTabbed');
 Route::post('/create_image_article', [ArticleController::class, 'createImageArticle'])->name('create_image_article');
 
+
 Route::post('/delete_row', [PageController::class, 'deleteRow'])->name('deleteRow');
 
 Route::get('/delete_row_form', function () {
     return View::make('app.edit_mode.delete_row_form');
 })->name('deleteRowForm');
+
+
+// CONSOLE ROUTING
+
+
+
+Route::get('/login', function () {
+    return View::make('console.login');
+})->name('login');
+Route::post('/console/login', [ConsoleController::class, 'login']);
+
+
+Route::get('/console/logout', [ConsoleController::class, 'logout']);
+
+//PAGE  ROUTES
+Route::post('page_edit/create_new/{returnTo}', [PageController::class, 'createPage'])->name('createPage');
+
+Route::get('/display_all_pages/{index}', [ConsoleController::class, 'displayAllPages'])->name('displayAllPages');
 
 Route::post('/delete_page', [PageController::class, 'deletePage'])->name('deletePage');
 
@@ -53,14 +61,8 @@ Route::get('/delete_page_form', function () {
     return View::make('app.edit_mode.delete_page_form');
 })->name('deletePageForm');
 
-// CONSOLE ROUTING
-Route::get('/console/logout', [ConsoleController::class, 'logout']);
-Route::get('/console/hash', [ConsoleController::class, 'hashAndLogPassword']);
-Route::get('/login', function () {
-    return View::make('console.login');
-})->name('login');
 
-
+//    CONTACT ROUTES
 
 
 Route::post('/delete_contact', [ConsoleController::class, 'deleteContact']);
@@ -68,21 +70,16 @@ Route::get('/dashboard', function () {
     return View::make('console.dashboard');
 })->name('dashboard');
 
-// Route::get('/pagination_form', function () {
-//     return View::make('console.page_pagination_form');
-// })->name('paginationForm');
+Route::get('/display_all_inquiries/{index}', [ConsoleController::class, 'displayAllInquiries']);
 
 Route::get('/delete_contact_form', function () {
     return View::make('app.edit_mode.delete_inq_form');
-})->name('paginationForm');
-
-Route::get('/display_all_pages/{index}', [ConsoleController::class, 'displayAllPages'])->name('displayAllPages');
-Route::get('/display_all_inquiries/{index}', [ConsoleController::class, 'displayAllInquiries']);
-Route::get('/display_all_users/{index}', [ConsoleController::class, 'displayAllUsers']);
-
+});
 
 
 //    USER ROUTES 
+
+Route::get('/display_all_users/{index}', [ConsoleController::class, 'displayAllUsers']);
 
 Route::get('/add_user', function () {
     return View::make('console.add_user_form');
@@ -104,12 +101,7 @@ Route::post('/console/delete_user', [ConsoleController::class, 'deleteUser']);
 
 
 
-// Route::post('console/register', [ConsoleController::class, 'createUser']);
 
-
-
-Route::post('/console/login', [ConsoleController::class, 'login']);
-Route::post('page_edit/create_new/{returnTo}', [PageController::class, 'createPage'])->name('createPage');
 
 
 
@@ -171,13 +163,13 @@ Route::get('/no_tab_assigned', function () {
 
 Route::post('/quick_tab_asign', [TabController::class, 'quickAssign'])->name('QuickTabAssign');
 
-Route::get('/edit_tabs', function () {
-    return View::make('tabs.edit_tabs_form');
-})->name('editTabs');
+// Route::get('/edit_tabs', function () {
+//     return View::make('tabs.edit_tabs_form');
+// })->name('editTabs');
 
-Route::post('/update_tabs', [TabController::class, 'updateTabs'])->name('update_tabs');
+// Route::post('/update_tabs', [TabController::class, 'updateTabs'])->name('update_tabs');
 
-Route::get('/load_tab/{routeName}', [TabController::class, 'loadTabContent']);
+// Route::get('/load_tab/{routeName}', [TabController::class, 'loadTabContent']);
 
 //this should be renamed to tab/change_tracked
 Route::post('/tab/new/{tabId}', function ($tabId) {
@@ -197,16 +189,16 @@ Route::post('/update_slideshow', [SlideController::class, 'updateSlideshow'])->n
 // PAGES AND ROWS
 
 //not sure if change location is being used??
-Route::get('/changelocation/{location}', function ($location = null) {
-    Session::put('location', $location);
-    return response()->json(['message' => 'Session variable changed successfully']);
-})->name('changeLocation');
+// Route::get('/changelocation/{location}', function ($location = null) {
+//     Session::put('location', $location);
+//     return response()->json(['message' => 'Session variable changed successfully']);
+// })->name('changeLocation');
 
-Route::get('/load_page/{routeName}', [PageController::class, 'loadPage']);
+// Route::get('/load_page/{routeName}', [PageController::class, 'loadPage']);
 
-Route::get('/title_change', function () {
-    return View::make('app.layouts.partials.title_change');
-})->name('titleChange');
+// Route::get('/title_change', function () {
+//     return View::make('app.layouts.partials.title_change');
+// })->name('titleChange');
 
 Route::get('/build', function () {
     return View::make('app.page_builder');
@@ -230,13 +222,9 @@ Route::get('/{page?}', function ($page = null) {
     return view('app.site', ['page' => $page]);
 })->name('root');
 
-Route::get('test_fetch/{action?}', function ($action = null) {
-    return view('app.test_fetch', ['action' => $action]);
-})->name('testFetch');
 
-Route::get('/site2/site', function () {
-    return View::make('app.site2');
-})->name('site2');
+
+
 
 Route::get('/insert_/insert_form/{sequence}', function ($sequence) {
     $sData = explode('^', $sequence);
@@ -299,12 +287,12 @@ Route::get('/render_/render_content/{render}', function ($render) {
     }
 })->name('render');
 
-Route::post('session_var/{value}', function (Request $request) {
-    $data = explode('^',  $request);
-    if (strpos( $request, 'scroll') !== false) {
-        Session::put('ScrollTo', $data[1]);
-    }
-});
+// Route::post('session_var/{value}', function (Request $request) {
+//     $data = explode('^',  $request);
+//     if (strpos( $request, 'scroll') !== false) {
+//         Session::put('ScrollTo', $data[1]);
+//     }
+// });
 
 Route::post('/write_/write_form', function (Request $request) {
     if (strpos($request->form_name, 'img') !== false) {
@@ -341,3 +329,23 @@ Route::post('/write_/write_form', function (Request $request) {
         return $consoleCtl->write($request);
     }else {}
 })->name('write');
+
+
+
+// DEV ROUTES 
+// Route::post('admin/off', function () {
+//     Auth::logout();
+//     return redirect()->back();
+// });
+
+// Route::post('admin/on', function () {
+//     $username = 'super';
+//     $password = '123';
+
+//     if (Auth::attempt(['name' => $username, 'password' => $password])) {
+//         return redirect()->back();
+//     }
+//     return response()->json(['status' => 'login_failed'], 401);
+// });
+
+// Route::get('/console/hash', [ConsoleController::class, 'hashAndLogPassword']);

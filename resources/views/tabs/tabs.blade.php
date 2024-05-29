@@ -18,12 +18,12 @@
                 'divId' => $tabCol,
             ])
         </div>
-        <div class="col-9 " id="{{ $contentCol }}">
+        <div class="col-9 " id="{{ $contentCol }}" >
             @php
                 $i = 0;
             @endphp
             @foreach ($contents as $content)
-                <div id="contents{{ $i }}" class="tabContent_{{ $rowId }}">
+                <div id="contents{{ $i }}" class="tabContent_{{ $rowId }}" style="margin-right:5vw">
                     {!! $content !!}
                 </div>
                 @php

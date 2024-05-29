@@ -8,12 +8,14 @@
      </ul>
 
      <!-- The slideshow -->
-     <div class="carousel-inner">
+     <div class="carousel-inner  ">
          @foreach ($slideList as $index => $slide)
-             <div class="carousel-item banner_container {{ $index === 0 ? 'active' : '' }}">
-                 <img src="{{ asset('images/' . $slide->image) }}" class="img-fluid" alt="Slide {{ $index + 1 }}">
+             <div class="carousel-item  {{ $index === 0 ? 'active' : '' }}">
+             <div class = "banner_container">
+                 <img src="{{ asset('images/' . $slide->image) }}" alt="Slide {{ $index + 1 }}">
                  <div class="carousel-caption d-none d-md-block">
                      <h2>{{ $slide->body }}</h2>
+                 </div>
                  </div>
              </div>
          @endforeach
