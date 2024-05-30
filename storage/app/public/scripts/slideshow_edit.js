@@ -2,9 +2,8 @@ var slideShowItems = [];
 var deletedSlides = [];
 
 function startCarousel(divId) {
-    console.log("running start slides");
     $("#" + divId).carousel({
-        interval: 4000,
+        interval: 4500,
         ride: "carousel",
     });
 

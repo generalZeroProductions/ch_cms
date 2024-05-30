@@ -26,7 +26,7 @@
         $captionAt = 'center';
     }
     $height = $height * 0.9;
-    $padCaption = $width * 0.1;
+    $padCaption = $width * 0.103;
   
 
     $padCaption = (int) $padCaption;

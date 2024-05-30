@@ -1,10 +1,11 @@
 @php
  $width = Session::get('screenwidth') / 6;
- $margin = $width*0.15;
+ $margin = $width*0.2026;
+ $top = 280;
 echo '<style> .stack_2 {
         position:absolute;
            z-index: 2;
-           bottom: 120px;
+           top:'.$top.'px;
            left:'.$margin.'px;
            width:'.$width . 'px;
        }</style>  '

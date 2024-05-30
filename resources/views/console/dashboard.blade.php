@@ -10,7 +10,6 @@
     $tStyle = $thankyou->styles['title'];
     $scroll = 0;
     if (Session::has('scrollDash')) {
-        echo Session::get('scrollDash');
         $scroll = (int) Session::get('scrollDash');
         Session::forget('scrollDash');
     }

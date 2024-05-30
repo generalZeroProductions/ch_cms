@@ -8,7 +8,6 @@ use App\Models\ContentItem;
 use App\Models\Navigation;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
 
@@ -24,7 +23,6 @@ class PageController extends Controller
         if ($formName === 'edit_footer_item') {
             $htmlString = View::make('footer.edit_foot_column')->render();
             return new Response($htmlString, 200, ['Content-Type' => 'text/html']);
-
         }
     }
     public function write(Request $request)
@@ -46,12 +44,10 @@ class PageController extends Controller
             $site->data = ['footer' => 'double'];
             $site->save();
         }
-
     }
 
     public function updateFooter(Request $request)
     {
-
         $reqData = json_decode($request->data);
         $getparent = ContentItem::findOrFail($reqData[0]->id);
 
@@ -82,12 +78,10 @@ class PageController extends Controller
                 }
             }
         }
-
     }
 
     public function updateLogo(Request $request)
     {
-
         $logo = Navigation::where('type', 'logo')->first();
         $useTitle = '0';
         $useLogo = '0';
@@ -97,7 +91,6 @@ class PageController extends Controller
         if (isset($request->use_title)) {
             $useTitle = '1';
         }
-
         if ($request->hasFile('upload_file')) {
             $uploadedFile = $request->file('upload_file');
             $path = $uploadedFile->storeAs('images', $request->image_name, 'public');
@@ -109,7 +102,6 @@ class PageController extends Controller
         $logo->title = $request->title;
         $logo->data = ['title' => $useTitle, 'image' => $useLogo];
         $logo->save();
-
     }
     public static function render($render)
     {
@@ -145,7 +137,7 @@ class PageController extends Controller
             'type' => 'page',
             'title' => $title,
         ]);
-        Session::put('edit', true);
+        Session::put('editMode', true);
         Session::put('buildMode', true);
         Session::put('returnPage', $page->title);
         return redirect()->route('root', ['page' => $page->title]);
@@ -172,7 +164,7 @@ class PageController extends Controller
         $page = ContentItem::findOrFail($request->page_id);
         $rows = ContentItem::where('parent', $page->id)->get();
         foreach ($rows as $row) {
-           $this->rowDeleter($row);
+            $this->rowDeleter($row);
         }
         $page->delete();
         if (Session::has('pageIndex')) {
@@ -186,14 +178,12 @@ class PageController extends Controller
     }
     public function rowDeleter($row)
     {
-
         $tabs = Navigation::where('type', ['tab'])->get();
         foreach ($tabs as $tab) {
             if ($tab->parent = $row->id) {
                 $tab->delete();
             }
         }
-
         $columns = ContentItem::where('parent', $row->id)->get();
         foreach ($columns as $col) {
             $infos = Navigation::where('type', 'info')->get();
@@ -202,22 +192,16 @@ class PageController extends Controller
                     $info->delete();
                 }
             }
-            Log::info('Got first col infos');
-
             $col->delete();
         }
-
         $row->delete();
-
     }
+
     public function deleteRow(Request $request)
     {
-        Log::info($request);
         $rows = ContentItem::where('parent', $request->page_id)->orderBy('index')->get();
         $row = ContentItem::findOrFail($request->row_id);
-
         $nextRowInsert = null;
-
         foreach ($rows as $r) {
 
             if ($r->index > $row->index) {

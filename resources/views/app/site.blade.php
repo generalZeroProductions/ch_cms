@@ -50,9 +50,6 @@
 
     <div class="nav-fixed-top" id="main-navigation"></div>
     <div id="headspace"></div>
-    @php
-        //echo $scrollTo. ' how its set before nav';
-    @endphp
     <div id="page_content"></div>
      <br>
       <br>

@@ -4,6 +4,8 @@ namespace App\Helpers;
 use App\Models\ContentItem;
 use App\Models\Navigation;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
+
 use Illuminate\Support\Facades\View;
 
 class ArticleMaker
@@ -87,7 +89,7 @@ class ArticleMaker
                     'editMode' => Session::get('editMode'),
                     'article' => $article1,
                     'column2' => $column2,
-                    'info' => $info1,
+                    'info' => $c1Info,
                     'rowId' => $row->id,
                     'pageId' => $page->id,
                     'index' => $row->index,
@@ -98,7 +100,7 @@ class ArticleMaker
                     'editMode' => Session::get('editMode'),
                     'article' => $article1,
                     'column2' => $column2,
-                    'info' => $info1,
+                    'info' => $c1Info,
                     'rowId' => $row->id,
                     'pageId' => $page->id,
                     'index' => $row->index,
@@ -110,7 +112,7 @@ class ArticleMaker
                 'editMode' => Session::get('editMode'),
                 'article' => $article1,
                 'column2' => $column2,
-                'info' => $info1,
+                'info' => $c1Info,
                 'rowId' => $row->id,
                 'pageId' => $page->id,
                 'index' => $row->index,

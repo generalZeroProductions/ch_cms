@@ -287,14 +287,9 @@ Route::get('/render_/render_content/{render}', function ($render) {
     }
 })->name('render');
 
-// Route::post('session_var/{value}', function (Request $request) {
-//     $data = explode('^',  $request);
-//     if (strpos( $request, 'scroll') !== false) {
-//         Session::put('ScrollTo', $data[1]);
-//     }
-// });
 
 Route::post('/write_/write_form', function (Request $request) {
+
     if (strpos($request->form_name, 'img') !== false) {
         $imageController = new ImageController();
         return $imageController->editImage($request);

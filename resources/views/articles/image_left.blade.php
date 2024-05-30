@@ -32,10 +32,12 @@
         'pageId' => $pageId,
         'rowId' => $rowId,
         'column' => $column2,
+        
     ])
 
 </div>
 <div class="col-md-9" id = "{{ $articleId }}" style="text-align: justify">
+
     @include('articles.partials.title_text', [
         'pageId' => $pageId,
         'rowId' => $rowId,

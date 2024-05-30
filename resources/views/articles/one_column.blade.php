@@ -17,6 +17,7 @@
             $spacing = 10;
         }
     }
+   
 @endphp
 <div style='height:{{ $spacing }}px'></div>
 @if (!$tabContent)

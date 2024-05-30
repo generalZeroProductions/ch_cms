@@ -1,21 +1,4 @@
 
-function setImageColumsSize() {
-    console.log('Setting image sizes');
-    // Set width for image-column divs
-    const imageColumns = document.querySelectorAll(".image-column");
-    imageColumns.forEach((div) => {
-        div.style.width = "30%";
-         var width = div.offsetWidth; // Access offsetWidth for each div
-         console.log("Width of the div: " + width + "px");
-    });
-    // Set width for image-article divs
-    const imageArticles = document.querySelectorAll(".image-article");
-    imageArticles.forEach((div) => {
-        div.style.width = "70%";
-    });
-}
-
-
 
 function insertUploadFileBar(id) {
     var iconBar = getIconBar(id);
@@ -34,7 +17,7 @@ function insertUploadFileBar(id) {
                 });
                 var inputs = iconBar.querySelectorAll("input");
                 inputs.forEach((input) => {
-                    if (input.id === "upload") {
+                    if (input.type === "file") {
                         input.addEventListener("change", (event) => {
                             displayUploadedImage(id, input);
                         });
@@ -45,33 +28,6 @@ function insertUploadFileBar(id) {
     }
 }
 
-// function insertUploadFileBar2(iconBar) {
-
-//     if (iconBar) {
-//         fetch("/insert_upload_file")
-//             .then((response) => response.text()) // Parse response as text
-//             .then((html) => {
-//                 iconBar.innerHTML = html;
-//                 var anchors = iconBar.querySelectorAll("a");
-//                 anchors.forEach((anchor) => {
-//                     if (anchor.id === "close") {
-//                         anchor.onclick = function () {
-//                             displayEditIcons(id);
-//                         };
-//                     }
-//                 });
-//                 var inputs = iconBar.querySelectorAll("input");
-//                 inputs.forEach((input) => {
-//                     if (input.id === "upload") {
-//                         input.addEventListener("change", (event) => {
-//                             displayUploadedImage(id, input);
-//                         });
-//                     }
-//                 });
-//             })
-//             .catch((error) => console.error("Error loading page:", error));
-//     }
-// }
 
 function getThumbDiv(id) {
     const card = document.getElementById("card" + id);
@@ -95,12 +51,19 @@ function displaySelectedFile(id, imageName) {
         slide.source = "server";
         slide.image = imageName;
         slide.file = null;
-        // const fileElement = document.getElementById("file_capture_" + slideId);
-        // fileElement.value = "";
         updateSlideData();
     }
 }
+ function findFormElement(element) {
+     while (element && element.nodeName !== "FORM") {
+         element = element.parentElement;
+     }
+     return element;
+ }
 function displayUploadedImage(id, input) {
+    var form = findFormElement(input);
+    form.id = "upload_slide_img" +id;
+    writeNoReturn("upload_slide_img" + id);
     const imgElement = getImageElementFromCard(id);
     const file = input.files[0];
     const reader = new FileReader();
@@ -128,36 +91,9 @@ function getIconBar(id) {
 
 function getIconBarS(id) {
     var cards = document.querySelectorAll("#edit_icons");
-    console.log("how many catrds " + cards.length)
     return cards[0];
 }
 
-// function insertFileSelect2(iconBar) {
-//     if (iconBar) {
-//         fetch("/insert_file_select")
-//             .then((response) => response.text()) // Parse response as text
-//             .then((html) => {
-//                 iconBar.innerHTML = html;
-//                 var anchors = iconBar.querySelectorAll("a");
-//                 anchors.forEach((anchor) => {
-//                     if (anchor.id === "close") {
-//                         anchor.onclick = function () {
-//                             displayEditIcons(id);
-//                         };
-//                     }
-//                 });
-//                 var selects = iconBar.querySelectorAll("select");
-//                 selects.forEach((select) => {
-//                     if (select.id === "select") {
-//                         select.addEventListener("input", (event) => {
-//                             displaySelectedFile(id, select.value);
-//                         });
-//                     }
-//                 });
-//             })
-//             .catch((error) => console.error("Error loading page:", error));
-//     }
-// }
 
 function insertFileSelect(id) {
     var iconBar = getIconBar(id);
@@ -186,30 +122,6 @@ function insertFileSelect(id) {
             .catch((error) => console.error("Error loading page:", error));
     }
 }
-// function displayEditIcons2(id) {
-//     var iconBar = getIconBarS(id);
-//     if (iconBar) {
-//         fetch("/insert_image_icons_2")
-//             .then((response) => response.text()) // Parse response as text
-//             .then((html) => {
-//                 iconBar.innerHTML = html;
-//                 var anchors = iconBar.querySelectorAll("a");
-//                 anchors.forEach((anchor) => {
-//                     if (anchor.id === "file") {
-//                         anchor.onclick = function () {
-//                             insertFileSelect2(iconBar);
-//                         };
-//                     }
-//                     if (anchor.id === "upload") {
-//                         anchor.onclick = function () {
-//                             insertUploadFileBar2(iconBar);
-//                         };
-//                     }
-//                 });
-//             })
-//             .catch((error) => console.error("Error loading page:", error));
-//     }
-// }
 
 function displayEditIcons(id) {
     var iconBar = getIconBar(id);

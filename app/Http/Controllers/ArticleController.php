@@ -134,7 +134,6 @@ class ArticleController extends Controller
         $article = ContentItem::findOrFail($request->article_id);
         $article->title = $request->title;
         $article->body = $request->body;
-Log::info($request->body);
         $useInfo = 'off';
         if (isset($request->use_info_checkbox)) {
             $useInfo = 'on';

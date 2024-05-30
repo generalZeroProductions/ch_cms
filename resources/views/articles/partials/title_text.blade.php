@@ -8,6 +8,7 @@
         'article' => $article,
         'info' => $info,
     ]);
+
 @endphp
 
 
@@ -30,6 +31,7 @@
     @endphp
     <br>
     @if ($info['show'] === 'on')
+
         <br>
         <div style = "height:45px">
             @if ($info['type'] === 'button')

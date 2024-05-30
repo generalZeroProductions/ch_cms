@@ -9,7 +9,7 @@
                 <form method = 'POST' action='console/login'>
                     @csrf
                     <div class="form-group">
-                        <label for="login">{{ config('app.name') }}.com  管理员登录</label>
+                        <label for="login">{{ config('app.name') }}  管理员登录</label>
                     </div>
                     <div class="form-group">
                         <label for="username">用户名</label>

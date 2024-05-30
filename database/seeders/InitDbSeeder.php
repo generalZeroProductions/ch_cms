@@ -51,7 +51,7 @@ class InitDbSeeder extends Seeder
             $column = ContentItem::create([
                 'type' => 'column',
                 'heading' => 'title_text',
-                'title' => '迎您来到新网站'.config('app.name'),
+                'title' => '迎您来到新网站 '.config('app.name'),
                 'body' => '登录开始编辑',
                 'styles' => ['info' => 'on', 'title' => 't3'],
                 'parent' => $row->id,

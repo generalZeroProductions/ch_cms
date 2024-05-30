@@ -1,5 +1,4 @@
-<form method="POST" action="/update_slideshow" enctype="multipart/form-data" id="slideEditForm">
-    @csrf
+
     <div class="d-flex justify-content-between">
         @for ($i = 0; $i < 3; $i++)
             <div class="card card-240" id = "card{{ $i }}">
@@ -14,6 +13,8 @@
             </div>
         @endfor
     </div>
+    <form method="POST" action="/update_slideshow" enctype="multipart/form-data" id="slideEditForm">
+    @csrf
     <input type = "hidden" id="row_id" name = "row_id">
     <input type = "hidden" id="page_id" name = "page_id">
     <input type = "hidden" id="scroll_to" name = "scroll_to">

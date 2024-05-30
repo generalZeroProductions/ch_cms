@@ -96,7 +96,7 @@ function insertForm(formName, item, divId) {
                 "Error occurred while loading " + formName,
                 +": " + error
             );
-            enableScrolling();
+
         });
 }
 
@@ -192,12 +192,11 @@ function writeAndRender(formName, sequence, div, scripts) {
                 renderToDiv(div, sequence, div.id, scripts);
             } else {
                 console.error("Form submission failed:", response.statusText);
-                enableScrolling();
             }
         })
         .catch((error) => {
             console.error("Error writing to " + formName + ":", error);
-            enableScrolling();
+ 
         });
 }
 

@@ -113,7 +113,7 @@
     }
 
     .logo-h3 {
-        margin-top: 11px;
+        margin-top: 13px;
         margin-right: 8px;
         height: 52px;
         font-size: 20px;
@@ -176,7 +176,7 @@
     .save_logo_btn {
         height: 46px;
         width: 48px;
-        margin-top: 6px;
+        margin-top: 13px;
         display: flex;
         justify-content: center;
         align-items: center;
